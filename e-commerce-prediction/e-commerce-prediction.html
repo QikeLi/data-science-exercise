@@ -1,0 +1,1446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2017-12-20 Wed 17:02 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E-commerce prediction model</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Qike Max Li" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/hideshow.css"/>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/bigblow.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/hideshow.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">E-commerce prediction model</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org600d19c">1. Exploratory Data analysis</a>
+<ul>
+<li><a href="#orgca05800">1.1. Calculate the occurrence of each activity in the training dataset.</a>
+<ul>
+<li><a href="#org4d317c4">1.1.1. request an interactive node on HPC and transfer files</a></li>
+<li><a href="#org72a8ee8">1.1.2. The number occurrences of each activity for all users.</a></li>
+<li><a href="#orgc6e6d37">1.1.3. The number occurrences of each activity for users who purchased.</a></li>
+<li><a href="#org8846923">1.1.4. The number occurrences of each activity for users who didn't purchase.</a></li>
+<li><a href="#org4dd02ef">1.1.5. The number occurrences of each activity for users in the test data.</a></li>
+</ul>
+</li>
+<li><a href="#orgbf68672">1.2. Make some plots</a>
+<ul>
+<li><a href="#orgd3dfc5a">1.2.1. Boxplots of all activities for users who made purchases and the ones who did not.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgc829681">2. Fit models</a>
+<ul>
+<li><a href="#org5d64afa">2.1. Prepare data</a>
+<ul>
+<li><a href="#org725e6ce">2.1.1. A function to do data munging</a></li>
+<li><a href="#org190bcbd">2.1.2. Munge training data and test data</a></li>
+</ul>
+</li>
+<li><a href="#org1d0b604">2.2. Random Forest model</a>
+<ul>
+<li><a href="#orgcab5c42">2.2.1. Split data, Define features and outcomes</a></li>
+<li><a href="#org1bdb5a0">2.2.2. Fit a model using all features</a></li>
+<li><a href="#orgeb0706e">2.2.3. Exclude the features that measure the date difference between the first date and the last time of an activity of a user</a></li>
+<li><a href="#orga01807d">2.2.4. Exclude the date related features</a></li>
+</ul>
+</li>
+<li><a href="#orgdc4dcf5">2.3. Gradient Boosting Model (GBM)</a>
+<ul>
+<li><a href="#orgb166bbb">2.3.1. Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</a></li>
+<li><a href="#org8597f5a">2.3.2. Grid search</a></li>
+<li><a href="#org6f9368b">2.3.3. Model Inspection and Final Test Set Scoring</a></li>
+<li><a href="#org99d50df">2.3.4. Ensembling Techniques</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org1dcc779">3. Most predictive features</a></li>
+<li><a href="#org68f27fa">4. Recurrent neural network (RNN)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org600d19c" class="outline-2">
+<h2 id="org600d19c"><span class="section-number-2">1</span> Exploratory Data analysis</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-orgca05800" class="outline-3">
+<h3 id="orgca05800"><span class="section-number-3">1.1</span> Calculate the occurrence of each activity in the training dataset.</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+I would like to know:
+</p>
+<ol class="org-ol">
+<li>What are the activities?</li>
+<li>The number of occurrences of each activity</li>
+</ol>
+</div>
+
+<div id="outline-container-org4d317c4" class="outline-4">
+<h4 id="org4d317c4"><span class="section-number-4">1.1.1</span> request an interactive node on HPC and transfer files</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<div class="org-src-container">
+<pre class="src src-sh">qsub -I -N takehome -m bea -M qikeli@email.arizona.edu
+ -W <span style="color: #DFAF8F;">group_list</span>=yves -q standard -l <span style="color: #DFAF8F;">select</span>=1:<span style="color: #DFAF8F;">ncpus</span>=28:<span style="color: #DFAF8F;">mem</span>=168gb:<span style="color: #DFAF8F;">pcmem</span>=6gb -l 
+<span style="color: #DFAF8F;">cput</span>=280:0:0 -l <span style="color: #DFAF8F;">walltime</span>=10:0:0
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rsync -azv ../../6sense/ qikeli@sftp.hpc.arizona.edu:~/Data-Science-Challenge/
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72a8ee8" class="outline-4">
+<h4 id="org72a8ee8"><span class="section-number-4">1.1.2</span> The number occurrences of each activity for all users.</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
+<span style="color: #BFEBBF;">library</span>(magrittr)
+
+setwd(<span style="color: #CC9393;">'~/Dropbox/job-search/Industry/Data-Science-Challenge/6sense/org'</span>)
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Read in data</span>
+dat_train <span style="color: #BFEBBF;">&lt;-</span> read_tsv(<span style="color: #CC9393;">'../takehome/training.tsv'</span>, col_names = F)
+dat_test <span style="color: #BFEBBF;">&lt;-</span> read_tsv(<span style="color: #CC9393;">'../takehome/test.tsv'</span>, col_names = F)
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">assign column names</span>
+colnames(dat_train) <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">'ID'</span>, <span style="color: #CC9393;">'date'</span>, <span style="color: #CC9393;">'activity'</span>)
+colnames(dat_test) <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">'ID'</span>, <span style="color: #CC9393;">'date'</span>, <span style="color: #CC9393;">'activity'</span>)
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Number of each activity for all users</span>
+table(dat_train$activity)
+</pre>
+</div>
+
+<pre class="example">
+
+CustomerSupport EmailClickthrough         EmailOpen        FormSubmit 
+         103991            285568           3191732            176067 
+       PageView          Purchase          WebVisit 
+         382263            395031            384025
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc6e6d37" class="outline-4">
+<h4 id="orgc6e6d37"><span class="section-number-4">1.1.3</span> The number occurrences of each activity for users who purchased.</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<div class="org-src-container">
+<pre class="src src-R">dat_train <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(<span style="color: #CC9393;">'Purchase'</span> <span style="color: #BFEBBF;">%in%</span> activity) <span style="color: #BFEBBF;">%$%</span>
+    table(activity)
+</pre>
+</div>
+
+<pre class="example">
+activity
+  CustomerSupport EmailClickthrough         EmailOpen        FormSubmit 
+           103991            135795           1225392             79937 
+         PageView          Purchase          WebVisit 
+           253606            395031            253792
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8846923" class="outline-4">
+<h4 id="org8846923"><span class="section-number-4">1.1.4</span> The number occurrences of each activity for users who didn't purchase.</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<div class="org-src-container">
+<pre class="src src-R">dat_train <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(! <span style="color: #CC9393;">'Purchase'</span> <span style="color: #BFEBBF;">%in%</span> activity) <span style="color: #BFEBBF;">%$%</span>
+    table(activity)
+</pre>
+</div>
+
+<pre class="example">
+activity
+EmailClickthrough         EmailOpen        FormSubmit          PageView 
+           149773           1966340             96130            128657 
+         WebVisit 
+           130233
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org4dd02ef" class="outline-4">
+<h4 id="org4dd02ef"><span class="section-number-4">1.1.5</span> The number occurrences of each activity for users in the test data.</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<div class="org-src-container">
+<pre class="src src-R">table(dat_test$activity)
+</pre>
+</div>
+
+<pre class="example">
+
+EmailClickthrough         EmailOpen        FormSubmit          PageView 
+            42364            550886             28765             87149 
+         WebVisit 
+            88595
+
+</pre>
+
+<p>
+Since the variable <code>CustomerSupport</code> does not exit in the test data, I will exclude it when building models.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbf68672" class="outline-3">
+<h3 id="orgbf68672"><span class="section-number-3">1.2</span> Make some plots</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-orgd3dfc5a" class="outline-4">
+<h4 id="orgd3dfc5a"><span class="section-number-4">1.2.1</span> Boxplots of all activities for users who made purchases and the ones who did not.</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Group data by customer ID, and then count the number occurences</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">for each activity of each paitent</span>
+act_count <span style="color: #BFEBBF;">&lt;-</span> dat_train <span style="color: #BFEBBF;">%&gt;%</span>
+    count( c(<span style="color: #CC9393;">'ID'</span>,<span style="color: #CC9393;">'activity'</span>))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Add a column to indicate if a customer has made purchases</span>
+act_count2 <span style="color: #BFEBBF;">&lt;-</span> rbind(
+    act_count <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter( <span style="color: #CC9393;">'Purchase'</span> <span style="color: #BFEBBF;">%in%</span> activity ) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(Purchase = <span style="color: #7CB8BB;">TRUE</span>)     
+   ,
+    act_count <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(! <span style="color: #CC9393;">'Purchase'</span> <span style="color: #BFEBBF;">%in%</span> activity ) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(Purchase = <span style="color: #7CB8BB;">FALSE</span>)
+)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">make boxplots of the occurences</span>
+act_count2 <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(x = activity, y = freq, color = Purchase)) +
+    geom_boxplot() +
+    ylim(c(0,50)) +
+    theme_bw(base_size = 20)+
+    labs(y = <span style="color: #CC9393;">'# of occurences'</span>, x = <span style="color: #CC9393;">'Activity'</span>) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+</pre>
+</div>
+
+<p>
+<img src="http://math.arizona.edu/~qikeli/Figs/fig-1.png" alt="fig-1.png" />
+Note that the range of y axis is set as <code>[0,50]</code>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc829681" class="outline-2">
+<h2 id="orgc829681"><span class="section-number-2">2</span> Fit models</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Due to the size of the dataset and the computationally intensive hyper-parameter tunning process, I use H2O distributed computing frame to fit models on high performance cluster(HPC). 
+</p>
+
+<p>
+The models I will use include Random Forest and Gradient Boosting Machine (GBM). 
+</p>
+</div>
+<div id="outline-container-org5d64afa" class="outline-3">
+<h3 id="org5d64afa"><span class="section-number-3">2.1</span> Prepare data</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-org725e6ce" class="outline-4">
+<h4 id="org725e6ce"><span class="section-number-4">2.1.1</span> A function to do data munging</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Feature Engineering:
+</p>
+<ol class="org-ol">
+<li>Including all dates will add too many dimensions.</li>
+<li>Count the number of occurrences of each activity and the total number of activities for each user.</li>
+<li>Test data don't have the variable <code>Customer Support</code>, exclude it to avoid data leakage.</li>
+<li>Weighing each user_id's activity relative to the total number of activities within dataset.</li>
+<li>Days between last activity and last date of the dataset.</li>
+<li>Days between the first date and the last date of each activity for each user.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #93E0E3;">prep_data</span> <span style="color: #BFEBBF;">&lt;-</span> <span style="color: #F0DFAF; font-weight: bold;">function</span>(dat_tmp, training){
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Prepare data: 1) feature engineering 2) reshape to wide format</span>
+    <span style="color: #5F7F5F;">## </span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Args:</span>
+    <span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">dat_tmp: either the training data or the test data </span>
+    <span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">training: a logical to inidicate if training data is being munged</span>
+    <span style="color: #5F7F5F;">## </span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Returns:</span>
+    <span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">A tibble that is ready to be used for fitting models</span>
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">last date in training data</span>
+    last_date_tmp <span style="color: #BFEBBF;">&lt;-</span> max(dat_tmp$date)
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">add a column of the date difference between the last date </span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">of a user's recored and the last date in the dataset</span>
+    dat_date <span style="color: #BFEBBF;">&lt;-</span> dat_tmp <span style="color: #BFEBBF;">%&gt;%</span>
+        group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+        mutate(date_last = min(last_date_tmp - date))
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">date difference between the first date of an activity</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">to the last date of an activity</span>
+    dat_date <span style="color: #BFEBBF;">&lt;-</span> dat_date <span style="color: #BFEBBF;">%&gt;%</span>
+        group_by(ID, activity) <span style="color: #BFEBBF;">%&gt;%</span>
+        mutate(date_diff = max(date) - min(date))
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## keep the date_last column</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">date_last_tmp &lt;- dat_tmp %&gt;%</span>
+    <span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">select(ID, date_last) %&gt;%</span>
+    <span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">distinct(ID, date_last) %&gt;%</span>
+    <span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">mutate(date_last = as.numeric(date_last))</span>
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">count each activity for each user</span>
+    act_count <span style="color: #BFEBBF;">&lt;-</span> dat_tmp <span style="color: #BFEBBF;">%&gt;%</span>
+        group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+        count(activity)
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">reshape the data to a wide format</span>
+    dat_wide <span style="color: #BFEBBF;">&lt;-</span> act_count <span style="color: #BFEBBF;">%&gt;%</span>
+        spread(activity, n, fill = 0)
+
+    <span style="color: #F0DFAF; font-weight: bold;">if</span>(training){
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">drop the variable 'CustomerSupport' for training data</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">since it doesn't exit in test data</span>
+        
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">reshape data to long format</span>
+        dat_date <span style="color: #BFEBBF;">&lt;-</span> dat_date <span style="color: #BFEBBF;">%&gt;%</span>
+            select(-date) <span style="color: #BFEBBF;">%&gt;%</span>
+            distinct <span style="color: #BFEBBF;">%&gt;%</span>        
+            spread(key = activity, value = date_diff, fill = 0) <span style="color: #BFEBBF;">%&gt;%</span> 
+            select(-CustomerSupport,-Purchase) <span style="color: #BFEBBF;">%&gt;%</span>
+            mutate(date_last = as.numeric(date_last),
+                   EmailClickthrough = as.numeric(EmailClickthrough),
+                   EmailOpen = as.numeric(EmailOpen),
+                   FormSubmit = as.numeric(FormSubmit),
+                   PageView = as.numeric(PageView),
+                   WebVisit = as.numeric(WebVisit))
+        
+        names(dat_date)[-1:-2] <span style="color: #BFEBBF;">&lt;-</span> paste0(names(dat_date)[-1:-2],<span style="color: #CC9393;">'_span'</span>)
+
+        dat_wide <span style="color: #BFEBBF;">&lt;-</span> dat_wide <span style="color: #BFEBBF;">%&gt;%</span>
+            select(-CustomerSupport)      
+        
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Count the total number of occurences of all activities</span>
+        tot_act <span style="color: #BFEBBF;">&lt;-</span> dat_wide <span style="color: #BFEBBF;">%&gt;%</span>
+            ungroup <span style="color: #BFEBBF;">%&gt;%</span>    
+            select(-Purchase,-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+            rowSums     
+
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">calculate the percentage of each activity relative to a user's total</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">number of activities</span>
+        action_pct <span style="color: #BFEBBF;">&lt;-</span> dat_wide <span style="color: #BFEBBF;">%&gt;%</span>
+            ungroup <span style="color: #BFEBBF;">%&gt;%</span>    
+            select(-Purchase,-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+            apply(1,<span style="color: #F0DFAF; font-weight: bold;">function</span>(x) x/sum(x)) <span style="color: #BFEBBF;">%&gt;%</span>
+            t
+    } <span style="color: #F0DFAF; font-weight: bold;">else</span> {
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">reshape data to long format</span>
+        dat_date <span style="color: #BFEBBF;">&lt;-</span> dat_date <span style="color: #BFEBBF;">%&gt;%</span>
+            select(-date) <span style="color: #BFEBBF;">%&gt;%</span>
+            distinct <span style="color: #BFEBBF;">%&gt;%</span>        
+            spread(key = activity, value = date_diff, fill = 0) <span style="color: #BFEBBF;">%&gt;%</span> 
+            mutate(date_last = as.numeric(date_last),
+                   EmailClickthrough = as.numeric(EmailClickthrough),
+                   EmailOpen = as.numeric(EmailOpen),
+                   FormSubmit = as.numeric(FormSubmit),
+                   PageView = as.numeric(PageView),
+                   WebVisit = as.numeric(WebVisit))
+        
+        names(dat_date)[-1:-2] <span style="color: #BFEBBF;">&lt;-</span> paste0(names(dat_date)[-1:-2],<span style="color: #CC9393;">'_span'</span>)
+
+        tot_act <span style="color: #BFEBBF;">&lt;-</span> dat_wide <span style="color: #BFEBBF;">%&gt;%</span>
+            ungroup <span style="color: #BFEBBF;">%&gt;%</span>    
+            select(-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+            rowSums
+
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">calculate the percentage of each activity relative to a user's total </span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">number of activities</span>
+        action_pct <span style="color: #BFEBBF;">&lt;-</span> dat_wide <span style="color: #BFEBBF;">%&gt;%</span>
+            ungroup <span style="color: #BFEBBF;">%&gt;%</span>    
+            select(-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+            apply(1,<span style="color: #F0DFAF; font-weight: bold;">function</span>(x) x/sum(x)) <span style="color: #BFEBBF;">%&gt;%</span>
+            t        
+    }
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">replace NA's by 0</span>
+    action_pct[is.na(action_pct)] <span style="color: #BFEBBF;">&lt;-</span> 0
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">rename columns</span>
+    colnames(action_pct) <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">"EmailClickthrough_pct"</span>,<span style="color: #CC9393;">"EmailOpen_pct"</span>,
+                              <span style="color: #CC9393;">"FormSubmit_pct"</span>,<span style="color: #CC9393;">"PageView_pct"</span>,<span style="color: #CC9393;">"WebVisit_pct"</span>)
+
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Combine the above three date frames</span>
+    dat_comb <span style="color: #BFEBBF;">&lt;-</span> as_tibble(cbind(as.data.frame(dat_wide), 
+                                as.data.frame(action_pct),
+                                as.data.frame(tot_act)))
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the rows with only puchase counts, but all the other counts are ze</span><span style="color: #DC8CC3; background-color: #3F3F3F;">ro</span>
+    dat_comb <span style="color: #BFEBBF;">%&gt;%</span>
+        filter(tot_act != 0)
+    
+    <span style="color: #F0DFAF; font-weight: bold;">return</span>(left_join(dat_comb, dat_date, by = <span style="color: #CC9393;">'ID'</span>))
+}    
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org190bcbd" class="outline-4">
+<h4 id="org190bcbd"><span class="section-number-4">2.1.2</span> Munge training data and test data</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<div class="org-src-container">
+<pre class="src src-R">dat_fit <span style="color: #BFEBBF;">&lt;-</span> prep_data(dat_train, training = T)
+dat_test_wide <span style="color: #BFEBBF;">&lt;-</span> prep_data(dat_test, training = F)
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">write out the data</span>
+write.table(dat_fit, file=<span style="color: #CC9393;">'./Data/train-wide.tsv'</span>,
+            quote=<span style="color: #7CB8BB;">FALSE</span>, sep=<span style="color: #CC9393;">'\t'</span>, row.names = F)
+write.table(dat_test_wide, file=<span style="color: #CC9393;">'./Data/test-wide.tsv'</span>,
+            quote=<span style="color: #7CB8BB;">FALSE</span>, sep=<span style="color: #CC9393;">'\t'</span>, row.names = F)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d0b604" class="outline-3">
+<h3 id="org1d0b604"><span class="section-number-3">2.2</span> Random Forest model</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Random Forest is robust and easy to tune, so we don't have to worry much about outliers, multicollinearity, or whether to include the interaction terms. Therefore, I use Random Forest to choose the engineered features.
+</p>
+</div>
+<div id="outline-container-orgcab5c42" class="outline-4">
+<h4 id="orgcab5c42"><span class="section-number-4">2.2.1</span> Split data, Define features and outcomes</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">library</span>(h2o)
+h2o.init(
+    nthreads = -1,                 <span style="color: #5F7F5F;">#</span><span style="color: #7F9F7F;">use all available threads</span>
+    max_mem_size = <span style="color: #CC9393;">'2G'</span>)           <span style="color: #5F7F5F;">#</span><span style="color: #7F9F7F;">specify the memory size for H2O cloud</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Clean state-just in case the cluster was already running</span>
+h2o.removeAll()
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Read in training data</span>
+
+ dat_fit <span style="color: #BFEBBF;">&lt;-</span> h2o.importFile(
+    path=normalizePath(<span style="color: #CC9393;">'./Data/train-wide.tsv'</span>))
+dat_fit$PurchaseBoolean <span style="color: #BFEBBF;">&lt;-</span> as.factor(ifelse(dat_fit$Purchase &gt;0, <span style="color: #CC9393;">'Y'</span>, <span style="color: #CC9393;">'N'</span>))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">split data</span>
+splits <span style="color: #BFEBBF;">&lt;-</span> h2o.splitFrame(
+    dat_fit,
+    ratios = c(.7,.2),                  <span style="color: #5F7F5F;">#</span><span style="color: #7F9F7F;">only need to specify 2 fractions,</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">the 3rd is implied</span>
+    seed = 123)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">assing training data, validation data, and testing data</span>
+train <span style="color: #BFEBBF;">&lt;-</span> h2o.assign(splits[[1]], <span style="color: #CC9393;">'train_hex'</span>)
+valid <span style="color: #BFEBBF;">&lt;-</span> h2o.assign(splits[[2]], <span style="color: #CC9393;">'valid_hex'</span>)
+test <span style="color: #BFEBBF;">&lt;-</span> h2o.assign(splits[[3]], <span style="color: #CC9393;">'test_hex'</span>)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">define the predictors and the response</span>
+myX_all <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">'EmailClickthrough'</span>, <span style="color: #CC9393;">'EmailOpen'</span>,
+         <span style="color: #CC9393;">'FormSubmit'</span>, <span style="color: #CC9393;">'PageView'</span>,<span style="color: #CC9393;">'WebVisit'</span>,
+         <span style="color: #CC9393;">"EmailClickthrough_pct"</span>, <span style="color: #CC9393;">"EmailOpen_pct"</span>,
+         <span style="color: #CC9393;">"FormSubmit_pct"</span>, <span style="color: #CC9393;">"PageView_pct"</span>,
+         <span style="color: #CC9393;">"WebVisit_pct"</span>, <span style="color: #CC9393;">"tot_act"</span>, <span style="color: #CC9393;">"date_last"</span>,
+         <span style="color: #CC9393;">"EmailClickthrough_span"</span>, <span style="color: #CC9393;">"EmailOpen_span"</span>,
+         <span style="color: #CC9393;">"FormSubmit_span"</span>, <span style="color: #CC9393;">"PageView_span"</span>,        
+          <span style="color: #CC9393;">"WebVisit_span"</span>)
+
+myX_noSpan <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">'EmailClickthrough'</span>, <span style="color: #CC9393;">'EmailOpen'</span>,
+         <span style="color: #CC9393;">'FormSubmit'</span>, <span style="color: #CC9393;">'PageView'</span>,<span style="color: #CC9393;">'WebVisit'</span>,
+         <span style="color: #CC9393;">"EmailClickthrough_pct"</span>, <span style="color: #CC9393;">"EmailOpen_pct"</span>,
+         <span style="color: #CC9393;">"FormSubmit_pct"</span>, <span style="color: #CC9393;">"PageView_pct"</span>,
+         <span style="color: #CC9393;">"WebVisit_pct"</span>, <span style="color: #CC9393;">"tot_act"</span>, <span style="color: #CC9393;">"date_last"</span>)
+
+
+myX_count <span style="color: #BFEBBF;">&lt;-</span> c(<span style="color: #CC9393;">'EmailClickthrough'</span>, <span style="color: #CC9393;">'EmailOpen'</span>,
+               <span style="color: #CC9393;">'FormSubmit'</span>, <span style="color: #CC9393;">'PageView'</span>,<span style="color: #CC9393;">'WebVisit'</span>)
+
+myY <span style="color: #BFEBBF;">&lt;-</span> <span style="color: #CC9393;">'PurchaseBoolean'</span>
+
+</pre>
+</div>
+
+<pre class="example">
+ Connection successful!
+
+R is connected to the H2O cluster: 
+    H2O cluster uptime:         10 seconds 496 milliseconds 
+    H2O cluster version:        3.16.0.2 
+    H2O cluster version age:    19 days  
+    H2O cluster name:           H2O_started_from_R_qikeli_rbo975 
+    H2O cluster total nodes:    1 
+    H2O cluster total memory:   1.78 GB 
+    H2O cluster total cores:    8 
+    H2O cluster allowed cores:  8 
+    H2O cluster healthy:        TRUE 
+    H2O Connection ip:          localhost 
+    H2O Connection port:        54321 
+    H2O Connection proxy:       NA 
+    H2O Internal Security:      FALSE 
+    H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+    R Version:                  R version 3.4.2 (2017-09-28)
+[1] 0
+
+ERROR: Unexpected HTTP Status code: 404 Not Found (url = http://localhost:54321/3/ImportFiles?path=.%2FData%2Ftrain-wide.tsv&amp;pattern=)
+
+water.exceptions.H2ONotFoundArgumentException
+ [1] "water.exceptions.H2ONotFoundArgumentException: File ./Data/train-wide.tsv does not exist"                           
+ [2] "    water.persist.PersistNFS.importFiles(PersistNFS.java:135)"                                                      
+ [3] "    water.persist.PersistManager.importFiles(PersistManager.java:271)"                                              
+ [4] "    water.api.ImportFilesHandler.importFiles(ImportFilesHandler.java:24)"                                           
+ [5] "    sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)"                                                    
+ [6] "    sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)"                                  
+ [7] "    sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)"                          
+ [8] "    java.lang.reflect.Method.invoke(Method.java:498)"                                                               
+ [9] "    water.api.Handler.handle(Handler.java:63)"                                                                      
+[10] "    water.api.RequestServer.serve(RequestServer.java:451)"                                                          
+[11] "    water.api.RequestServer.doGeneric(RequestServer.java:296)"                                                      
+[12] "    water.api.RequestServer.doGet(RequestServer.java:220)"                                                          
+[13] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:735)"                                                   
+[14] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:848)"                                                   
+[15] "    org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:684)"                                         
+[16] "    org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:503)"                                     
+[17] "    org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)"                             
+[18] "    org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:429)"                                      
+[19] "    org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)"                              
+[20] "    org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)"                                  
+[21] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[22] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[23] "    water.JettyHTTPD$LoginHandler.handle(JettyHTTPD.java:192)"                                                      
+[24] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[25] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[26] "    org.eclipse.jetty.server.Server.handle(Server.java:370)"                                                        
+[27] "    org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:494)"                 
+[28] "    org.eclipse.jetty.server.BlockingHttpConnection.handleRequest(BlockingHttpConnection.java:53)"                  
+[29] "    org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:971)"                
+[30] "    org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1033)"
+[31] "    org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)"                                               
+[32] "    org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)"                                          
+[33] "    org.eclipse.jetty.server.BlockingHttpConnection.handle(BlockingHttpConnection.java:72)"                         
+[34] "    org.eclipse.jetty.server.bio.SocketConnector$ConnectorEndPoint.run(SocketConnector.java:264)"                   
+[35] "    org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)"                               
+[36] "    org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)"                                
+[37] "    java.lang.Thread.run(Thread.java:745)"                                                                          
+
+Error in .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page,  : 
+  
+
+ERROR MESSAGE:
+
+File ./Data/train-wide.tsv does not exist
+
+In addition: Warning message:
+In normalizePath("./Data/train-wide.tsv") :
+  path[1]="./Data/train-wide.tsv": No such file or directory
+Error in ifelse(dat_fit$Purchase &gt; 0, "Y", "N") : 
+  object 'dat_fit' not found
+Error in is.H2OFrame(fr) : object 'dat_fit' not found
+Error in is.H2OFrame(fr) : object 'splits' not found
+Error in is.H2OFrame(fr) : object 'splits' not found
+Error in is.H2OFrame(fr) : object 'splits' not found
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org1bdb5a0" class="outline-4">
+<h4 id="org1bdb5a0"><span class="section-number-4">2.2.2</span> Fit a model using all features</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
+rf_all <span style="color: #BFEBBF;">&lt;-</span> h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_all,
+    y = myY,
+    model_id = <span style="color: #CC9393;">'rf_v1'</span>,
+    ntrees = 200,
+    stopping_rounds = 2,                <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">stop fiting new trees when the 2-tree</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">average is within 0.001 (default) of the prior two 2-tree averages.</span>
+    score_each_iteration = T,           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Predict against trainig and validation</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">for each tree.</span>
+    seed = 123)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">performance on validation data</span>
+h2o.confusionMatrix(rf_all)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb0706e" class="outline-4">
+<h4 id="orgeb0706e"><span class="section-number-4">2.2.3</span> Exclude the features that measure the date difference between the first date and the last time of an activity of a user</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
+rf_noSpan <span style="color: #BFEBBF;">&lt;-</span> h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_noSpan,
+    y = myY,
+    model_id = <span style="color: #CC9393;">'rf_v1'</span>,
+    ntrees = 200,
+    stopping_rounds = 2,                <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">stop fiting new trees when the 2-tree</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">average is within 0.001 (default) of the prior two 2-tree averages.</span>
+    score_each_iteration = T,           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Predict against trainig and validation</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">for each tree.</span>
+    seed = 123)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">performance on validation data</span>
+h2o.confusionMatrix(rf_noSpan)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga01807d" class="outline-4">
+<h4 id="orga01807d"><span class="section-number-4">2.2.4</span> Exclude the date related features</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
+rf_count <span style="color: #BFEBBF;">&lt;-</span> h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_count,
+    y = myY,
+    model_id = <span style="color: #CC9393;">'rf_v1'</span>,
+    ntrees = 200,
+    stopping_rounds = 2,                <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">stop fiting new trees when the 2-tree</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">average is within 0.001 (default) of the prior two 2-tree averages.</span>
+    score_each_iteration = T,           <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">Predict against trainig and validation</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">for each tree.</span>
+    seed = 123)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">performance on validation data</span>
+h2o.confusionMatrix(rf_count)
+</pre>
+</div>
+
+<p>
+Form the three models above, we can see the error rate does not change too much between the models. I chose to include all the engineered features since the ensemble methods are robust against over-fitting and multicollinearity. However, there are a few more things I can try to further improve the model's performance:
+</p>
+<ul class="org-ul">
+<li>More careful feature engineering.</li>
+<li>Instead of dichotomizing the 'Purchase', group 'Purchase' and treat it as a multinomial variable.</li>
+<li>Try to address the problem of imbalanced data.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc4dcf5" class="outline-3">
+<h3 id="orgdc4dcf5"><span class="section-number-3">2.3</span> Gradient Boosting Model (GBM)</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Here, I explore another ensemble method GBM since it is often one of the best performers. Unlike Random Forest, GBM requires carefully hyper-parameter tunning. The tree depth is almost always the most important hyper-parameter, so I first find a range of depth that yields good performance of GBM,  and then I do a grid search for the other hyper-parameters. Note, due to the heavy computation, I do not do cross-validation, but rather splitting the data into thee subsets: train, validation, test. This may increase the variance of estimates for the error rates.
+</p>
+</div>
+
+<div id="outline-container-orgb166bbb" class="outline-4">
+<h4 id="orgb166bbb"><span class="section-number-4">2.3.1</span> Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<div class="org-src-container">
+<pre class="src src-R">hyper_params = list( max_depth = seq(1,29,2) )
+
+grid <span style="color: #BFEBBF;">&lt;-</span> h2o.grid(
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">hyper parameters</span>
+  hyper_params = hyper_params,
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">full Cartesian hyper-parameter search</span>
+  search_criteria = list(strategy = <span style="color: #CC9393;">"Cartesian"</span>),
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">which algorithm to run</span>
+  algorithm=<span style="color: #CC9393;">"gbm"</span>,
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">identifier for the grid, to later retrieve it</span>
+  grid_id=<span style="color: #CC9393;">"depth_grid"</span>,
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">standard model parameters</span>
+  x = myX_all, 
+  y = myY, 
+  training_frame = train, 
+  validation_frame = valid,
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">more trees is better if the learning rate is small enough </span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">here, use "more than enough" trees - we have early stopping</span>
+  ntrees = 10000,                                                            
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">smaller learning rate is better</span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">since we have learning_rate_annealing, we can afford to start with </span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">a bigger learning rate</span>
+  learn_rate = 0.05,                                                         
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">learning rate annealing: learning_rate shrinks by 1% after every tree </span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">(use 1.00 to disable, but then lower the learning_rate)</span>
+  learn_rate_annealing = 0.99,                                               
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">sample 80% of rows per tree</span>
+  sample_rate = 0.8,                                                       
+
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">sample 80% of columns per split</span>
+  col_sample_rate = 0.8, 
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fix a random number generator seed for reproducibility</span>
+  seed = 123,                                                             
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">early stopping once the validation AUC doesn't improve</span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">by at least 0.01% for 5 consecutive scoring events</span>
+  stopping_rounds = 5,
+  stopping_tolerance = 1e-4,
+  stopping_metric = <span style="color: #CC9393;">"AUC"</span>, 
+  
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">score every 10 trees to make early stopping reproducible (it depends</span>
+  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">on the scoring interval)</span>
+  score_tree_interval = 10                                                
+)
+
+save(grid, file = <span style="color: #CC9393;">'./grid1.RData'</span>)
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-sh">rsync -azv  qikeli@sftp.hpc.arizona.edu:~/
+Data-Science-Challenge/6sense/org/grid1.RData ../../6sense/org/
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">display the grid search results</span>
+load(<span style="color: #CC9393;">'./grid1.RData'</span>)
+grid                                                                       
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">sort the grid models by decreasing AUC</span>
+sortedGrid <span style="color: #BFEBBF;">&lt;-</span> h2o.getGrid(<span style="color: #CC9393;">"depth_grid"</span>, sort_by=<span style="color: #CC9393;">"auc"</span>, decreasing = <span style="color: #7CB8BB;">TRUE</span>)    
+sortedGrid
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">find the range of max_depth for the top 5 models</span>
+topDepths = sortedGrid@summary_table$max_depth[1:5]                       
+minDepth = min(as.numeric(topDepths))
+maxDepth = max(as.numeric(topDepths))
+minDepth
+maxDepth [[http://math.arizona.edu/~qikeli/Figs/gbm-varimp.png]] 
+</pre>
+</div>
+
+<pre class="example">
+Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
+In addition: Warning message:
+In readChar(con, 5L, useBytes = TRUE) :
+  cannot open compressed file './grid1.RData', probable reason 'No such file or directory'
+function (nx = NULL, ny = nx, col = "lightgray", lty = "dotted", 
+    lwd = par("lwd"), equilogs = TRUE) 
+{
+    if (is.null(nx) || (!is.na(nx) &amp;&amp; nx &gt;= 1)) {
+        log &lt;- par("xlog")
+        if (is.null(nx)) {
+            ax &lt;- par("xaxp")
+            if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
+                ax[3L] &lt;- 1
+            at &lt;- axTicks(1, axp = ax, log = log)
+        }
+        else {
+            U &lt;- par("usr")
+            at &lt;- seq.int(U[1L], U[2L], length.out = nx + 1)
+            at &lt;- (if (log) 
+                10^at
+            else at)[-c(1, nx + 1)]
+        }
+        abline(v = at, col = col, lty = lty, lwd = lwd)
+    }
+    if (is.null(ny) || (!is.na(ny) &amp;&amp; ny &gt;= 1)) {
+        log &lt;- par("ylog")
+        if (is.null(ny)) {
+            ax &lt;- par("yaxp")
+            if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
+                ax[3L] &lt;- 1
+            at &lt;- axTicks(2, axp = ax, log = log)
+        }
+        else {
+            U &lt;- par("usr")
+            at &lt;- seq.int(U[3L], U[4L], length.out = ny + 1)
+            at &lt;- (if (log) 
+                10^at
+            else at)[-c(1, ny + 1)]
+        }
+        abline(h = at, col = col, lty = lty, lwd = lwd)
+    }
+}
+&lt;bytecode: 0x7f813c3f0628&gt;
+&lt;environment: namespace:graphics&gt;
+
+ERROR: Unexpected HTTP Status code: 404 Not Found (url = http://localhost:54321/99/Grids/depth_grid?sort_by=auc&amp;decreasing=TRUE)
+
+water.exceptions.H2OKeyNotFoundArgumentException
+ [1] "water.exceptions.H2OKeyNotFoundArgumentException: Object 'depth_grid' not found for argument: grid_id"              
+ [2] "    water.api.Handler.getFromDKV(Handler.java:103)"                                                                 
+ [3] "    water.api.GridsHandler.fetch(GridsHandler.java:41)"                                                             
+ [4] "    sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)"                                                    
+ [5] "    sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)"                                  
+ [6] "    sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)"                          
+ [7] "    java.lang.reflect.Method.invoke(Method.java:498)"                                                               
+ [8] "    water.api.Handler.handle(Handler.java:63)"                                                                      
+ [9] "    water.api.RequestServer.serve(RequestServer.java:451)"                                                          
+[10] "    water.api.RequestServer.doGeneric(RequestServer.java:296)"                                                      
+[11] "    water.api.RequestServer.doGet(RequestServer.java:220)"                                                          
+[12] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:735)"                                                   
+[13] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:848)"                                                   
+[14] "    org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:684)"                                         
+[15] "    org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:503)"                                     
+[16] "    org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)"                             
+[17] "    org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:429)"                                      
+[18] "    org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)"                              
+[19] "    org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)"                                  
+[20] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[21] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[22] "    water.JettyHTTPD$LoginHandler.handle(JettyHTTPD.java:192)"                                                      
+[23] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[24] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[25] "    org.eclipse.jetty.server.Server.handle(Server.java:370)"                                                        
+[26] "    org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:494)"                 
+[27] "    org.eclipse.jetty.server.BlockingHttpConnection.handleRequest(BlockingHttpConnection.java:53)"                  
+[28] "    org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:971)"                
+[29] "    org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1033)"
+[30] "    org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)"                                               
+[31] "    org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)"                                          
+[32] "    org.eclipse.jetty.server.BlockingHttpConnection.handle(BlockingHttpConnection.java:72)"                         
+[33] "    org.eclipse.jetty.server.bio.SocketConnector$ConnectorEndPoint.run(SocketConnector.java:264)"                   
+[34] "    org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)"                               
+[35] "    org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)"                                
+[36] "    java.lang.Thread.run(Thread.java:745)"                                                                          
+
+Error in .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page,  : 
+  
+
+ERROR MESSAGE:
+
+Object 'depth_grid' not found for argument: grid_id
+Error: object 'sortedGrid' not found
+Error: object 'sortedGrid' not found
+Error in is.H2OFrame(x) : object 'topDepths' not found
+Error in is.H2OFrame(x) : object 'topDepths' not found
+Error: object 'minDepth' not found
+Error: unexpected '/' in "maxDepth [[http:/"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8597f5a" class="outline-4">
+<h4 id="org8597f5a"><span class="section-number-4">2.3.2</span> Grid search</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+Now that we know a good range, <code>[7,15]</code>, for <code>max_depth</code>, I can tune all other parameters in more detail. Since we don't know what combinations of hyper-parameters will result in the best model, I'll use random hyper-parameter search. 
+</p>
+<div class="org-src-container">
+<pre class="src src-R">hyper_params = list( 
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">restrict the search to the range of max_depth established above</span>
+    max_depth = seq(minDepth,maxDepth,1),                                      
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of row sampling rates per tree</span>
+    sample_rate = seq(0.2,1,0.01),                                             
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of column sampling rates per split</span>
+    col_sample_rate = seq(0.2,1,0.01),                                         
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of column sampling rates per tree</span>
+    col_sample_rate_per_tree = seq(0.2,1,0.01),                                
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of how column sampling per split should </span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">change as a function of the depth of the split</span>
+    col_sample_rate_change_per_level = seq(0.9,1.1,0.01),                      
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of the number of min rows in a terminal node</span>
+    min_rows = 2^seq(0,log2(nrow(train))-1,1),                                 
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of the number of bins for split-finding for</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">continuous and integer columns</span>
+    nbins = 2^seq(4,10,1),                                                     
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a large space of the number of bins for split-finding for</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">categorical columns</span>
+    nbins_cats = 2^seq(4,12,1),                                                
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">search a few minimum required relative error improvement thresholds for a</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">split to happen</span>
+    min_split_improvement = c(0,1e-8,1e-6,1e-4),                               
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">try all histogram types (QuantilesGlobal and RoundRobin are good for</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">numeric columns with outliers)</span>
+    histogram_type = c(<span style="color: #CC9393;">"UniformAdaptive"</span>,<span style="color: #CC9393;">"QuantilesGlobal"</span>,<span style="color: #CC9393;">"RoundRobin"</span>)       
+)
+
+search_criteria = list(
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Random grid search</span>
+    strategy = <span style="color: #CC9393;">"RandomDiscrete"</span>,      
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">limit the runtime to 60 minutes</span>
+    max_runtime_secs = 3600,         
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">build no more than 100 models</span>
+    max_models = 100,                  
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">random number generator seed to make sampling of parameter</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">combinations reproducible</span>
+    seed = 1234,                        
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">early stopping once the leaderboard of the top 5 models is converged to</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">0.1% relative difference</span>
+    stopping_rounds = 5,                
+    stopping_metric = <span style="color: #CC9393;">"AUC"</span>,
+    stopping_tolerance = 1e-3
+)
+
+grid <span style="color: #BFEBBF;">&lt;-</span> h2o.grid(
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">hyper parameters</span>
+    hyper_params = hyper_params,
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">hyper-parameter search configuration (see above)</span>
+    search_criteria = search_criteria,
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">which algorithm to run</span>
+    algorithm = <span style="color: #CC9393;">"gbm"</span>,
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">identifier for the grid, to later retrieve it</span>
+    grid_id = <span style="color: #CC9393;">"final_grid"</span>, 
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">standard model parameters</span>
+    x = myX_all, 
+    y = myY, 
+    training_frame = train, 
+    validation_frame = valid,
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">more trees is better if the learning rate is small enough</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">use "more than enough" trees - we have early stopping</span>
+    ntrees = 10000,                                                            
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">smaller learning rate is better</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">since we have learning_rate_annealing, we can afford to start with a</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">bigger learning rate</span>
+    learn_rate = 0.05,                                                         
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">learning rate annealing: learning_rate shrinks by 1% after every tree </span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">(use 1.00 to disable, but then lower the learning_rate)</span>
+    learn_rate_annealing = 0.99,                                               
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">early stopping based on timeout (no model should take more than</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">1 hour - modify as needed)</span>
+    max_runtime_secs = 3600,                                                 
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">early stopping once the validation AUC doesn't improve by</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">at least 0.01% for 5 consecutive scoring events</span>
+    stopping_rounds = 5, stopping_tolerance = 1e-4, stopping_metric = <span style="color: #CC9393;">"AUC"</span>, 
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">score every 10 trees to make early stopping reproducible (it depends</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">on the scoring interval)</span>
+    score_tree_interval = 10,                                                
+    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">base random number generator seed for each model (automatically gets</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">incremented internally for each model)</span>
+    seed = 1234                                                             
+)
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Sort the grid models by AUC</span>
+sortedGrid <span style="color: #BFEBBF;">&lt;-</span> h2o.getGrid(<span style="color: #CC9393;">"final_grid"</span>, sort_by = <span style="color: #CC9393;">"auc"</span>, decreasing = <span style="color: #7CB8BB;">TRUE</span>)    
+save(sortedGrid,file = <span style="color: #CC9393;">'./grid2.RData'</span>)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rsync -azv  qikeli@sftp.hpc.arizona.edu:~/Data-Science-Challenge/6sense/
+org/grid2.RData ../../6sense/org/
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">sortedGrid
+</pre>
+</div>
+
+<pre class="example">
+Error: object 'sortedGrid' not found
+
+</pre>
+
+<p>
+We can inspect the best 5 models from the grid search explicitly, and query their validation AUC:
+</p>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #F0DFAF; font-weight: bold;">for</span> (i <span style="color: #F0DFAF; font-weight: bold;">in</span> 1:5) {
+  gbm <span style="color: #BFEBBF;">&lt;-</span> h2o.getModel(sortedGrid@model_ids[[i]])
+  print(h2o.auc(h2o.performance(gbm, valid = <span style="color: #7CB8BB;">TRUE</span>)))
+}
+</pre>
+</div>
+
+<pre class="example">
+Error in paste0(.h2o.__MODELS, "/", model_id) : 
+  object 'sortedGrid' not found
+
+</pre>
+
+<p>
+The error rate of the winning GBM is lower than the error rate of RF, which indicates the grid search is successful.
+</p>
+
+<ul class="org-ul">
+<li>Confusion matrix derived from Random Forest model</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-R">h2o.confusionMatrix(rf_all)
+</pre>
+</div>
+
+<pre class="example">
+Error in h2o.confusionMatrix(rf_all) : object 'rf_all' not found
+
+</pre>
+
+<ul class="org-ul">
+<li>Confusion matrix derived from the winning GBM</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-R">h2o.confusionMatrix(h2o.getModel(sortedGrid@model_ids[[i]]))
+</pre>
+</div>
+
+<pre class="example">
+Error in paste0(.h2o.__MODELS, "/", model_id) : 
+  object 'sortedGrid' not found
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org6f9368b" class="outline-4">
+<h4 id="org6f9368b"><span class="section-number-4">2.3.3</span> Model Inspection and Final Test Set Scoring</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+Let's see how well the best model of the grid search (as determined by validation set AUC) does on the held out test set:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">gbm <span style="color: #BFEBBF;">&lt;-</span> h2o.getModel(sortedGrid@model_ids[[1]])
+h2o.auc(h2o.performance(gbm, newdata = test))
+</pre>
+</div>
+
+<p>
+AUC on the held out date  is <code>0.924</code>.
+</p>
+
+<p>
+Now we can investigate if these parameters are generalizable, by building a GBM model on the whole dataset (instead of the 60%) and using internal 5-fold cross-validation (re-using all other parameters including the seed):
+</p>
+<div class="org-src-container">
+<pre class="src src-R">model <span style="color: #BFEBBF;">&lt;-</span> do.call(
+    h2o.gbm,
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">update parameters in place</span>
+    {
+        p <span style="color: #BFEBBF;">&lt;-</span> gbm@parameters
+        p$model_id = <span style="color: #7CB8BB;">NULL</span>          <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">do not overwrite the original grid model</span>
+        p$training_frame = train      <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">use the full dataset</span>
+        p$validation_frame = <span style="color: #7CB8BB;">NULL</span>  <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">no validation frame</span>
+        p$nfolds = 5               <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">cross-validation</span>
+        p
+    }
+)
+
+model@model$cross_validation_metrics_summary
+</pre>
+</div>
+
+<pre class="example">
+Cross-Validation Metrics Summary: 
+                              mean           sd cv_1_valid cv_2_valid
+accuracy                0.89230967 9.5506734E-4 0.89068377  0.8908008
+auc                     0.92441744 0.0010279379  0.9216516  0.9249695
+err                     0.10769034 9.5506734E-4 0.10931622 0.10919925
+err_count                   5153.4    43.198612     5231.0     5223.0
+f0point5                 0.8566183 0.0041146674  0.8608616 0.84639525
+f1                      0.80581224  0.001934594  0.8009286  0.8066773
+f2                      0.76078933  0.005484282  0.7487974 0.77051985
+lift_top_group           3.2824671  0.012339572  3.2634523  3.2838998
+logloss                 0.26912057  0.002100826 0.27480158 0.26900366
+max_per_class_error     0.26648945  0.007642947 0.28234333  0.2518366
+mcc                     0.73931557 0.0020949757  0.7363585  0.7355962
+mean_per_class_accuracy  0.8476993 0.0021703853 0.84239215  0.8507088
+mean_per_class_error    0.15230072 0.0021703853 0.15760782 0.14929122
+mse                     0.08048811 7.4603833E-4 0.08251667 0.08046955
+precision               0.89428866  0.008126793 0.90606165 0.87512046
+r2                      0.62005633 0.0030535315 0.61173797  0.6200431
+recall                  0.73351055  0.007642947  0.7176567  0.7481634
+rmse                    0.28369823 0.0013095994 0.28725716 0.28367156
+specificity               0.961888 0.0036822131  0.9671277 0.95325416
+                        cv_3_valid cv_4_valid cv_5_valid
+accuracy                 0.8940863 0.89274126  0.8932362
+auc                      0.9244652   0.925137  0.9258638
+err                     0.10591369 0.10725876  0.1067638
+err_count                   5090.0     5123.0     5100.0
+f0point5                0.86325216  0.8551585  0.8574239
+f1                       0.8070069  0.8091495  0.8052989
+f2                       0.7576426  0.7678385 0.75914836
+lift_top_group           3.2873657  3.2658463   3.311772
+logloss                 0.26781562 0.26772395  0.2662581
+max_per_class_error     0.27204323  0.2574359 0.26878813
+mcc                      0.7435033   0.741142 0.73997784
+mean_per_class_accuracy  0.8473361   0.850792  0.8472673
+mean_per_class_error    0.15266386 0.14920802 0.15273264
+mse                     0.07993584 0.07996271 0.07955576
+precision                0.9053169 0.88885254 0.89609176
+r2                       0.6223391 0.62360096  0.6225604
+recall                   0.7279568  0.7425641 0.73121184
+rmse                    0.28272927 0.28277677  0.2820563
+specificity              0.9667155 0.95901984  0.9633228
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org99d50df" class="outline-4">
+<h4 id="org99d50df"><span class="section-number-4">2.3.4</span> Ensembling Techniques</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+To further reduce the variance of models, I use ensembling techniques by
+simply taking the average of the predictions (purchase probabilities) of the top <code>k</code> grid search model predictions (here, I use k=5):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">dat_test_final <span style="color: #BFEBBF;">&lt;-</span> h2o.importFile(
+    path=normalizePath(<span style="color: #CC9393;">'./Data/test-wide.tsv'</span>))
+
+prob = <span style="color: #7CB8BB;">NULL</span>
+k=5
+<span style="color: #F0DFAF; font-weight: bold;">for</span> (i <span style="color: #F0DFAF; font-weight: bold;">in</span> 1:k) {
+  gbm <span style="color: #BFEBBF;">&lt;-</span> h2o.getModel(sortedGrid@model_ids[[i]])
+  <span style="color: #F0DFAF; font-weight: bold;">if</span> (is.null(prob)) prob = h2o.predict(gbm, dat_test_final)$Y
+  <span style="color: #F0DFAF; font-weight: bold;">else</span> prob = prob + h2o.predict(gbm, dat_test_final)$Y
+}
+prob <span style="color: #BFEBBF;">&lt;-</span> prob/k
+
+as.tibble(h2o.cbind(dat_test_final$ID, prob))<span style="color: #BFEBBF;">%&gt;%</span>
+    arrange(desc(Y)) <span style="color: #BFEBBF;">%&gt;%</span>
+    head(1000) <span style="color: #BFEBBF;">%&gt;%</span>
+    select(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    write.table(.,file = <span style="color: #CC9393;">'./Results/user_id_1000.txt'</span>,
+                sep = <span style="color: #CC9393;">'\n'</span>, quote = F, col.names = F,
+                row.names = F)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1dcc779" class="outline-2">
+<h2 id="org1dcc779"><span class="section-number-2">3</span> Most predictive features</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Both Random Forest and GBM suggest that the most predictive variable is <code>EmailOpen</code>, which seems counter intuitive to me since <code>EmailOpen</code> demands little effort of a user. Possible reasons that can obfuscate the inference might include the disproportionately high abundance of <code>EmailOpen</code> activity and the highly correlated features.  
+</p>
+<div class="org-src-container">
+<pre class="src src-R">h2o.varimp_plot(rf_all)
+</pre>
+</div>
+
+<pre class="example">
+Error in h2o.varimp_plot(rf_all) : object 'rf_all' not found
+
+</pre>
+
+
+<div class="figure">
+<p><img src="http://math.arizona.edu/~qikeli/Figs/rf_varimp.png" alt="rf_varimp.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Viriable importances computed by Random Forest</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">h2o.varimp_plot(gbm)
+</pre>
+</div>
+
+<pre class="example">
+Error in h2o.varimp_plot(gbm) : object 'gbm' not found
+
+</pre>
+
+
+<div class="figure">
+<p><img src="http://math.arizona.edu/~qikeli/Figs/gbm-varimp.png" alt="gbm-varimp.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Viriable importances computed by GBM</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org68f27fa" class="outline-2">
+<h2 id="org68f27fa"><span class="section-number-2">4</span> Recurrent neural network (RNN)</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Predicting future consumer behavior is fundamental to many cases in e-commerce. Consumer behavior in e-commerce can be described by sequences of interactions with a webshop. The methods I employed above are vector-based methods; they operate on feature vectors of fixed length as input. To apply them to predict consumer behavior, one needs to convert consumer histories into fixed sets of features. These features need to be hand-crafted to reflect consumer behavior. Two major drawbacks of the vector-based methods are:
+</p>
+<ol class="org-ol">
+<li>Feature engineering requires domain knowledge and is very time consuming. These features often need to be constantly updated while more data are being collected.</li>
+<li>Consequently, lack of good engineered features can lead to poor predications.</li>
+</ol>
+
+<p>
+Recurrent neural networks (RNNs) are a natural fit for modeling and predicting consumer behavior. RNN operate directly on sequences of data and thus are a perfect fit for modeling consumer histories. Time-intensive human feature engineering is no longer required. In addition, long short-term memory cells (LSTMs) can be used as a component of RNN, and LSTMs are good at preserving long-term dependencies.  
+</p>
+
+<p>
+I tried to implement RNN to solve this take-home problem. However, I realized it might take substantially more time and effort. By researching 6sense's website, it seems this take-home problem is a good representation of the problems being solved at 6sense. I would love to learn more on how data scientist at 6sense solve those problems and the potential applications of RNN.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-09-24 Sun 00:00</p>
+<p class="author">Author: Qike Li</p>
+<p class="date">Created: 2017-12-20 Wed 17:02</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

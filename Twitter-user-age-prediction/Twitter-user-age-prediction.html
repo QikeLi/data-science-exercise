@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2017-12-20 Wed 15:04 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Twitter users' age prediction</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Qike Li" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/hideshow.css"/>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/bigblow.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/hideshow.js"></script>
+<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Twitter users' age prediction</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org679456f">1. Descriptive</a>
+<ul>
+<li><a href="#org69a60dc">1.1. Histograms</a></li>
+<li><a href="#org201d30c">1.2. Correlations</a>
+<ul>
+<li><a href="#orgcc87f0d">1.2.1. Are friend   and   follower   counts   correlated?</a></li>
+</ul>
+</li>
+<li><a href="#orge56c946">1.3. Time zone</a>
+<ul>
+<li><a href="#orgbbfa360">1.3.1. Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</a></li>
+</ul>
+</li>
+<li><a href="#org8638f18">1.4. Mentions</a>
+<ul>
+<li><a href="#orgbbb6322">1.4.1. Build   a   list   of   the   top   20   handles</a></li>
+<li><a href="#org95ee11d">1.4.2. Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</a></li>
+</ul>
+</li>
+<li><a href="#org73c87c1">1.5. Age breakdown</a>
+<ul>
+<li><a href="#org8d8d09f">1.5.1. make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</a></li>
+</ul>
+</li>
+<li><a href="#org7d139a7">1.6. Emoji</a>
+<ul>
+<li><a href="#orgbf71de2">1.6.1. Which   age   group   uses   the   most   emojis   in   their   profile   status?</a></li>
+<li><a href="#orgba1415d">1.6.2. Which   is   the   most   common   emoji?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgae3c398">2. Predicting Twitter users' age</a>
+<ul>
+<li><a href="#orgd3da242">2.1. Read in data</a></li>
+<li><a href="#org4950ee9">2.2. Sentiment analysis</a>
+<ul>
+<li><a href="#org90f6b58">2.2.1. Utility functions</a></li>
+<li><a href="#org02db725">2.2.2. Sentiment analysis of all the recent tweets</a></li>
+</ul>
+</li>
+<li><a href="#org69b64bc">2.3. Joint all tables-prepare training and test data</a></li>
+<li><a href="#org7216fe4">2.4. Train a gradient boosting model</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org679456f" class="outline-2">
+<h2 id="org679456f"><span class="section-number-2">1</span> Descriptive</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-org69a60dc" class="outline-3">
+<h3 id="org69a60dc"><span class="section-number-3">1.1</span> Histograms</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
+<span style="color: #BFEBBF;">library</span>(jsonlite)
+<span style="color: #BFEBBF;">library</span>(magrittr)
+age_profiles <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/age_profiles.json'</span>,
+                          simplifyDataFrame = T)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">flatten the data.frame,</span>
+age_profiles <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">and remove the record that has a negative count of friends</span>
+    filter(friends_count != -69) <span style="color: #BFEBBF;">%&gt;%</span>
+    as.tibble
+
+ <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">age_profiles %&gt;%</span>
+ <span style="color: #5F7F5F;">##    </span><span style="color: #7F9F7F;">select(id, status.text) %&gt;%</span>
+ <span style="color: #5F7F5F;">##    </span><span style="color: #7F9F7F;">mutate(id = as.character(id)) %&gt;%</span>
+ <span style="color: #5F7F5F;">##    </span><span style="color: #7F9F7F;">write_csv(path = '../Data/age_profiles2.csv')</span>
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(favourites_count, friends_count, statuses_count,followers_count) <span style="color: #BFEBBF;">%&gt;%</span>
+    gather(type, count) <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(count)) +
+    geom_histogram() +
+    facet_grid(type~., scales = <span style="color: #CC9393;">'free'</span>) +
+    theme_bw(base_size = 20) +
+    scale_x_continuous(labels = scales::comma) 
+    
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="../Figures/fig-hist.png" alt="fig-hist.png" />
+</p>
+</div>
+
+<p>
+From the histograms above, we can see that the all of the counts are right skewed. We may want to use log(count). 
+</p>
+<div class="org-src-container">
+<pre class="src src-R">age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(favourites_count, friends_count, statuses_count,followers_count) <span style="color: #BFEBBF;">%&gt;%</span>
+    summary
+</pre>
+</div>
+
+<pre class="example">
+favourites_count friends_count      statuses_count   followers_count   
+Min.   :    0    Min.   :     0.0   Min.   :     0   Min.   :     0.0  
+1st Qu.:  103    1st Qu.:   179.0   1st Qu.:  1961   1st Qu.:   160.0  
+Median :  545    Median :   340.0   Median :  7414   Median :   348.0  
+Mean   : 1801    Mean   :   689.7   Mean   : 16990   Mean   :   944.9  
+3rd Qu.: 1951    3rd Qu.:   628.0   3rd Qu.: 21583   3rd Qu.:   698.0  
+Max.   :99169    Max.   :202293.0   Max.   :257590   Max.   :258937.0
+
+</pre>
+
+<p>
+The summary of the counts again confirmed that there are some extreme values and the counts are highly skewed. Note, I observed a negative count (-69) of friends_count when I looked at the summaries. I removed that record since I believe it is an data quality issue.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org201d30c" class="outline-3">
+<h3 id="org201d30c"><span class="section-number-3">1.2</span> Correlations</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-orgcc87f0d" class="outline-4">
+<h4 id="orgcc87f0d"><span class="section-number-4">1.2.1</span> Are friend   and   follower   counts   correlated?</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+<pre class="src src-R">age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(favourites_count, friends_count, statuses_count,followers_count) <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(x = log(friends_count), y = log(followers_count))) +
+    geom_point() +
+    labs(x = <span style="color: #CC9393;">"log(friends count)"</span>, y = <span style="color: #CC9393;">'log(followers count)'</span>) +
+    theme_bw(base_size = 20)
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="../Figures/fig-cor1.png" alt="fig-cor1.png" />
+</p>
+</div>
+
+<p>
+The figure above demonstrate a strong correlation between friend counts and follower counts. Since we don't expect a linear relationship between friend counts and follower counts, I use Spearman's \(\rho\) test to test the correlation. Keep in mind, with so many data points, p-values are not so informative, and we will focus on the effect sizes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">(cor_test1 <span style="color: #BFEBBF;">&lt;-</span> age_profiles <span style="color: #BFEBBF;">%$%</span>
+    cor.test(friends_count, followers_count,method = <span style="color: #CC9393;">'spearman'</span>))
+</pre>
+</div>
+
+<pre class="example">
+
+	Spearman's rank correlation rho
+
+data:  friends_count and followers_count
+S = 535230000, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.7702907 
+
+Warning message:
+In cor.test.default(friends_count, followers_count, method = "spearman") :
+  Cannot compute exact p-value with ties
+</pre>
+
+<p>
+The statistic Spearman's \(\rho\) is equal to <code>0.77</code>, which indicates a strong correlation.
+</p>
+<div class="org-src-container">
+<pre class="src src-R">age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(favourites_count, friends_count, statuses_count,followers_count) <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(x = log(favourites_count), y = log(statuses_count))) +
+    geom_point() +
+    labs(x = <span style="color: #CC9393;">"log(favorites count)"</span>, y = <span style="color: #CC9393;">'log(statuses count)'</span>) +
+    theme_bw(base_size = 20)
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="../Figures/fig-cor2.png" alt="fig-cor2.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">(cor_test1 <span style="color: #BFEBBF;">&lt;-</span> age_profiles <span style="color: #BFEBBF;">%$%</span>
+    cor.test(favourites_count, statuses_count, method = <span style="color: #CC9393;">'spearman'</span>))
+</pre>
+</div>
+
+<pre class="example">
+
+	Spearman's rank correlation rho
+
+data:  favourites_count and statuses_count
+S = 1498100000, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.3570623 
+
+Warning message:
+In cor.test.default(favourites_count, statuses_count, method = "spearman") :
+  Cannot compute exact p-value with ties
+</pre>
+
+<p>
+The figure above demonstrate a clear correlation between favorite counts and status counts.  The statistic Spearman's \(\rho\) is equal to <code>0.357</code>, which is substantially weaker than the one between friend counts and follower counts.
+</p>
+
+<p>
+Based on these correlations, we can see that users with higher count of friends tend to have  higher count of followers. And increasing the number of friends may be a good strategy to gain followers. In addition, users with higher count of favorite tend to also have higher count of status, which may suggest that an active user has both high number of favorites and high number of tweets(status count).
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orge56c946" class="outline-3">
+<h3 id="orge56c946"><span class="section-number-3">1.3</span> Time zone</h3>
+<div class="outline-text-3" id="text-1-3">
+</div><div id="outline-container-orgbbfa360" class="outline-4">
+<h4 id="orgbbfa360"><span class="section-number-4">1.3.1</span> Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+Here I only considered iPhone users and Android users,not all types of iOS and Android platform users, due to the time limit.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">add a column to indicate the platform</span>
+age_profiles <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+    mutate(platform = str_extract(status.source, <span style="color: #CC9393;">'[[[:alnum:]]&#174;)]+(?=&lt;/a&gt;$)'</span>))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">proportion of different platforms in each time zone</span>
+age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(platform,time_zone) <span style="color: #BFEBBF;">%&gt;%</span>
+    arrange(time_zone) <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(time_zone) <span style="color: #BFEBBF;">%&gt;%</span>
+    add_tally() <span style="color: #BFEBBF;">%&gt;%</span>
+    add_count(platform) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(platform_prop = nn/n) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(platform <span style="color: #BFEBBF;">%in%</span> c( <span style="color: #CC9393;">'Android'</span>, <span style="color: #CC9393;">'iPhone'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    arrange(desc(platform_prop))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## figure of the above proportions</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">age_profiles %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">select(platform,time_zone) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">arrange(time_zone) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">group_by(time_zone) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">add_count(platform) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">mutate(platform = ifelse( platform %in% c('iPhone','Android'),</span>
+<span style="color: #5F7F5F;">##                               </span><span style="color: #7F9F7F;">yes = platform, no = 'Other')) %&gt;%    </span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">ggplot(aes(y = n, x = time_zone, fill = platform)) +</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">geom_bar( stat="identity")    </span>
+</pre>
+</div>
+
+<pre class="example">
+ # A tibble: 1,646 x 5
+ # Groups:   time_zone [57]
+    platform                    time_zone     n    nn platform_prop
+       &lt;chr&gt;                        &lt;chr&gt; &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;
+  1   iPhone                     Adelaide     2     2             1
+  2   iPhone                     Adelaide     2     2             1
+  3  Android             America/New_York     2     2             1
+  4  Android             America/New_York     2     2             1
+  5   iPhone                     Auckland     1     1             1
+  6   iPhone                       Berlin     1     1             1
+  7  Android                 Buenos Aires     1     1             1
+  8  Android                      Caracas     1     1             1
+  9   iPhone International Date Line West     1     1             1
+ 10   iPhone                      Irkutsk     2     2             1
+ # ... with 1,636 more rows
+</pre>
+
+<p>
+A number of time zones have exclusive iPhone users or exclusive Android users due to the small number of users in those time zones who have known platform information. 
+</p>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">time zones w/ the most iPhone and Android users.</span>
+age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+    select(platform,time_zone) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(platform = ifelse( platform <span style="color: #BFEBBF;">%in%</span> c(<span style="color: #CC9393;">'iPhone'</span>,<span style="color: #CC9393;">'Android'</span>),
+                             yes = platform, no = <span style="color: #CC9393;">'Other'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(platform) <span style="color: #BFEBBF;">%&gt;%</span>
+    count(time_zone) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(n == sort(n, decreasing = T)[2])
+</pre>
+</div>
+
+<pre class="example">
+# A tibble: 3 x 3
+# Groups:   platform [3]
+  platform                  time_zone     n
+     &lt;chr&gt;                      &lt;chr&gt; &lt;int&gt;
+1  Android Central Time (US &amp; Canada)    56
+2   iPhone Central Time (US &amp; Canada)   181
+3    Other Eastern Time (US &amp; Canada)   133
+
+</pre>
+
+<p>
+Among the Android users, most of them are in time zone: Central Time (US &amp; Canada). And among the iPhone users, also most of them are in time zone: Central Time (US &amp; Canada).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8638f18" class="outline-3">
+<h3 id="org8638f18"><span class="section-number-3">1.4</span> Mentions</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Gaol: use   the   “mentions”   data   in    mentions.csv    to   come   up   with   a   list   of   Twitter   handles that   were   mentioned   by   more   than   one   user.
+</p>
+</div>
+
+<div id="outline-container-orgbbb6322" class="outline-4">
+<h4 id="orgbbb6322"><span class="section-number-4">1.4.1</span> Build   a   list   of   the   top   20   handles</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+Below is the list of the top  20  handles:  
+</p>
+<div class="org-src-container">
+<pre class="src src-R">mentions <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/mentions.csv'</span>)
+
+mentions <span style="color: #BFEBBF;">%&gt;%</span>
+    add_count(MentionedID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(n &gt; 1) <span style="color: #BFEBBF;">%&gt;%</span>
+    arrange(desc(n))
+
+
+mentions <span style="color: #BFEBBF;">%&gt;%</span>
+    distinct() <span style="color: #BFEBBF;">%&gt;%</span>    
+    count(MentionedID, sort = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(mentions, by = <span style="color: #CC9393;">'MentionedID'</span>) <span style="color: #BFEBBF;">%&gt;%</span>
+    select(-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    distinct() <span style="color: #BFEBBF;">%&gt;%</span>
+    head(20)
+
+</pre>
+</div>
+
+<pre class="example">
+ Parsed with column specification:
+ cols(
+   ID = col_double(),
+   MentionedID = col_double(),
+   MentionedHandle = col_character()
+ )
+ # A tibble: 10,046 x 4
+	   ID MentionedID MentionedHandle     n
+	&lt;dbl&gt;       &lt;dbl&gt;           &lt;chr&gt; &lt;int&gt;
+  1 318061601    10228272         YouTube    46
+  2 429307371    10228272         YouTube    46
+  3 429307371    10228272         YouTube    46
+  4 429307371    10228272         YouTube    46
+  5  54176816    10228272         YouTube    46
+  6 127799707    10228272         YouTube    46
+  7 486176491    10228272         YouTube    46
+  8  65839204    10228272         YouTube    46
+  9  65839204    10228272         YouTube    46
+ 10  65839204    10228272         YouTube    46
+ # ... with 10,036 more rows
+ # A tibble: 20 x 3
+    MentionedID     n MentionedHandle
+	  &lt;dbl&gt; &lt;int&gt;           &lt;chr&gt;
+  1   132774626    32       girlposts
+  2   154048214    30       Sexualgif
+  3    26257166    24    SportsCenter
+  4    10228272    22         YouTube
+  5  1372975219    20  BabyAnimalPics
+  6   219049532    19      SoDamnTrue
+  7   147305691    18  RelatableQuote
+  8    95023423    17       UberFacts
+  9   568825492    17   CuteEmergency
+ 10  1370986902    17 WORIDSTARHlPHOP
+ 11   524657792    16  FunnyPicsDepot
+ 12  1107613844    16  WorldStarFunny
+ 13   416983726    15  FIirtationship
+ 14   561684253    15      HornyFacts
+ 15    20322929    14      wizkhalifa
+ 16    61003804    14    FreddyAmazin
+ 17   422178777    14     AboutVirgos
+ 18   891826837    14  TweetLikeAGirI
+ 19   166739404    13        EmWatson
+ 20   127245578    12    funnyortruth
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org95ee11d" class="outline-4">
+<h4 id="org95ee11d"><span class="section-number-4">1.4.2</span> Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+Emma Watson (<code>=EmWatson=</code>) is in the Harry Potter, and she was mentioned by <code>=13=</code> unique users.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org73c87c1" class="outline-3">
+<h3 id="org73c87c1"><span class="section-number-3">1.5</span> Age breakdown</h3>
+<div class="outline-text-3" id="text-1-5">
+</div><div id="outline-container-org8d8d09f" class="outline-4">
+<h4 id="org8d8d09f"><span class="section-number-4">1.5.1</span> make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<div class="org-src-container">
+<pre class="src src-R">ages_train <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/ages_train.csv'</span>) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(age_group =  cut(Age, breaks = seq(10,120, by = 10)))
+
+ages_train <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(age_group)) +
+    geom_bar() +
+    labs(x = <span style="color: #CC9393;">'Age Group'</span>, y = <span style="color: #CC9393;">'Count'</span>) + 
+    theme_bw(base_size = 15)
+</pre>
+</div>
+
+<pre class="example">
+Parsed with column specification:
+cols(
+  ID = col_double(),
+  Age = col_integer()
+)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d139a7" class="outline-3">
+<h3 id="org7d139a7"><span class="section-number-3">1.6</span> Emoji</h3>
+<div class="outline-text-3" id="text-1-6">
+</div><div id="outline-container-orgbf71de2" class="outline-4">
+<h4 id="orgbf71de2"><span class="section-number-4">1.6.1</span> Which   age   group   uses   the   most   emojis   in   their   profile   status?</h4>
+<div class="outline-text-4" id="text-1-6-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">read in the tweets</span>
+age_tweets <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/age_tweets.json'</span>,simplifyDataFram<span style="color: #DC8CC3; background-color: #3F3F3F;">e = T)</span>
+
+age_tweets <span style="color: #BFEBBF;">%&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    select(text,user.id_str) <span style="color: #BFEBBF;">%&gt;%</span>
+    write_csv(<span style="color: #CC9393;">'../Data/age_tweets.csv'</span>)
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">library(twitteR)</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">library(rvest)</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">library(Unicode)</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">library(tm)</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">library(ggplot2)</span>
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## utility functions</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## this function applies count_matches on a vector of texts and outputs a dat</span><span style="color: #DC8CC3; background-color: #3F3F3F;">a.frame</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">emojis_matching &lt;- function(texts, matchto, description, sentiment = NA) {  </span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">texts %&gt;% </span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">lapply(count_matches, matchto = matchto, description = description, senti</span><span style="color: #DC8CC3; background-color: #3F3F3F;">ment = sentiment) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">bind_rows  </span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">}</span>
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## this function outputs the emojis found in a string as well as their occure</span><span style="color: #DC8CC3; background-color: #3F3F3F;">nces</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">count_matches &lt;- function(string, matchto, description, sentiment = NA) {</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">vec &lt;- str_count(string, matchto)</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">matches &lt;- which(vec != 0)</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">descr &lt;- NA</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">cnt &lt;- NA</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">if (length(matches) != 0) {</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">descr &lt;- description[matches]</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">cnt &lt;- vec[matches]</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">} </span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">df &lt;- data.frame(text = string, description = descr, count = cnt, sentiment</span><span style="color: #DC8CC3; background-color: #3F3F3F;"> = NA)</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">if (!is.na(sentiment) &amp; length(sentiment[matches]) != 0) {</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">df$sentiment &lt;- sentiment[matches]</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">}</span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">return(df)</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">}</span>
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## read in an emoji dictionary</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">emDict_raw &lt;- read.csv2("https://raw.githubusercontent.com/today-is-a-good-da</span><span style="color: #DC8CC3; background-color: #3F3F3F;">y/emojis/master/emojis.csv",</span>
+<span style="color: #5F7F5F;">##                         </span><span style="color: #7F9F7F;">stringsAsFactors = F) %&gt;% </span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">select(EN, ftu8, unicode) %&gt;% </span>
+<span style="color: #5F7F5F;">##   </span><span style="color: #7F9F7F;">dplyr::rename(description = EN, r.encoding = ftu8)</span>
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## plain skin tones</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">skin_tones &lt;- c("light skin tone", </span>
+<span style="color: #5F7F5F;">##                 </span><span style="color: #7F9F7F;">"medium-light skin tone", </span>
+<span style="color: #5F7F5F;">##                 </span><span style="color: #7F9F7F;">"medium skin tone",</span>
+<span style="color: #5F7F5F;">##                 </span><span style="color: #7F9F7F;">"medium-dark skin tone", </span>
+<span style="color: #5F7F5F;">##                 </span><span style="color: #7F9F7F;">"dark skin tone")</span>
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## remove plain skin tones and remove skin tone info in description</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">emDict &lt;- emDict_raw %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">## remove plain skin tones emojis</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">filter(!description %in% skin_tones) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">## remove emojis with skin tones info, e.g. remove woman: light skin tone</span><span style="color: #DC8CC3; background-color: #3F3F3F;"> and only</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">## keep woman</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">filter(!grepl(":", description)) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">mutate(description = tolower(description)) %&gt;%</span>
+<span style="color: #5F7F5F;">##     </span><span style="color: #7F9F7F;">mutate(unicode = as.character(unicode))</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">## all emojis with more than one unicode codepoint become NA</span>
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">matchto &lt;- emDict$r.encoding</span>
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">description &lt;- emDict$description</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #F0DFAF; font-weight: bold;">import</span> emoji
+<span style="color: #F0DFAF; font-weight: bold;">import</span> pandas <span style="color: #F0DFAF; font-weight: bold;">as</span> pd
+<span style="color: #F0DFAF; font-weight: bold;">import</span> numpy <span style="color: #F0DFAF; font-weight: bold;">as</span> np
+<span style="color: #F0DFAF; font-weight: bold;">from</span> collections <span style="color: #F0DFAF; font-weight: bold;">import</span> Counter
+
+<span style="color: #DFAF8F;">age_profiles2</span> = pd.read_csv(<span style="color: #CC9393;">'../Data/age_profiles2.csv'</span>)
+age_profiles2.head()
+<span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">define a function to extract emojis</span>
+<span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">extract_emojis</span>(s):
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   <span style="color: #F0DFAF; font-weight: bold;">return</span> <span style="color: #CC9393;">''</span>.join(c <span style="color: #F0DFAF; font-weight: bold;">for</span> c <span style="color: #F0DFAF; font-weight: bold;">in</span> <span style="color: #DCDCCC; font-weight: bold;">str</span>(s) <span style="color: #F0DFAF; font-weight: bold;">if</span> c <span style="color: #F0DFAF; font-weight: bold;">in</span> emoji.UNICODE_EMOJI)
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   
+<span style="color: #DFAF8F;">age_profiles2</span>[<span style="color: #CC9393;">'emoji_code'</span>] = age_profiles2[<span style="color: #CC9393;">'status.text'</span>].<span style="color: #DCDCCC; font-weight: bold;">map</span>(<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: extract<span style="color: #DC8CC3; background-color: #3F3F3F;">_emojis(x))</span>
+
+<span style="color: #DFAF8F;">age_profiles2</span>[<span style="color: #CC9393;">'emoji_count'</span>] = age_profiles2[<span style="color: #CC9393;">'emoji_code'</span>].<span style="color: #DCDCCC; font-weight: bold;">map</span>(<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: <span style="color: #DCDCCC; font-weight: bold;">len</span>(x))
+
+age_profiles2.to_csv(<span style="color: #CC9393;">'../Data/age_profiles_emoji_count.csv'</span>)
+
+<span style="color: #DFAF8F;">age_tweets2</span> = pd.read_csv(<span style="color: #CC9393;">'../Data/age_tweets.csv'</span>)
+
+age_tweets2.head()
+<span style="color: #DCDCCC; background-color: #4F4F4F;"> </span>   
+<span style="color: #DFAF8F;">age_tweets2</span>[<span style="color: #CC9393;">'emoji_code'</span>] = age_tweets2[<span style="color: #CC9393;">'text'</span>].<span style="color: #DCDCCC; font-weight: bold;">map</span>(<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: extract_emojis(x))
+
+<span style="color: #DFAF8F;">age_tweets2</span>[<span style="color: #CC9393;">'emoji_count'</span>] = age_tweets2[<span style="color: #CC9393;">'emoji_code'</span>].<span style="color: #DCDCCC; font-weight: bold;">map</span>(<span style="color: #F0DFAF; font-weight: bold;">lambda</span> x: <span style="color: #DCDCCC; font-weight: bold;">len</span>(x))
+
+age_tweets2.to_csv(<span style="color: #CC9393;">'../Data/age_tweets_emoji_count.csv'</span>)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">age_profiles_emoji_count <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../Data/age_tweets_emoji_count.csv'</span>) <span style="color: #BFEBBF;">%&gt;%</span>
+    select(-X1)
+
+ages_train <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(age_profiles_emoji_count, by = c(<span style="color: #CC9393;">'ID'</span> = <span style="color: #CC9393;">'user.id_str'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">select(id, emoji_count, age_group) %&gt;%</span>
+    group_by(age_group) <span style="color: #BFEBBF;">%&gt;%</span>
+    summarize(
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">number of records w/ emojis</span>
+        count = sum(emoji_count,na.rm = T),
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">proportion of records w/ emojis</span>
+        prop = sum(emoji_count,na.rm = T)/length(emoji_count)) <span style="color: #BFEBBF;">%&gt;%</span>
+    arrange(desc(count)) <span style="color: #BFEBBF;">%&gt;%</span>
+    ggplot(aes(x = age_group, y=prop)) +
+    geom_col() +
+    labs(x = <span style="color: #CC9393;">'Age Group'</span>, y = <span style="color: #CC9393;">'User proportion w/ emoji use'</span> ) +
+    theme_bw(base_size = 18) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="../Figures/fig-emoji.png" alt="fig-emoji.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba1415d" class="outline-4">
+<h4 id="orgba1415d"><span class="section-number-4">1.6.2</span> Which   is   the   most   common   emoji?</h4>
+<div class="outline-text-4" id="text-1-6-2">
+<p>
+The most frequent emojis and their occurrences are below:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #DFAF8F;">all_emojis_tweets</span> = <span style="color: #DCDCCC; font-weight: bold;">list</span>(<span style="color: #DCDCCC; font-weight: bold;">filter</span>(<span style="color: #BFEBBF;">None</span>, age_tweets2.emoji_code.tolist()))
+<span style="color: #DFAF8F;">all_emojis_tweets</span> = <span style="color: #CC9393;">''</span>.join(x <span style="color: #F0DFAF; font-weight: bold;">for</span> x <span style="color: #F0DFAF; font-weight: bold;">in</span> all_emojis_tweets)
+Counter(all_emojis_tweets).most_common(5)
+
+</pre>
+</div>
+
+<p>
+
+</p>
+
+<p>
+&gt;&gt;&gt; [('😂', 2432), ('😍', 912), ('😭', 772), ('😩', 636), ('❤', 519)]
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgae3c398" class="outline-2">
+<h2 id="orgae3c398"><span class="section-number-2">2</span> Predicting Twitter users' age</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Here I document the sentiment analysis, data wrangling, and building a prediction model. 
+</p>
+</div>
+
+<div id="outline-container-orgd3da242" class="outline-3">
+<h3 id="orgd3da242"><span class="section-number-3">2.1</span> Read in data</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
+<span style="color: #BFEBBF;">library</span>(jsonlite)
+<span style="color: #BFEBBF;">library</span>(magrittr)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">test data</span>
+ages_test <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/ages_test.csv'</span>,
+                      col_names = F, col_types = <span style="color: #CC9393;">'c'</span>) <span style="color: #BFEBBF;">%&gt;%</span>
+    dplyr::rename(ID = X1) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(Age = <span style="color: #7CB8BB;">NA</span>)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">training data</span>
+ages_train <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/ages_train.csv'</span>, col_types = <span style="color: #CC9393;">'ci'</span>)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">combine training data and test data</span>
+dat <span style="color: #BFEBBF;">&lt;-</span> rbind(ages_train, ages_test)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">====read in all realted info</span>
+age_profiles <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/age_profiles.json'</span>,
+                          simplifyDataFrame = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>    
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">and remove the record that has a negative count of friends</span>
+    filter(friends_count != -69) <span style="color: #BFEBBF;">%&gt;%</span>
+    as.tibble    
+
+age_tweets <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/age_tweets.json'</span>,
+                        simplifyDataFrame = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    as.tibble
+
+mentions <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/mentions.csv'</span>, col_types = <span style="color: #CC9393;">'ccc'</span>)
+
+mention_profiles <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/mention_profiles.json'</span>,
+                        simplifyDataFrame = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    as.tibble
+
+friends <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/friends.csv'</span>, col_types = <span style="color: #CC9393;">'cc'</span>)
+
+friend_profiles <span style="color: #BFEBBF;">&lt;-</span> read_json(<span style="color: #CC9393;">'../assignment_package/friend_profiles.json'</span>,
+                        simplifyDataFrame = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    flatten(recursive = T) <span style="color: #BFEBBF;">%&gt;%</span>
+    as.tibble
+
+tweets_emoji_count <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../Data/age_tweets_emoji_count.csv'</span>,col_types = <span style="color: #DC8CC3; background-color: #3F3F3F;">'iccci'</span><span style="color: #DC8CC3; background-color: #3F3F3F;">) </span><span style="color: #DC8CC3; background-color: #3F3F3F;">%&gt;%</span>
+    select(-X1)
+</pre>
+</div>
+
+<pre class="example">
+Warning: 26 parsing failures.
+row # A tibble: 5 x 5 col     row   col   expected expected   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt; actual 1  7302  &lt;NA&gt;  5 columns file 2  7303    X1 an integer row 3  7303  &lt;NA&gt;  5 columns col 4  7306  &lt;NA&gt;  5 columns expected 5  7307    X1 an integer actual # ... with 2 more variables: actual &lt;chr&gt;, file &lt;chr&gt;
+... ................. ... ........................ ........ ........................ ...... ........................ .... ........................ ... ........................ ... ........................ ........ ........................ ...... .....................................................
+See problems(...) for more details.
+
+Warning messages:
+1: Missing column names filled in: 'X1' [1] 
+2: In rbind(names(probs), probs_f) :
+  number of columns of result is not a multiple of vector length (arg 1)
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org4950ee9" class="outline-3">
+<h3 id="org4950ee9"><span class="section-number-3">2.2</span> Sentiment analysis</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-org90f6b58" class="outline-4">
+<h4 id="org90f6b58"><span class="section-number-4">2.2.1</span> Utility functions</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">library</span>(lubridate)
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">* score.sentiment</span>
+score.sentiment = <span style="color: #F0DFAF; font-weight: bold;">function</span>(sentences, pos.words, neg.words, .progress=<span style="color: #CC9393;">'none'</span>)
+{
+  scores = plyr::laply(sentences, <span style="color: #F0DFAF; font-weight: bold;">function</span>(sentence, pos.words, neg.words) {
+    
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">clean up sentences with R's regex-driven global substitute, gsub():</span>
+    sentence = gsub(<span style="color: #CC9393;">'[[:punct:]]'</span>, <span style="color: #CC9393;">''</span>, sentence)
+    sentence = gsub(<span style="color: #CC9393;">'[[:cntrl:]]'</span>, <span style="color: #CC9393;">''</span>, sentence)
+    sentence = gsub(<span style="color: #CC9393;">'\\d+'</span>, <span style="color: #CC9393;">''</span>, sentence)
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">and convert to lower case:</span>
+    sentence = tolower(sentence)
+    
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">split into words. str_split is in the stringr package</span>
+    word.list = str_split(sentence, <span style="color: #CC9393;">'\\s+'</span>)
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">sometimes a list() is one level of hierarchy too much</span>
+    words = unlist(word.list)
+    
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">compare our words to the dictionaries of positive &amp; negative terms</span>
+   
+    neg.matches = match(words, neg.words)
+    pos.matches = match(words, pos.words)
+    
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">match() returns the position of the matched term or NA</span>
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">we just want a TRUE/FALSE:</span>
+    pos.matches = !is.na(pos.matches)
+    neg.matches = !is.na(neg.matches)
+    
+    <span style="color: #5F7F5F;"># </span><span style="color: #7F9F7F;">and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():</span>
+    score = sum(pos.matches) - sum(neg.matches)
+    
+    <span style="color: #F0DFAF; font-weight: bold;">return</span>(score)
+  }, pos.words, neg.words, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  <span style="color: #F0DFAF; font-weight: bold;">return</span>(scores.df)
+}
+
+</pre>
+</div>
+
+<pre class="example">
+
+Attaching package: ‘lubridate’
+
+The following object is masked from ‘package:base’:
+
+    date
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org02db725" class="outline-4">
+<h4 id="org02db725"><span class="section-number-4">2.2.2</span> Sentiment analysis of all the recent tweets</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">read in a dictionary of negtive words nad positive words</span>
+pos_words <span style="color: #BFEBBF;">&lt;-</span> scan(<span style="color: #CC9393;">'../Data/wordbanks/positive-words.txt'</span>,
+                  what = <span style="color: #CC9393;">'character'</span>,
+                  comment.char = <span style="color: #CC9393;">';'</span>)
+                      
+neg_words <span style="color: #BFEBBF;">&lt;-</span> scan(<span style="color: #CC9393;">'../Data/wordbanks/negative-words.txt'</span>,
+                  what = <span style="color: #CC9393;">'character'</span>,
+                  comment.char = <span style="color: #CC9393;">';'</span>)
+
+age_tweets <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+    mutate(sentiment_score = score.sentiment(text,
+                                             pos.words = pos_words,
+                                             neg.words = neg_words)$score) 
+</pre>
+</div>
+
+<pre class="example">
+Read 2006 items
+Read 4783 items
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69b64bc" class="outline-3">
+<h3 id="org69b64bc"><span class="section-number-3">2.3</span> Joint all tables-prepare training and test data</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-R">age_tweets <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+    mutate(tweet_len = str_length(text))
+  
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the varialbes that are not likely asscoated w/ age and w/ too many lev</span><span style="color: #DC8CC3; background-color: #3F3F3F;">els</span>
+var_to_remove <span style="color: #BFEBBF;">&lt;-</span>
+    c(<span style="color: #CC9393;">"name"</span>,<span style="color: #CC9393;">"location"</span>,<span style="color: #CC9393;">"lang"</span>,<span style="color: #CC9393;">"description"</span>,
+      <span style="color: #CC9393;">"profile_background_image_url_https"</span>,<span style="color: #CC9393;">"profile_background_color"</span>,
+      <span style="color: #CC9393;">"screen_name"</span>, <span style="color: #CC9393;">"profile_sidebar_border_color"</span>,
+      <span style="color: #CC9393;">"profile_sidebar_fill_color"</span>, <span style="color: #CC9393;">"status.text"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.coordinates.coordinates"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.entities.urls"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.entities.user_mentions"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.entities.symbols"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.entities.hashtags"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.entities.media"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.place.contained_within"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.place.bounding_box.coordinates"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.geo.coordinates"</span>,
+      <span style="color: #CC9393;">"status.retweeted_status.scopes.place_ids"</span>,
+      <span style="color: #CC9393;">"status.entities.urls"</span>,
+      <span style="color: #CC9393;">"status.entities.user_mentions"</span>,
+      <span style="color: #CC9393;">"status.entities.symbols"</span>,
+      <span style="color: #CC9393;">"status.entities.hashtags"</span>,
+      <span style="color: #CC9393;">"status.entities.media"</span>,
+      <span style="color: #CC9393;">"status.geo.coordinates"</span>,
+      <span style="color: #CC9393;">"status.coordinates.coordinates"</span>,
+      <span style="color: #CC9393;">"status.place.contained_within"</span>,
+      <span style="color: #CC9393;">"status.place.bounding_box.coordinates"</span>,
+      <span style="color: #CC9393;">"status.source"</span>,
+      <span style="color: #CC9393;">"time_zone"</span>)
+
+
+
+<span style="color: #93E0E3;">f.cleanData</span> <span style="color: #BFEBBF;">&lt;-</span> <span style="color: #F0DFAF; font-weight: bold;">function</span>(profiles = age_profiles){
+    tmp_profiles <span style="color: #BFEBBF;">&lt;-</span> profiles
+    tmp_profiles <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the columns w/ id</span>
+        select(-contains(<span style="color: #CC9393;">'id'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the columns w/ urls</span>
+        select(-contains(<span style="color: #CC9393;">'url'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the columns w/ color</span>
+        select(-contains(<span style="color: #CC9393;">'color'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">when was the account created</span>
+        mutate(created_at = as.numeric(str_sub(created_at, -4,-1))) <span style="color: #BFEBBF;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">when was the status created</span>
+        mutate(status.created_at = as.numeric(str_sub(status.created_at, -4,-1))<span style="color: #DC8CC3; background-color: #3F3F3F;">) </span><span style="color: #DC8CC3; background-color: #3F3F3F;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">sentiment score of descriptions</span>
+        mutate(desc_senti_score = score.sentiment(description,
+                                                  pos.words = pos_words,
+                                                  neg.words = neg_words)$score) <span style="color: #DC8CC3; background-color: #3F3F3F;">%&gt;%</span>
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">sentiment score of status text</span>
+        mutate(text_senti_score = score.sentiment(status.text,
+                                                  pos.words = pos_words,
+                                                  neg.words = neg_words)$score) <span style="color: #DC8CC3; background-color: #3F3F3F;">%&gt;%</span>
+        select(-one_of(var_to_remove))
+
+    na_prop <span style="color: #BFEBBF;">&lt;-</span> tmp_profiles <span style="color: #BFEBBF;">%&gt;%</span>
+        apply(2, <span style="color: #F0DFAF; font-weight: bold;">function</span>(x) sum(!is.na(x))/length(x))
+
+    tmp_profiles <span style="color: #BFEBBF;">%&lt;&gt;%</span>    
+        <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove the columns w/ too much missing data</span>
+        select(names(na_prop)[na_prop&gt;.8])
+    tmp_profiles <span style="color: #BFEBBF;">%&lt;&gt;%</span>
+        mutate(id_str = profiles$id_str)
+    <span style="color: #F0DFAF; font-weight: bold;">return</span>(tmp_profiles)
+}
+
+
+age_profiles_s <span style="color: #BFEBBF;">&lt;-</span> f.cleanData(age_profiles)
+
+friend_profiles_s <span style="color: #BFEBBF;">&lt;-</span> f.cleanData(friend_profiles)
+
+mention_profiles_s <span style="color: #BFEBBF;">&lt;-</span> f.cleanData(mention_profiles)
+
+
+friends_grouped <span style="color: #BFEBBF;">&lt;-</span> friend_profiles_s <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(friends, by = c(<span style="color: #CC9393;">'id_str'</span> = <span style="color: #CC9393;">'FriendID'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove two variables for which taking a mean doesn't make sense</span>
+    select(-c(status.lang,id_str)) <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    summarize_all(funs(mean(.,na.rm = T)))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">missing value imputatioin</span>
+friends_grouped$utc_offset[is.na(friends_grouped$utc_offset)] <span style="color: #BFEBBF;">&lt;-</span>
+    mean(friends_grouped$utc_offset,na.rm = T)
+
+mentions_grouped <span style="color: #BFEBBF;">&lt;-</span> mention_profiles_s <span style="color: #BFEBBF;">%&gt;%</span>    
+    left_join(mentions, by = c(<span style="color: #CC9393;">'id_str'</span> = <span style="color: #CC9393;">'MentionedID'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    <span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">remove two variables for which taking a mean doesn't make sense</span>
+    select(-c(status.lang,id_str,MentionedHandle)) <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    summarize_all(funs(mean(.,na.rm = T)))
+
+
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">calculate the average length and average sentiment scores of user's tweets</span>
+age_tweets_grouped <span style="color: #BFEBBF;">&lt;-</span>
+    age_tweets <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(user.id_str) <span style="color: #BFEBBF;">%&gt;%</span>
+        summarise(avg_senti_score = mean(sentiment_score,na.rm = T),
+                  avg_tweet_len = mean(tweet_len,na.rm = T))
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">claculate the avg number of emoji count for each user</span>
+emoji_count_grouped <span style="color: #BFEBBF;">&lt;-</span> 
+    tweets_emoji_count <span style="color: #BFEBBF;">%&gt;%</span>
+    group_by(user.id_str) <span style="color: #BFEBBF;">%&gt;%</span>
+    summarise(avg_emoji_count = mean(emoji_count,na.rm = T))
+   
+dat_all <span style="color: #BFEBBF;">&lt;-</span> dat <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(age_profiles_s, by = c(<span style="color: #CC9393;">'ID'</span> = <span style="color: #CC9393;">'id_str'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(friends_grouped, by = <span style="color: #CC9393;">'ID'</span>, suffix = c(<span style="color: #CC9393;">''</span>, <span style="color: #CC9393;">'.fg'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(mentions_grouped, by = <span style="color: #CC9393;">'ID'</span>, suffix = c(<span style="color: #CC9393;">''</span>, <span style="color: #CC9393;">'.mg'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(age_tweets_grouped, by = c(<span style="color: #CC9393;">'ID'</span> = <span style="color: #CC9393;">'user.id_str'</span>)) <span style="color: #BFEBBF;">%&gt;%</span>
+    left_join(emoji_count_grouped, by = c(<span style="color: #CC9393;">'ID'</span> = <span style="color: #CC9393;">'user.id_str'</span>)) 
+
+
+dat_all <span style="color: #BFEBBF;">%&gt;%</span>
+    apply(2, <span style="color: #F0DFAF; font-weight: bold;">function</span>(x) sum(is.na(x))/length(x)) <span style="color: #BFEBBF;">%&gt;%</span>
+    summary
+</pre>
+</div>
+
+<pre class="example">
+Warning message:
+Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+Warning message:
+Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+Warning message:
+Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00000 0.02834 0.04127 0.08819 0.20388 0.22178
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7216fe4" class="outline-3">
+<h3 id="org7216fe4"><span class="section-number-3">2.4</span> Train a gradient boosting model</h3>
+<div class="outline-text-3" id="text-2-4">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #BFEBBF;">require</span>(xgboost)
+<span style="color: #BFEBBF;">require</span>(Matrix)
+<span style="color: #BFEBBF;">require</span>(data.table)
+
+
+train <span style="color: #BFEBBF;">&lt;-</span> dat_all <span style="color: #BFEBBF;">%&gt;%</span>
+    select(-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(!is.na(Age))
+    
+test <span style="color: #BFEBBF;">&lt;-</span> dat_all <span style="color: #BFEBBF;">%&gt;%</span>
+    select(-ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(is.na(Age))
+
+<span style="color: #5F7F5F;">##  </span><span style="color: #7F9F7F;">missing data imputataion</span>
+na_val_train <span style="color: #BFEBBF;">&lt;-</span> apply(train, 2,<span style="color: #F0DFAF; font-weight: bold;">function</span>(x) any(is.na(x)))
+
+<span style="color: #F0DFAF; font-weight: bold;">for</span>(i <span style="color: #F0DFAF; font-weight: bold;">in</span> 1:sum(na_val_train)){
+    na_element <span style="color: #BFEBBF;">&lt;-</span> is.na(train[,na_val_train][,i])
+    <span style="color: #F0DFAF; font-weight: bold;">if</span>(class(unlist(train[,na_val_train][,i])) == <span style="color: #CC9393;">'character'</span>){
+        train[,na_val_train][,i] = addNA(unlist(train[,na_val_train][,i]))
+    }<span style="color: #F0DFAF; font-weight: bold;">else</span>{
+        train[,na_val_train][na_element,i] <span style="color: #BFEBBF;">&lt;-</span> mean(train[,na_val_train][[i]],
+                                                   na.rm = T)
+    }
+}
+
+na_val_test <span style="color: #BFEBBF;">&lt;-</span> apply(test, 2,<span style="color: #F0DFAF; font-weight: bold;">function</span>(x) any(is.na(x)))
+
+<span style="color: #F0DFAF; font-weight: bold;">for</span>(i <span style="color: #F0DFAF; font-weight: bold;">in</span> 1:sum(na_val_test)){
+    na_element <span style="color: #BFEBBF;">&lt;-</span> is.na(test[,na_val_test][,i])
+    <span style="color: #F0DFAF; font-weight: bold;">if</span>(class(unlist(test[,na_val_test][,i])) == <span style="color: #CC9393;">'character'</span>){
+        test[,na_val_test][,i] = addNA(unlist(test[,na_val_test][,i]))
+    }<span style="color: #F0DFAF; font-weight: bold;">else</span>{
+        test[,na_val_test][na_element,i] <span style="color: #BFEBBF;">&lt;-</span> mean(test[,na_val_test][[i]],
+                                                   na.rm = T)
+    }
+}
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">cv</span>
+nround <span style="color: #BFEBBF;">&lt;-</span> 2
+param <span style="color: #BFEBBF;">&lt;-</span> list(max_depth=5, eta=.9, silent=1, nthread=5)
+cv <span style="color: #BFEBBF;">&lt;-</span> xgb.cv(param, dtrain, nround, nfold=5)
+print(cv)
+
+test$Age <span style="color: #BFEBBF;">&lt;-</span> sample(1:100, replace = T, size = nrow(test))
+test_sparse <span style="color: #BFEBBF;">&lt;-</span> sparse.model.matrix( Age~. ,data = test)
+
+sparse_matrix <span style="color: #BFEBBF;">&lt;-</span> sparse.model.matrix(Age ~ ., data = train)
+
+bst <span style="color: #BFEBBF;">&lt;-</span> xgboost(data = sparse_matrix,
+               label = unlist(train <span style="color: #BFEBBF;">%&gt;%</span> select(Age)),
+               max_depth = 5,
+               eta = .9, nthread = 2, nrounds = 2)
+
+<span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">write out the predictioins</span>
+dat_all <span style="color: #BFEBBF;">%&gt;%</span>
+    filter(is.na(Age)) <span style="color: #BFEBBF;">%&gt;%</span>
+    select(ID) <span style="color: #BFEBBF;">%&gt;%</span>
+    mutate(Age = predict(bst,test_sparse) ) <span style="color: #BFEBBF;">%&gt;%</span>
+    write_csv(<span style="color: #CC9393;">'../Results/ages_pred.csv'</span>)
+
+
+
+</pre>
+</div>
+
+<pre class="example">
+Loading required package: xgboost
+
+Attaching package: ‘xgboost’
+
+The following object is masked from ‘package:dplyr’:
+
+    slice
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:tidyr’:
+
+    expand
+Loading required package: data.table
+data.table 1.10.4.3
+  The fastest way to learn (by data.table authors): https://www.datacamp.com/courses/data-analysis-the-data-table-way
+  Documentation: ?data.table, example(data.table) and browseVignettes("data.table")
+  Release notes, videos and slides: http://r-datatable.com
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:lubridate’:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+The following object is masked from ‘package:purrr’:
+
+    transpose
+Error in inherits(data, "xgb.DMatrix") : object 'dtrain' not found
+Error in print(cv) : object 'cv' not found
+[1]	train-rmse:6.145485 
+[2]	train-rmse:4.718259
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-10-24 Tue 00:00</p>
+<p class="author">Author: Qike Li</p>
+<p class="date">Created: 2017-12-20 Wed 15:04</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

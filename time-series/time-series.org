@@ -1,0 +1,534 @@
+#+TITLE: Time Series Data Analysis
+#+DATE: <2017-12-4 Mon 20:00>
+#+AUTHOR: Qike Max Li
+#+EMAIL: qikeli@gmail.com
+#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-readtheorg.setup
+
+
+* COMMENT read in data and load packages
+#+BEGIN_SRC R :exports both :results output :session :eval no
+library(tidyverse)
+library(ggplot2)
+library(astsa)
+
+
+dat1 <- read_csv('../Data/data.csv')
+
+dat1 %>%    
+    ggplot(aes(x = factor(day.of.week,
+                          levels = (c( "Monday", 
+                                      "Tuesday",
+                                      "Wednesday",
+                                      "Thursday",
+                                      "Friday",
+                                      "Saturday",
+                                      "Sunday"))),
+               y = car.count)) +
+    geom_boxplot()
+
+summary(dat1)
+
+dat1 %>%
+    ggplot(aes(x = weather, y = car.count)) +
+    geom_point()
+
+dat1 %>%
+    ggplot(aes(x = factor(cloud.indicator), y = car.count)) +
+    geom_boxplot()
+
+dat1 %>%
+    ggplot(aes(x = weather, y = car.count)) +
+    geom_point()
+
+dat1 %>%
+    ggplot(aes(x = index, y = log(car.count),
+               color = factor(cloud.indicator))) +
+    geom_path() +
+    theme(legend.position = 'none')
+
+summary(dat1$date)
+dat1 %>%
+    filter(cloud.indicator == 'clear') %>%
+    ggplot(aes(x = factor(day.of.week,
+                          levels = (c( "Monday", 
+                                      "Tuesday",
+                                      "Wednesday",
+                                      "Thursday",
+                                      "Friday",
+                                      "Saturday",
+                                      "Sunday"))), y = car.count)) +
+    geom_boxplot()    
+
+
+ts_car <- ts(dat1$car.count, frequency = 7)
+
+plot(ts_car)
+ts_car_d <- diff(ts_car,  lag = 7)
+acf2(ts_car)
+foo <- ts(dat1$car.count,frequency = 7)
+plot(decompose(foo))
+plot(decompose(dat1$car.count))
+plot(dat1$weather,dat1$car.count)
+
+plot.new()
+dat2 <- dat1 %>%
+    filter(cloud.indicator =='clear')
+plot(head(ts(dat2$car.count),400))
+
+
+lag1.plot(ts_car,9)
+
+acf2(ts_car)
+
+tail(dat1,1)$date - head(dat1,1)$date
+
+foo <- dat1 %>%
+    head(800) %>%
+    select(car.count,date)
+
+plot(foo$date, foo$car.count, type = 'l')
+#+END_SRC
+
+* Exploratory data analysis (EDA)
+
+** Get a feeling of the data
+
+#+BEGIN_SRC R :exports both :results output :session 
+## load the libraries
+library(tidyverse)
+library(ggplot2)
+library(astsa)
+library(imputeTS)                       # to impute missing values
+library(lubridate)
+library(parallel)                       # to parallelize computation
+
+## read in data
+dat1 <- suppressMessages(read_csv('../Data/data.csv')) %>%
+    mutate(day.of.week = factor(day.of.week,
+                                   levels = c( "Monday", 
+                                               "Tuesday",
+                                               "Wednesday",
+                                               "Thursday",
+                                               "Friday",
+                                               "Saturday",
+                                              "Sunday")),
+           cloud.indicator = factor(cloud.indicator))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Warning message:
+package ‘astsa’ was built under R version 3.3.2
+Warning message:
+package ‘imputeTS’ was built under R version 3.3.2
+
+Attaching package: ‘lubridate’
+
+The following object is masked from ‘package:base’:
+
+    date
+#+end_example
+
+- Print the first few rows of the data
+#+BEGIN_SRC R :exports both :results output :session
+dat1
+#+END_SRC
+
+- Summarize each column of the data
+#+BEGIN_SRC R :exports both :results output :session
+summary(dat1)
+#+END_SRC
+
+There are five columns in the data, and approximately 40% of the data are collected from cloudy days. It is unclear how weather affects car counts. 
+** Initial plots
+*** Plot the time series data with different colors for clear days and cloudy days.
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-ini.png :session :eval no
+dat1 %>%
+    ggplot(aes(x = date, y = car.count,
+               color = cloud.indicator)) +
+    geom_path() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-ini.png]]
+
+- Impressions:
+  - Data of the clear days and data of the cloudy days don't follow the same distribution.
+  - Data of the cloudy days are highly variable.
+  - Cyclical behavior.
+
+***  Plot car counts against weather
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-weather-car.png :session :eval no
+dat1 %>%
+    ggplot(aes(x = weather, y = car.count)) +
+    geom_point() +
+    geom_smooth() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-weather-car.png]]
+
+There doesn't seem to be a relationship between weather and car counts.
+*** Plot weather of clear days and cloudy days
+
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-weather-cloud.png :session :eval no
+dat1 %>%
+    ggplot(aes(x = cloud.indicator, y = weather)) +
+    geom_boxplot() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-weather-cloud.png]]
+
+There doesn't seem to be a difference between the weather of cloudy days and weather of clear days.
+
+** Single-year data analysis
+It is hard to visualize other patterns in the data since the data has =2373= data points (6.5 years). Therefore, let's plot the data year by year.
+
+*** Year 2010
+
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-year-2010.png :session :eval no
+dat1 %>%
+    filter(date < '2011-01-01') %>%
+    ggplot(aes(x = date, y = car.count,
+               color = cloud.indicator)) +
+    geom_path() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-year-2010.png]]
+
+*** Year 2014
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-year-2014.png :session :eval no
+dat1 %>%
+    filter(date < '2015-01-01' & date >= '2014-01-01') %>%
+    ggplot(aes(x = date, y = car.count,
+               color = cloud.indicator)) +
+    geom_path() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-year-2014.png]]
+
+- Impressions:
+  - It is unclear if cyclic behavior exists within a year.
+  - The increasing trend of year 2010 and the decreasing trend of year 2015 may be due to the cyclic behavior across years.
+
+
+#+BEGIN_SRC R :exports none :results output :session
+x <- dat1 %>%
+    filter(cloud.indicator == 'clear') %>%
+    select(car.count) %>%
+    ts
+
+x = diff(sunspots)
+
+foo2 <- diff(foo)
+
+spec.pgram(foo2, spans = c(9,9), taper = 0, log = "no")
+
+x <- diff(x)
+I <- abs(fft(x)/length(x))^2
+P = (4/length(x))*I[1:((length(x)+2)/2)]
+freq = (0:(length(x)/2))/length(x)
+plot(freq,P,type="l")
+
+plot(sunspots,type="b")
+x = diff(sunspots)
+I = abs(fft(x)/sqrt(458))^2
+P = (4/458)*I[1:230]
+freq = (0:229)/458
+plot(freq,P,type="l")
+
+
+
+dat1 %>%
+    filter(cloud.indicator == 'clear') %>%
+    ggplot(aes(x = weather, y = car.count)) +
+           geom_point()                 
+#+END_SRC
+** Group data points
+Grouping the data points into categories and taking the mean. 
+
+*** Group by day of week
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-day-of-week.png :session :eval no
+dat1 %>%
+    ggplot(aes(x = day.of.week, y = car.count)) +
+    geom_boxplot()
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-day-of-week.png]]
+
+Not surprisingly, more cars were on the parking lot on Fridays, Saturdays, and Sundays.
+
+*** Group by day of month
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-day-of-month.png :session :eval no
+dat1 %>%
+    filter(cloud.indicator == 'clear') %>%
+    mutate(day.of.month = mday(date)) %>%
+    group_by(day.of.month) %>%
+    summarize(day.of.month.mean = mean(car.count)) %>%
+    ggplot(aes(x = day.of.month, y = day.of.month.mean)) +
+    ggtitle('Group by day of month') +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    geom_path()
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-day-of-month.png]]
+
+*** Group by day of year
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-by-day.png :session :eval no
+dat1 %>%
+    filter(cloud.indicator == 'clear') %>%
+    mutate(day.of.year = yday(date)) %>%
+    group_by(day.of.year) %>%
+    summarize(day.of.year.mean = mean(car.count)) %>%
+    ggplot(aes(x = day.of.year, y = day.of.year.mean)) +
+    ggtitle('Group by day of year') +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    geom_path()
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-by-day.png]]
+
+Cyclical behavior (~100 days period) may exist in the =Group by day of year= plot.
+
+* Analysis in Frequency Domain
+
+To identify the dominant cyclical behavior in a series, we will do a spectrum analysis. From now on, I will drop the data of cloudy days and impute the missing values since the data collected from cloudy days are very noisy and seems from a different distribution.
+
+** Imputation 
+#+BEGIN_SRC R :exports both :results output :session
+dat1 %>%
+    mutate(car.count.impute = car.count) %>%
+    mutate(car.count.impute = replace(car.count,
+                                      cloud.indicator == 'cloudy',
+                                      NA)) %>%
+    mutate(car.count.impute = na.interpolation(car.count,
+                                               option = 'spline'))%>%
+    select(car.count) %>%
+    ts %>%
+    plot
+
+## drop the rows corresponding the the cloudy days
+dat_clear <- dat1 %>%
+    mutate(car.count.impute = car.count) %>%
+    mutate(car.count.impute = replace(car.count,
+                                      cloud.indicator == 'cloudy',
+                                      NA)) %>%
+    mutate(month = month(date)) %>%
+    mutate(year = year(date))
+
+## calculate the mean of that month for Monday to Sunday
+dat_avg <- dat_clear %>%
+    group_by( year, month, day.of.week) %>%
+    summarize(avg = mean(car.count.impute, na.rm = T))
+
+## there are still some NA's after the step above. Replace the NA's
+## by the average of that year
+
+dat_avg_year <- dat_clear %>%
+    group_by( year, day.of.week) %>%
+    summarize(avg.year = mean(car.count.impute, na.rm = T))
+
+
+## merge the two date frames above and replace the NA values by the means
+
+dat_impute <- left_join(dat_clear, dat_avg, by = c('year', 'month', 'day.of.week'))
+dat_impute <- left_join(dat_impute, dat_avg_year, by = c('year', 'day.of.week'))
+    
+ind_na <- is.na(dat_impute$car.count.impute)
+dat_impute$car.count.impute[ind_na] <- dat_impute$avg[ind_na]
+
+ind_na_2 <- is.na(dat_impute$car.count.impute)
+dat_impute$car.count.impute[ind_na_2] <- dat_impute$avg.year[ind_na_2]
+#+END_SRC
+
+#+RESULTS:
+
+** Plot the time series with imputed data points
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-interp.png :session :eval no
+dat_impute %>%
+    ggplot(aes(x = date, y = car.count.impute)) +               
+    geom_path() +
+    theme_bw(base_size = 18) +
+    theme(legend.position = 'bottom')
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-interp.png]]
+
+** Decompose the series
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-decompose.png :session :eval no
+dat_impute$car.count.impute %>%
+    ts(frequency = 365, start = 2010) %>%
+    decompose('additive') %>%
+    plot
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-decompose.png]]
+
+Looking at this figure, the trend is clear, and there may exist a three-month periodicity.  
+** Spectrum analysis
+
+*** Detrend
+Since a clear trend exists for the time series, I chose to detrend with linear regression.
+ #+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-detrend.png :session :eval no
+car_ts <- dat_impute %>%
+    select(car.count.impute) %>%
+    ts(frequency = 365, start = 2010)
+
+trend <- time(car_ts) - mean(time(car_ts))
+trend2 <- trend^2
+trend3 <- trend^3
+regtrend <- lm(car_ts ~ trend + trend2 + trend3)
+summary(regtrend)
+
+plot(as.numeric(trend),
+     as.numeric(car_ts),
+     xlab = "Time",
+     ylab = "Car Count")
+lines(as.numeric(trend),
+      as.numeric(predict(regtrend)),
+      type = "l",col = 'red', lwd = 2)
+ #+END_SRC
+
+ #+RESULTS:
+ [[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-detrend.png]]
+*** Spectrum Analysis
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-spec.png :session :eval no 
+car_spec <- spec.pgram(residuals(regtrend), 
+                       spans=c(15,15),
+                       taper=0,
+                       log ='no')
+
+
+## decom_car_ts <- decompose(car_ts,type='additive')
+
+## acf2(decom_car_ts$random, na.action = na.pass)
+
+## samp_size = length(decom_car_ts$seasonal)
+## FF = abs(fft(decom_car_ts$seasonal)/sqrt(samp_size))^2
+## P = (4/samp_size)*FF[1:(samp_size%/%2)]
+## f = (0:(samp_size%/%2-1))/samp_size
+## plot(f,P,type="l")
+
+## 1/f[which.max(P)]
+#+END_SRC
+
+#+RESULTS:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-spec.png]]
+
+The first peak in the figure above corresponds to a seasonal pattern for =92= days, approximately 3 months. The second peak corresponds to a seasonal pattern for =7= days, a week. Although this 7-day periodicity is unsurprising, we need to keep in mind that the second peak may be a consequence of the data imputation. 
+
+* Fit ARIMA models
+
+** COMMENT Sample ACF and PACF of the regression residuals 
+
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-resid.png :session :eval no
+acf2(regtrend, max.lag = 100)
+#+END_SRC
+
+Since the lower lags of both ACF and PACF are significant, it appears that we need an ARMA model with both AR and MA terms. 
+
+** ARIMA $(1,0,1)×(0,1,0)_{92}$
+
+My first try is $ARIMA(1,0,1)×(0,1,0)_{92}$.
+- Fit the model
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-sarima-examp.png :session :eval no :cache yes
+sarima(car_ts, p = 1, d = 0, q = 1,
+       P = 0, Q = 1, D = 0,S = 92,
+       xreg=cbind(trend,trend2, trend3))
+#+END_SRC
+
+#+RESULTS[de76c68fd68ef6f14bafaa9545c461c997f73092]:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-sarima-examp.png]]
+
+Here, the ACF of residuals shows that autocorrelation still exists for the residuals. The normal Q-Q plot indicates deviations at the tails. Further, Ljung-Box statistic is significant for most of the lags. Clearly, this model does not fit the data well, and more models need to be compared. 
+
+- Make predications
+For illustration purpose, I will use this model to make some predications.
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-sarima-pred.png :session :eval no :cache yes
+sarima.for(car_ts, n.ahead = 10,
+           p = 1, d = 0, q = 1,
+           P = 0, Q = 1, D=0,S=91)
+#+END_SRC
+
+#+RESULTS[1a99616fa650e53d004221191aa04f4396d1135a]:
+[[http://math.arizona.edu/~qikeli/Figs/Orbitial-insight/fig-sarima-pred.png]]
+
+** Choose ARIMA models
+- We could use AIC or BIC to choose between ARIMA models. For the sake of computation simplification, let's choose the orders for AR and MA first and then the orders for SAR and SMA. Note, here we set S = 92.
+#+BEGIN_SRC R :exports both :results output :session :eval no
+# Calculate the number of cores
+no_cores <- detectCores() - 1
+ 
+# Initiate cluster
+cl <- makeCluster(no_cores)
+par_m <- expand.grid(1:5,1:5)
+colnames(par_m) <- c('AR', 'MA')
+clusterExport(cl, c('Arima','car_ts', 'par_m'))
+
+t  <- Sys.time()
+bic_all <- clusterMap(cl, function(p,q)
+    Arima(car_ts,
+          order = c(p,0,q),
+          seasonal = list(order = c(0,1,0),
+                          period = 92))$bic,
+           p = par_m$AR, q = par_m$MA, SIMPLIFY = T)
+Sys.time() - t
+
+model_bic <- data.frame(AR = stringr::str_c(names(par_m)[1],par_m[,1]),
+                        MA = stringr::str_c(names(par_m)[2],par_m[,2]),
+                        BIC = bic_all)
+#+END_SRC
+
+- The data frame =model_bic= in the above code block contains the BIC's for models with different orders of AR and MA. We can find the the smallest BIC and its corresponding AR (=p=) order and MA order (=q=).
+
+- Using the =p= and =q= form the previous step, we can then find the optimal SAR (=P=) order and SMA order (=Q=) as follows.
+#+BEGIN_SRC R :exports both :results output :session :eval no
+cl <- makeCluster(no_cores)
+par_m_s <- expand.grid(1:5,1:5)
+colnames(par_m_s) <- c('SAR', 'SMA')
+clusterExport(cl, c('Arima','car_ts', 'par_m_s'))
+
+t  <- Sys.time()
+bic_all_s <- clusterMap(cl, function(P,Q)
+    Arima(car_ts,
+          order = c(5,0,4),
+          seasonal = list(order = c(P,1,Q),
+                          period = 92))$bic,
+           p = par_m_s$SAR, q = par_m_s$SMA, SIMPLIFY = T)
+Sys.time() - t
+
+model_bic_s <- data.frame(AR = stringr::str_c(names(par_m)[1],par_m[,1]),
+                        MA = stringr::str_c(names(par_m)[2],par_m[,2]),
+                        BIC = bic_all)
+#+END_SRC
+
+With this process, we can find the top models that yield the lowest BIC. Further, we need to do necessary model diagnostics and pick the best model. Note, even I parallelized the computation, this process is still time consuming and therefore not conducted. 
+* Future analysis
+- If I had a whole day to work on this problem, I would explore the following things:
+  - Missing data. For now, I am averaging over a month, but I could try averaging over three months or over a year. Alternatively I could do interpolation. However, as I alluded to in *Section 2.4.2*, data imputation may introduce bias. To avoid that, I could explore techniques that don't require evenly spaced time series. For example, I could use Lomb-Scargle periodogram for unevenly sampled time series.
+
+  - Incorporate data of cloudy days. For simplicity, I dropped the data of cloudy days in this analysis. However, incorporating them may improve our model. The model for the series of cloudy days and the model for series of clear days should share many similarities, except that the error terms in the model for cloudy days should have larger variances.
+
+  - Do a grid search for the parameters and identify the best ARIMA model based on AIC/BIC and model diagnostics.
+
+  - Determine how weather affects car counts.
+
+  - The 3-month periodicity is an interesting feature of this dataset. Understanding the reason of this pattern will be helpful for interpreting the model and for identifying potential useful features for future predicative models. 

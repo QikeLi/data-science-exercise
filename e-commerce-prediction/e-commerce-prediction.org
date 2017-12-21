@@ -1,0 +1,777 @@
+#+TITLE: E-commerce prediction model
+#+DATE: <2017-09-24 Sun>
+#+AUTHOR: Qike Max Li
+#+EMAIL: qikeli@gmail.com
+#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-bigblow.setup
+
+* Exploratory Data analysis 
+  
+** Calculate the occurrence of each activity in the training dataset.
+I would like to know:
+  1) What are the activities?
+  2) The number of occurrences of each activity
+
+*** request an interactive node on HPC and transfer files
+#+BEGIN_SRC sh :eval no
+qsub -I -N takehome -m bea -M qikeli@email.arizona.edu
+ -W group_list=yves -q standard -l select=1:ncpus=28:mem=168gb:pcmem=6gb -l 
+cput=280:0:0 -l walltime=10:0:0
+#+END_SRC
+
+#+BEGIN_SRC sh :results none :eval 
+rsync -azv ../../6sense/ qikeli@sftp.hpc.arizona.edu:~/Data-Science-Challenge/
+#+END_SRC
+
+*** The number occurrences of each activity for all users.
+#+BEGIN_SRC R :exports code :results output silent :session :cache yes :eval no
+library(tidyverse)
+library(magrittr)
+
+setwd('~/Dropbox/job-search/Industry/Data-Science-Challenge/6sense/org')
+## Read in data
+dat_train <- read_tsv('../takehome/training.tsv', col_names = F)
+dat_test <- read_tsv('../takehome/test.tsv', col_names = F)
+## assign column names
+colnames(dat_train) <- c('ID', 'date', 'activity')
+colnames(dat_test) <- c('ID', 'date', 'activity')
+  #+END_SRC
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## Number of each activity for all users
+table(dat_train$activity)
+#+END_SRC
+
+#+RESULTS:
+: 
+:   CustomerSupport EmailClickthrough         EmailOpen        FormSubmit 
+:            103991            285568           3191732            176067 
+:          PageView          Purchase          WebVisit 
+:            382263            395031            384025
+
+*** The number occurrences of each activity for users who purchased.
+
+#+BEGIN_SRC R :exports both :results output :session :eval no
+dat_train %>%
+    group_by(ID) %>%
+    filter('Purchase' %in% activity) %$%
+    table(activity)
+#+END_SRC
+
+#+RESULTS:
+: activity
+:   CustomerSupport EmailClickthrough         EmailOpen        FormSubmit 
+:            103991            135795           1225392             79937 
+:          PageView          Purchase          WebVisit 
+:            253606            395031            253792
+
+*** The number occurrences of each activity for users who didn't purchase.
+
+#+BEGIN_SRC R :exports both :results output :session :eval no
+dat_train %>%
+    group_by(ID) %>%
+    filter(! 'Purchase' %in% activity) %$%
+    table(activity)
+#+END_SRC
+
+#+RESULTS:
+: activity
+: EmailClickthrough         EmailOpen        FormSubmit          PageView 
+:            149773           1966340             96130            128657 
+:          WebVisit 
+:            130233
+
+*** The number occurrences of each activity for users in the test data.
+#+BEGIN_SRC R :exports both :results output :session :eval no
+table(dat_test$activity)
+#+END_SRC
+
+#+RESULTS:
+: 
+: EmailClickthrough         EmailOpen        FormSubmit          PageView 
+:             42364            550886             28765             87149 
+:          WebVisit 
+:             88595
+
+Since the variable =CustomerSupport= does not exit in the test data, I will exclude it when building models.
+
+** Make some plots
+*** Boxplots of all activities for users who made purchases and the ones who did not.
+
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## Group data by customer ID, and then count the number occurences
+## for each activity of each paitent
+act_count <- dat_train %>%
+    count( c('ID','activity'))
+
+## Add a column to indicate if a customer has made purchases
+act_count2 <- rbind(
+    act_count %>%
+    group_by(ID) %>%
+    filter( 'Purchase' %in% activity ) %>%
+    mutate(Purchase = TRUE)     
+   ,
+    act_count %>%
+    group_by(ID) %>%
+    filter(! 'Purchase' %in% activity ) %>%
+    mutate(Purchase = FALSE)
+)
+#+END_SRC
+
+#+RESULTS[b1a2a24a45599c195e1a1ff68acfecfcab3a46a6]:
+
+
+#+BEGIN_SRC R :exports both :results graphics :file ./Figures/fig-1.png :session :eval no
+## make boxplots of the occurences
+act_count2 %>%
+    ggplot(aes(x = activity, y = freq, color = Purchase)) +
+    geom_boxplot() +
+    ylim(c(0,50)) +
+    theme_bw(base_size = 20)+
+    labs(y = '# of occurences', x = 'Activity') +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#+END_SRC
+
+#+CAPTION: The number of occurrences of activities
+[[http://math.arizona.edu/~qikeli/Figs/fig-1.png]]
+Note that the range of y axis is set as =[0,50]=.
+* Fit models
+Due to the size of the dataset and the computationally intensive hyper-parameter tunning process, I use H2O distributed computing frame to fit models on high performance cluster(HPC). 
+
+The models I will use include Random Forest and Gradient Boosting Machine (GBM). 
+** Prepare data 
+*** A function to do data munging
+Feature Engineering:
+1) Including all dates will add too many dimensions.
+2) Count the number of occurrences of each activity and the total number of activities for each user.
+3) Test data don't have the variable =Customer Support=, exclude it to avoid data leakage.
+4) Weighing each user_id's activity relative to the total number of activities within dataset.
+5) Days between last activity and last date of the dataset.
+6) Days between the first date and the last date of each activity for each user.
+#+BEGIN_SRC R :exports both :results output :session
+prep_data <- function(dat_tmp, training){
+    ## Prepare data: 1) feature engineering 2) reshape to wide format
+    ## 
+    ## Args:
+    ##   dat_tmp: either the training data or the test data 
+    ##   training: a logical to inidicate if training data is being munged
+    ## 
+    ## Returns:
+    ##   A tibble that is ready to be used for fitting models
+
+    ## last date in training data
+    last_date_tmp <- max(dat_tmp$date)
+
+    ## add a column of the date difference between the last date 
+    ## of a user's recored and the last date in the dataset
+    dat_date <- dat_tmp %>%
+        group_by(ID) %>%
+        mutate(date_last = min(last_date_tmp - date))
+
+    ## date difference between the first date of an activity
+    ## to the last date of an activity
+    dat_date <- dat_date %>%
+        group_by(ID, activity) %>%
+        mutate(date_diff = max(date) - min(date))
+    ## ## keep the date_last column
+    ## date_last_tmp <- dat_tmp %>%
+    ##     select(ID, date_last) %>%
+    ##     distinct(ID, date_last) %>%
+    ##     mutate(date_last = as.numeric(date_last))
+
+    ## count each activity for each user
+    act_count <- dat_tmp %>%
+        group_by(ID) %>%
+        count(activity)
+
+    ## reshape the data to a wide format
+    dat_wide <- act_count %>%
+        spread(activity, n, fill = 0)
+
+    if(training){
+        ## drop the variable 'CustomerSupport' for training data
+        ## since it doesn't exit in test data
+        
+        ## reshape data to long format
+        dat_date <- dat_date %>%
+            select(-date) %>%
+            distinct %>%        
+            spread(key = activity, value = date_diff, fill = 0) %>% 
+            select(-CustomerSupport,-Purchase) %>%
+            mutate(date_last = as.numeric(date_last),
+                   EmailClickthrough = as.numeric(EmailClickthrough),
+                   EmailOpen = as.numeric(EmailOpen),
+                   FormSubmit = as.numeric(FormSubmit),
+                   PageView = as.numeric(PageView),
+                   WebVisit = as.numeric(WebVisit))
+        
+        names(dat_date)[-1:-2] <- paste0(names(dat_date)[-1:-2],'_span')
+
+        dat_wide <- dat_wide %>%
+            select(-CustomerSupport)      
+        
+        ## Count the total number of occurences of all activities
+        tot_act <- dat_wide %>%
+            ungroup %>%    
+            select(-Purchase,-ID) %>%
+            rowSums     
+
+        ## calculate the percentage of each activity relative to a user's total
+        ## number of activities
+        action_pct <- dat_wide %>%
+            ungroup %>%    
+            select(-Purchase,-ID) %>%
+            apply(1,function(x) x/sum(x)) %>%
+            t
+    } else {
+        ## reshape data to long format
+        dat_date <- dat_date %>%
+            select(-date) %>%
+            distinct %>%        
+            spread(key = activity, value = date_diff, fill = 0) %>% 
+            mutate(date_last = as.numeric(date_last),
+                   EmailClickthrough = as.numeric(EmailClickthrough),
+                   EmailOpen = as.numeric(EmailOpen),
+                   FormSubmit = as.numeric(FormSubmit),
+                   PageView = as.numeric(PageView),
+                   WebVisit = as.numeric(WebVisit))
+        
+        names(dat_date)[-1:-2] <- paste0(names(dat_date)[-1:-2],'_span')
+
+        tot_act <- dat_wide %>%
+            ungroup %>%    
+            select(-ID) %>%
+            rowSums
+
+        ## calculate the percentage of each activity relative to a user's total 
+        ## number of activities
+        action_pct <- dat_wide %>%
+            ungroup %>%    
+            select(-ID) %>%
+            apply(1,function(x) x/sum(x)) %>%
+            t        
+    }
+    
+    ## replace NA's by 0
+    action_pct[is.na(action_pct)] <- 0
+
+    ## rename columns
+    colnames(action_pct) <- c("EmailClickthrough_pct","EmailOpen_pct",
+                              "FormSubmit_pct","PageView_pct","WebVisit_pct")
+
+    ## Combine the above three date frames
+    dat_comb <- as_tibble(cbind(as.data.frame(dat_wide), 
+                                as.data.frame(action_pct),
+                                as.data.frame(tot_act)))
+    
+    ## remove the rows with only puchase counts, but all the other counts are zero
+    dat_comb %>%
+        filter(tot_act != 0)
+    
+    return(left_join(dat_comb, dat_date, by = 'ID'))
+}    
+#+END_SRC
+
+#+RESULTS:
+
+*** Munge training data and test data 
+#+BEGIN_SRC R :exports both :results output :session :eval no
+dat_fit <- prep_data(dat_train, training = T)
+dat_test_wide <- prep_data(dat_test, training = F)
+## write out the data
+write.table(dat_fit, file='./Data/train-wide.tsv',
+            quote=FALSE, sep='\t', row.names = F)
+write.table(dat_test_wide, file='./Data/test-wide.tsv',
+            quote=FALSE, sep='\t', row.names = F)
+#+END_SRC
+
+** Random Forest model
+Random Forest is robust and easy to tune, so we don't have to worry much about outliers, multicollinearity, or whether to include the interaction terms. Therefore, I use Random Forest to choose the engineered features.
+*** Split data, Define features and outcomes
+#+BEGIN_SRC R :exports both :results output :session :eval no
+library(h2o)
+h2o.init(
+    nthreads = -1,                 #use all available threads
+    max_mem_size = '2G')           #specify the memory size for H2O cloud
+## Clean state-just in case the cluster was already running
+h2o.removeAll()
+
+## Read in training data
+
+ dat_fit <- h2o.importFile(
+    path=normalizePath('./Data/train-wide.tsv'))
+dat_fit$PurchaseBoolean <- as.factor(ifelse(dat_fit$Purchase >0, 'Y', 'N'))
+
+## split data
+splits <- h2o.splitFrame(
+    dat_fit,
+    ratios = c(.7,.2),                  #only need to specify 2 fractions,
+    ## the 3rd is implied
+    seed = 123)
+
+## assing training data, validation data, and testing data
+train <- h2o.assign(splits[[1]], 'train_hex')
+valid <- h2o.assign(splits[[2]], 'valid_hex')
+test <- h2o.assign(splits[[3]], 'test_hex')
+
+## define the predictors and the response
+myX_all <- c('EmailClickthrough', 'EmailOpen',
+         'FormSubmit', 'PageView','WebVisit',
+         "EmailClickthrough_pct", "EmailOpen_pct",
+         "FormSubmit_pct", "PageView_pct",
+         "WebVisit_pct", "tot_act", "date_last",
+         "EmailClickthrough_span", "EmailOpen_span",
+         "FormSubmit_span", "PageView_span",        
+          "WebVisit_span")
+
+myX_noSpan <- c('EmailClickthrough', 'EmailOpen',
+         'FormSubmit', 'PageView','WebVisit',
+         "EmailClickthrough_pct", "EmailOpen_pct",
+         "FormSubmit_pct", "PageView_pct",
+         "WebVisit_pct", "tot_act", "date_last")
+
+
+myX_count <- c('EmailClickthrough', 'EmailOpen',
+               'FormSubmit', 'PageView','WebVisit')
+
+myY <- 'PurchaseBoolean'
+
+#+END_SRC
+*** Fit a model using all features
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## fit a Random Forest mode
+rf_all <- h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_all,
+    y = myY,
+    model_id = 'rf_v1',
+    ntrees = 200,
+    stopping_rounds = 2,                # stop fiting new trees when the 2-tree
+    ## average is within 0.001 (default) of the prior two 2-tree averages.
+    score_each_iteration = T,           # Predict against trainig and validation
+    ## for each tree.
+    seed = 123)
+
+## performance on validation data
+h2o.confusionMatrix(rf_all)
+#+END_SRC
+
+*** Exclude the features that measure the date difference between the first date and the last time of an activity of a user
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## fit a Random Forest mode
+rf_noSpan <- h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_noSpan,
+    y = myY,
+    model_id = 'rf_v1',
+    ntrees = 200,
+    stopping_rounds = 2,                # stop fiting new trees when the 2-tree
+    ## average is within 0.001 (default) of the prior two 2-tree averages.
+    score_each_iteration = T,           # Predict against trainig and validation
+    ## for each tree.
+    seed = 123)
+
+## performance on validation data
+h2o.confusionMatrix(rf_noSpan)
+#+END_SRC
+
+*** Exclude the date related features 
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## fit a Random Forest mode
+rf_count <- h2o.randomForest(
+    training_frame = train,
+    validation_frame = valid,
+    x = myX_count,
+    y = myY,
+    model_id = 'rf_v1',
+    ntrees = 200,
+    stopping_rounds = 2,                # stop fiting new trees when the 2-tree
+    ## average is within 0.001 (default) of the prior two 2-tree averages.
+    score_each_iteration = T,           # Predict against trainig and validation
+    ## for each tree.
+    seed = 123)
+
+## performance on validation data
+h2o.confusionMatrix(rf_count)
+#+END_SRC
+
+Form the three models above, we can see the error rate does not change too much between the models. I chose to include all the engineered features since the ensemble methods are robust against over-fitting and multicollinearity. However, there are a few more things I can try to further improve the model's performance:
+ - More careful feature engineering.
+ - Instead of dichotomizing the 'Purchase', group 'Purchase' and treat it as a multinomial variable.
+ - Try to address the problem of imbalanced data.
+
+** Gradient Boosting Model (GBM)
+
+Here, I explore another ensemble method GBM since it is often one of the best performers. Unlike Random Forest, GBM requires carefully hyper-parameter tunning. The tree depth is almost always the most important hyper-parameter, so I first find a range of depth that yields good performance of GBM,  and then I do a grid search for the other hyper-parameters. Note, due to the heavy computation, I do not do cross-validation, but rather splitting the data into thee subsets: train, validation, test. This may increase the variance of estimates for the error rates.
+
+*** Search the range of hyper-parameter =max_depth= that yields good performance of GBM. 
+#+BEGIN_SRC R :exports both :results output :session :eval 
+hyper_params = list( max_depth = seq(1,29,2) )
+
+grid <- h2o.grid(
+  ## hyper parameters
+  hyper_params = hyper_params,
+  
+  ## full Cartesian hyper-parameter search
+  search_criteria = list(strategy = "Cartesian"),
+  
+  ## which algorithm to run
+  algorithm="gbm",
+  
+  ## identifier for the grid, to later retrieve it
+  grid_id="depth_grid",
+  
+  ## standard model parameters
+  x = myX_all, 
+  y = myY, 
+  training_frame = train, 
+  validation_frame = valid,
+  
+  ## more trees is better if the learning rate is small enough 
+  ## here, use "more than enough" trees - we have early stopping
+  ntrees = 10000,                                                            
+  
+  ## smaller learning rate is better
+  ## since we have learning_rate_annealing, we can afford to start with 
+  ## a bigger learning rate
+  learn_rate = 0.05,                                                         
+  
+  ## learning rate annealing: learning_rate shrinks by 1% after every tree 
+  ## (use 1.00 to disable, but then lower the learning_rate)
+  learn_rate_annealing = 0.99,                                               
+  
+  ## sample 80% of rows per tree
+  sample_rate = 0.8,                                                       
+
+  ## sample 80% of columns per split
+  col_sample_rate = 0.8, 
+  
+  ## fix a random number generator seed for reproducibility
+  seed = 123,                                                             
+  
+  ## early stopping once the validation AUC doesn't improve
+  ## by at least 0.01% for 5 consecutive scoring events
+  stopping_rounds = 5,
+  stopping_tolerance = 1e-4,
+  stopping_metric = "AUC", 
+  
+  ## score every 10 trees to make early stopping reproducible (it depends
+  ## on the scoring interval)
+  score_tree_interval = 10                                                
+)
+
+save(grid, file = './grid1.RData')
+#+END_SRC
+#+BEGIN_SRC sh :results both :eval :eval 
+rsync -azv  qikeli@sftp.hpc.arizona.edu:~/
+Data-Science-Challenge/6sense/org/grid1.RData ../../6sense/org/
+#+END_SRC
+
+#+RESULTS:
+| receiving   | file | list  | ...      | done    |       |        |           |
+| grid1.RData |      |       |          |         |       |        |           |
+|             |      |       |          |         |       |        |           |
+| sent        | 42   | bytes | received | 841     | bytes | 588.67 | bytes/sec |
+| total       | size | is    | 708      | speedup | is    |    0.8 |           |
+
+#+BEGIN_SRC R :exports both :results output :session :eval yes
+## display the grid search results
+load('./grid1.RData')
+grid                                                                       
+
+## sort the grid models by decreasing AUC
+sortedGrid <- h2o.getGrid("depth_grid", sort_by="auc", decreasing = TRUE)    
+sortedGrid
+
+## find the range of max_depth for the top 5 models
+topDepths = sortedGrid@summary_table$max_depth[1:5]                       
+minDepth = min(as.numeric(topDepths))
+maxDepth = max(as.numeric(topDepths))
+minDepth
+maxDepth [[http://math.arizona.edu/~qikeli/Figs/gbm-varimp.png]] 
+#+END_SRC
+*** Grid search
+Now that we know a good range, =[7,15]=, for =max_depth=, I can tune all other parameters in more detail. Since we don't know what combinations of hyper-parameters will result in the best model, I'll use random hyper-parameter search. 
+#+BEGIN_SRC R :exports both :results output :session :eval 
+hyper_params = list( 
+    ## restrict the search to the range of max_depth established above
+    max_depth = seq(minDepth,maxDepth,1),                                      
+    
+    ## search a large space of row sampling rates per tree
+    sample_rate = seq(0.2,1,0.01),                                             
+    
+    ## search a large space of column sampling rates per split
+    col_sample_rate = seq(0.2,1,0.01),                                         
+    
+    ## search a large space of column sampling rates per tree
+    col_sample_rate_per_tree = seq(0.2,1,0.01),                                
+    
+    ## search a large space of how column sampling per split should 
+    ## change as a function of the depth of the split
+    col_sample_rate_change_per_level = seq(0.9,1.1,0.01),                      
+    
+    ## search a large space of the number of min rows in a terminal node
+    min_rows = 2^seq(0,log2(nrow(train))-1,1),                                 
+    
+    ## search a large space of the number of bins for split-finding for
+    ## continuous and integer columns
+    nbins = 2^seq(4,10,1),                                                     
+    
+    ## search a large space of the number of bins for split-finding for
+    ## categorical columns
+    nbins_cats = 2^seq(4,12,1),                                                
+    
+    ## search a few minimum required relative error improvement thresholds for a
+    ## split to happen
+    min_split_improvement = c(0,1e-8,1e-6,1e-4),                               
+    
+    ## try all histogram types (QuantilesGlobal and RoundRobin are good for
+    ## numeric columns with outliers)
+    histogram_type = c("UniformAdaptive","QuantilesGlobal","RoundRobin")       
+)
+
+search_criteria = list(
+    ## Random grid search
+    strategy = "RandomDiscrete",      
+    
+    ## limit the runtime to 60 minutes
+    max_runtime_secs = 3600,         
+    
+    ## build no more than 100 models
+    max_models = 100,                  
+    
+    ## random number generator seed to make sampling of parameter
+    ## combinations reproducible
+    seed = 1234,                        
+    
+    ## early stopping once the leaderboard of the top 5 models is converged to
+    ## 0.1% relative difference
+    stopping_rounds = 5,                
+    stopping_metric = "AUC",
+    stopping_tolerance = 1e-3
+)
+
+grid <- h2o.grid(
+    ## hyper parameters
+    hyper_params = hyper_params,
+    
+    ## hyper-parameter search configuration (see above)
+    search_criteria = search_criteria,
+    
+    ## which algorithm to run
+    algorithm = "gbm",
+    
+    ## identifier for the grid, to later retrieve it
+    grid_id = "final_grid", 
+    
+    ## standard model parameters
+    x = myX_all, 
+    y = myY, 
+    training_frame = train, 
+    validation_frame = valid,
+    
+    ## more trees is better if the learning rate is small enough
+    ## use "more than enough" trees - we have early stopping
+    ntrees = 10000,                                                            
+    
+    ## smaller learning rate is better
+    ## since we have learning_rate_annealing, we can afford to start with a
+    ## bigger learning rate
+    learn_rate = 0.05,                                                         
+    
+    ## learning rate annealing: learning_rate shrinks by 1% after every tree 
+    ## (use 1.00 to disable, but then lower the learning_rate)
+    learn_rate_annealing = 0.99,                                               
+    
+    ## early stopping based on timeout (no model should take more than
+    ## 1 hour - modify as needed)
+    max_runtime_secs = 3600,                                                 
+    
+    ## early stopping once the validation AUC doesn't improve by
+    ## at least 0.01% for 5 consecutive scoring events
+    stopping_rounds = 5, stopping_tolerance = 1e-4, stopping_metric = "AUC", 
+    
+    ## score every 10 trees to make early stopping reproducible (it depends
+    ## on the scoring interval)
+    score_tree_interval = 10,                                                
+    
+    ## base random number generator seed for each model (automatically gets
+    ## incremented internally for each model)
+    seed = 1234                                                             
+)
+## Sort the grid models by AUC
+sortedGrid <- h2o.getGrid("final_grid", sort_by = "auc", decreasing = TRUE)    
+save(sortedGrid,file = './grid2.RData')
+#+END_SRC
+
+#+BEGIN_SRC sh :results both :eval no
+rsync -azv  qikeli@sftp.hpc.arizona.edu:~/Data-Science-Challenge/6sense/
+org/grid2.RData ../../6sense/org/
+#+END_SRC
+
+#+BEGIN_SRC R :exports both :results output :session
+sortedGrid
+#+END_SRC
+We can inspect the best 5 models from the grid search explicitly, and query their validation AUC:
+#+BEGIN_SRC R :exports both :results output :session
+for (i in 1:5) {
+  gbm <- h2o.getModel(sortedGrid@model_ids[[i]])
+  print(h2o.auc(h2o.performance(gbm, valid = TRUE)))
+}
+#+END_SRC
+
+The error rate of the winning GBM is lower than the error rate of RF, which indicates the grid search is successful.
+
+  - Confusion matrix derived from Random Forest model 
+#+BEGIN_SRC R :exports both :results output :session
+h2o.confusionMatrix(rf_all)
+#+END_SRC
+
+#+RESULTS:
+: Confusion Matrix: Row labels: Actual class; Column labels: Predicted class
+:             0     1   2    3  Error               Rate
+: 0      141074   230 100 1304 0.0114 =  1,634 / 142,708
+: 1       10539 29250  35  584 0.2761 =  11,158 / 40,408
+: 2        4051  5302  28  433 0.9971 =    9,786 / 9,814
+: 3        6283  3799  74 2186 0.8229 =  10,156 / 12,342
+: Totals 161947 38581 237 4507 0.1595 = 32,734 / 205,272
+
+  - Confusion matrix derived from the winning GBM
+#+BEGIN_SRC R :exports both :results output :session
+h2o.confusionMatrix(h2o.getModel(sortedGrid@model_ids[[i]]))
+#+END_SRC 
+
+#+RESULTS:
+: Confusion Matrix (vertical: actual; across: predicted)  for max f1 @ threshold = 0.290790940174074:
+:             N     Y    Error          Rate
+: N      190063   115 0.000605   =115/190178
+: Y        9653 73607 0.115938   =9653/83260
+: Totals 199716 73722 0.035723  =9768/273438
+
+*** Model Inspection and Final Test Set Scoring
+Let's see how well the best model of the grid search (as determined by validation set AUC) does on the held out test set:
+
+#+BEGIN_SRC R :exports both :results output :session :eval no
+gbm <- h2o.getModel(sortedGrid@model_ids[[1]])
+h2o.auc(h2o.performance(gbm, newdata = test))
+#+END_SRC
+
+AUC on the held out date  is =0.924=.
+
+Now we can investigate if these parameters are generalizable, by building a GBM model on the whole dataset (instead of the 60%) and using internal 5-fold cross-validation (re-using all other parameters including the seed):
+#+BEGIN_SRC R :exports both :results output :session :eval no
+model <- do.call(
+    h2o.gbm,
+    ## update parameters in place
+    {
+        p <- gbm@parameters
+        p$model_id = NULL          ## do not overwrite the original grid model
+        p$training_frame = train      ## use the full dataset
+        p$validation_frame = NULL  ## no validation frame
+        p$nfolds = 5               ## cross-validation
+        p
+    }
+)
+
+model@model$cross_validation_metrics_summary
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Cross-Validation Metrics Summary: 
+                              mean           sd cv_1_valid cv_2_valid
+accuracy                0.89230967 9.5506734E-4 0.89068377  0.8908008
+auc                     0.92441744 0.0010279379  0.9216516  0.9249695
+err                     0.10769034 9.5506734E-4 0.10931622 0.10919925
+err_count                   5153.4    43.198612     5231.0     5223.0
+f0point5                 0.8566183 0.0041146674  0.8608616 0.84639525
+f1                      0.80581224  0.001934594  0.8009286  0.8066773
+f2                      0.76078933  0.005484282  0.7487974 0.77051985
+lift_top_group           3.2824671  0.012339572  3.2634523  3.2838998
+logloss                 0.26912057  0.002100826 0.27480158 0.26900366
+max_per_class_error     0.26648945  0.007642947 0.28234333  0.2518366
+mcc                     0.73931557 0.0020949757  0.7363585  0.7355962
+mean_per_class_accuracy  0.8476993 0.0021703853 0.84239215  0.8507088
+mean_per_class_error    0.15230072 0.0021703853 0.15760782 0.14929122
+mse                     0.08048811 7.4603833E-4 0.08251667 0.08046955
+precision               0.89428866  0.008126793 0.90606165 0.87512046
+r2                      0.62005633 0.0030535315 0.61173797  0.6200431
+recall                  0.73351055  0.007642947  0.7176567  0.7481634
+rmse                    0.28369823 0.0013095994 0.28725716 0.28367156
+specificity               0.961888 0.0036822131  0.9671277 0.95325416
+                        cv_3_valid cv_4_valid cv_5_valid
+accuracy                 0.8940863 0.89274126  0.8932362
+auc                      0.9244652   0.925137  0.9258638
+err                     0.10591369 0.10725876  0.1067638
+err_count                   5090.0     5123.0     5100.0
+f0point5                0.86325216  0.8551585  0.8574239
+f1                       0.8070069  0.8091495  0.8052989
+f2                       0.7576426  0.7678385 0.75914836
+lift_top_group           3.2873657  3.2658463   3.311772
+logloss                 0.26781562 0.26772395  0.2662581
+max_per_class_error     0.27204323  0.2574359 0.26878813
+mcc                      0.7435033   0.741142 0.73997784
+mean_per_class_accuracy  0.8473361   0.850792  0.8472673
+mean_per_class_error    0.15266386 0.14920802 0.15273264
+mse                     0.07993584 0.07996271 0.07955576
+precision                0.9053169 0.88885254 0.89609176
+r2                       0.6223391 0.62360096  0.6225604
+recall                   0.7279568  0.7425641 0.73121184
+rmse                    0.28272927 0.28277677  0.2820563
+specificity              0.9667155 0.95901984  0.9633228
+#+end_example
+
+*** Ensembling Techniques
+
+To further reduce the variance of models, I use ensembling techniques by
+simply taking the average of the predictions (purchase probabilities) of the top =k= grid search model predictions (here, I use k=5):
+
+#+BEGIN_SRC R :exports code  :results output :session
+dat_test_final <- h2o.importFile(
+    path=normalizePath('./Data/test-wide.tsv'))
+
+prob = NULL
+k=5
+for (i in 1:k) {
+  gbm <- h2o.getModel(sortedGrid@model_ids[[i]])
+  if (is.null(prob)) prob = h2o.predict(gbm, dat_test_final)$Y
+  else prob = prob + h2o.predict(gbm, dat_test_final)$Y
+}
+prob <- prob/k
+
+as.tibble(h2o.cbind(dat_test_final$ID, prob))%>%
+    arrange(desc(Y)) %>%
+    head(1000) %>%
+    select(ID) %>%
+    write.table(.,file = './Results/user_id_1000.txt',
+                sep = '\n', quote = F, col.names = F,
+                row.names = F)
+#+END_SRC
+
+* Most predictive features
+Both Random Forest and GBM suggest that the most predictive variable is =EmailOpen=, which seems counter intuitive to me since =EmailOpen= demands little effort of a user. Possible reasons that can obfuscate the inference might include the disproportionately high abundance of =EmailOpen= activity and the highly correlated features.  
+#+BEGIN_SRC R :exports both :results output :session
+h2o.varimp_plot(rf_all)
+#+END_SRC
+
+#+CAPTION: Viriable importances computed by Random Forest
+[[http://math.arizona.edu/~qikeli/Figs/rf_varimp.png]]
+
+#+BEGIN_SRC R :exports both :results output :session
+h2o.varimp_plot(gbm)
+#+END_SRC
+
+#+CAPTION: Viriable importances computed by GBM
+[[http://math.arizona.edu/~qikeli/Figs/gbm-varimp.png]]
+
+* Recurrent neural network (RNN)
+Predicting future consumer behavior is fundamental to many cases in e-commerce. Consumer behavior in e-commerce can be described by sequences of interactions with a webshop. The methods I employed above are vector-based methods; they operate on feature vectors of fixed length as input. To apply them to predict consumer behavior, one needs to convert consumer histories into fixed sets of features. These features need to be hand-crafted to reflect consumer behavior. Two major drawbacks of the vector-based methods are:
+  1) Feature engineering requires domain knowledge and is very time consuming. These features often need to be constantly updated while more data are being collected.
+  2) Consequently, lack of good engineered features can lead to poor predications.
+
+Recurrent neural networks (RNNs) are a natural fit for modeling and predicting consumer behavior. RNN operate directly on sequences of data and thus are a perfect fit for modeling consumer histories. Time-intensive human feature engineering is no longer required. In addition, long short-term memory cells (LSTMs) can be used as a component of RNN, and LSTMs are good at preserving long-term dependencies.  
+
+I tried to implement RNN to solve this take-home problem. However, I realized it might take substantially more time and effort. By researching 6sense's website, it seems this take-home problem is a good representation of the problems being solved at 6sense. I would love to learn more on how data scientist at 6sense solve those problems and the potential applications of RNN.
+
+
+#  LocalWords:  RNN

@@ -1,0 +1,860 @@
+#+TITLE: Twitter users' age prediction
+#+DATE: <2017-10-24 Sun>
+#+AUTHOR: Qike Li
+#+EMAIL: qikeli@gmail.com
+#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-bigblow.setup
+
+* Descriptive
+** Histograms
+#+BEGIN_SRC R :exports both :results output :session
+library(tidyverse)
+library(jsonlite)
+library(magrittr)
+age_profiles <- read_json('../assignment_package/age_profiles.json',
+                          simplifyDataFrame = T)
+
+## flatten the data.frame,
+age_profiles %<>%
+    flatten(recursive = T) %>%    
+    ## and remove the record that has a negative count of friends
+    filter(friends_count != -69) %>%
+    as.tibble
+
+ ## age_profiles %>%
+ ##    select(id, status.text) %>%
+ ##    mutate(id = as.character(id)) %>%
+ ##    write_csv(path = '../Data/age_profiles2.csv')
+
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-hist.png :session :height 700
+age_profiles %>%
+    select(favourites_count, friends_count, statuses_count,followers_count) %>%
+    gather(type, count) %>%
+    ggplot(aes(count)) +
+    geom_histogram() +
+    facet_grid(type~., scales = 'free') +
+    theme_bw(base_size = 20) +
+    scale_x_continuous(labels = scales::comma) 
+    
+#+END_SRC
+
+#+RESULTS:
+[[file:../Figures/fig-hist.png]]
+
+From the histograms above, we can see that the all of the counts are right skewed. We may want to use log(count). 
+#+BEGIN_SRC R :exports both :results output :session
+age_profiles %>%
+    select(favourites_count, friends_count, statuses_count,followers_count) %>%
+    summary
+#+END_SRC
+
+#+RESULTS:
+:  favourites_count friends_count      statuses_count   followers_count   
+:  Min.   :    0    Min.   :     0.0   Min.   :     0   Min.   :     0.0  
+:  1st Qu.:  103    1st Qu.:   179.0   1st Qu.:  1961   1st Qu.:   160.0  
+:  Median :  545    Median :   340.0   Median :  7414   Median :   348.0  
+:  Mean   : 1801    Mean   :   689.7   Mean   : 16990   Mean   :   944.9  
+:  3rd Qu.: 1951    3rd Qu.:   628.0   3rd Qu.: 21583   3rd Qu.:   698.0  
+:  Max.   :99169    Max.   :202293.0   Max.   :257590   Max.   :258937.0
+
+The summary of the counts again confirmed that there are some extreme values and the counts are highly skewed. Note, I observed a negative count (-69) of friends_count when I looked at the summaries. I removed that record since I believe it is an data quality issue.
+
+** Correlations
+
+*** Are friend   and   follower   counts   correlated?
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor1.png :session
+age_profiles %>%
+    select(favourites_count, friends_count, statuses_count,followers_count) %>%
+    ggplot(aes(x = log(friends_count), y = log(followers_count))) +
+    geom_point() +
+    labs(x = "log(friends count)", y = 'log(followers count)') +
+    theme_bw(base_size = 20)
+#+END_SRC
+
+#+RESULTS:
+[[file:../Figures/fig-cor1.png]]
+
+The figure above demonstrate a strong correlation between friend counts and follower counts. Since we don't expect a linear relationship between friend counts and follower counts, I use Spearman's $\rho$ test to test the correlation. Keep in mind, with so many data points, p-values are not so informative, and we will focus on the effect sizes.
+
+#+BEGIN_SRC R :exports both :results output :session
+(cor_test1 <- age_profiles %$%
+    cor.test(friends_count, followers_count,method = 'spearman'))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+
+	Spearman's rank correlation rho
+
+data:  friends_count and followers_count
+S = 535230000, p-value < 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.7702907 
+
+Warning message:
+In cor.test.default(friends_count, followers_count, method = "spearman") :
+  Cannot compute exact p-value with ties
+#+end_example
+
+The statistic Spearman's $\rho$ is equal to =0.77=, which indicates a strong correlation.
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor2.png :session
+age_profiles %>%
+    select(favourites_count, friends_count, statuses_count,followers_count) %>%
+    ggplot(aes(x = log(favourites_count), y = log(statuses_count))) +
+    geom_point() +
+    labs(x = "log(favorites count)", y = 'log(statuses count)') +
+    theme_bw(base_size = 20)
+#+END_SRC
+
+#+RESULTS:
+[[file:../Figures/fig-cor2.png]]
+
+#+BEGIN_SRC R :exports both :results output :session
+(cor_test1 <- age_profiles %$%
+    cor.test(favourites_count, statuses_count, method = 'spearman'))
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+
+	Spearman's rank correlation rho
+
+data:  favourites_count and statuses_count
+S = 1498100000, p-value < 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.3570623 
+
+Warning message:
+In cor.test.default(favourites_count, statuses_count, method = "spearman") :
+  Cannot compute exact p-value with ties
+#+end_example
+
+The figure above demonstrate a clear correlation between favorite counts and status counts.  The statistic Spearman's $\rho$ is equal to =0.357=, which is substantially weaker than the one between friend counts and follower counts.
+
+Based on these correlations, we can see that users with higher count of friends tend to have  higher count of followers. And increasing the number of friends may be a good strategy to gain followers. In addition, users with higher count of favorite tend to also have higher count of status, which may suggest that an active user has both high number of favorites and high number of tweets(status count).
+** Time zone
+*** Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?
+
+ Here I only considered iPhone users and Android users,not all types of iOS and Android platform users, due to the time limit.
+
+ #+BEGIN_SRC R :exports both :results output :session
+## add a column to indicate the platform
+age_profiles %<>%
+    mutate(platform = str_extract(status.source, '[[[:alnum:]]®)]+(?=</a>$)'))
+
+## proportion of different platforms in each time zone
+age_profiles %>%
+    select(platform,time_zone) %>%
+    arrange(time_zone) %>%
+    group_by(time_zone) %>%
+    add_tally() %>%
+    add_count(platform) %>%
+    mutate(platform_prop = nn/n) %>%
+    filter(platform %in% c( 'Android', 'iPhone')) %>%
+    arrange(desc(platform_prop))
+
+## ## figure of the above proportions
+## age_profiles %>%
+##     select(platform,time_zone) %>%
+##     arrange(time_zone) %>%
+##     group_by(time_zone) %>%
+##     add_count(platform) %>%
+##     mutate(platform = ifelse( platform %in% c('iPhone','Android'),
+##                               yes = platform, no = 'Other')) %>%    
+##     ggplot(aes(y = n, x = time_zone, fill = platform)) +
+##     geom_bar( stat="identity")    
+ #+END_SRC
+
+ #+RESULTS:
+ #+begin_example
+ # A tibble: 1,646 x 5
+ # Groups:   time_zone [57]
+    platform                    time_zone     n    nn platform_prop
+       <chr>                        <chr> <int> <int>         <dbl>
+  1   iPhone                     Adelaide     2     2             1
+  2   iPhone                     Adelaide     2     2             1
+  3  Android             America/New_York     2     2             1
+  4  Android             America/New_York     2     2             1
+  5   iPhone                     Auckland     1     1             1
+  6   iPhone                       Berlin     1     1             1
+  7  Android                 Buenos Aires     1     1             1
+  8  Android                      Caracas     1     1             1
+  9   iPhone International Date Line West     1     1             1
+ 10   iPhone                      Irkutsk     2     2             1
+ # ... with 1,636 more rows
+#+end_example
+
+ A number of time zones have exclusive iPhone users or exclusive Android users due to the small number of users in those time zones who have known platform information. 
+ #+BEGIN_SRC R :exports both :results output :session
+## time zones w/ the most iPhone and Android users.
+age_profiles %>%
+    select(platform,time_zone) %>%
+    mutate(platform = ifelse( platform %in% c('iPhone','Android'),
+                             yes = platform, no = 'Other')) %>%
+    group_by(platform) %>%
+    count(time_zone) %>%
+    filter(n == sort(n, decreasing = T)[2])
+ #+END_SRC
+
+ #+RESULTS:
+ : # A tibble: 3 x 3
+ : # Groups:   platform [3]
+ :   platform                  time_zone     n
+ :      <chr>                      <chr> <int>
+ : 1  Android Central Time (US & Canada)    56
+ : 2   iPhone Central Time (US & Canada)   181
+ : 3    Other Eastern Time (US & Canada)   133
+
+ Among the Android users, most of them are in time zone: Central Time (US & Canada). And among the iPhone users, also most of them are in time zone: Central Time (US & Canada).
+
+** Mentions 
+Gaol: use   the   “mentions”   data   in    mentions.csv    to   come   up   with   a   list   of   Twitter   handles that   were   mentioned   by   more   than   one   user.
+
+*** Build   a   list   of   the   top   20   handles  
+Below is the list of the top  20  handles:  
+ #+BEGIN_SRC R :exports both :results output :session
+mentions <- read_csv('../assignment_package/mentions.csv')
+
+mentions %>%
+    add_count(MentionedID) %>%
+    filter(n > 1) %>%
+    arrange(desc(n))
+
+
+mentions %>%
+    distinct() %>%    
+    count(MentionedID, sort = T) %>%
+    left_join(mentions, by = 'MentionedID') %>%
+    select(-ID) %>%
+    distinct() %>%
+    head(20)
+
+ #+END_SRC
+
+ #+RESULTS:
+ #+begin_example
+ Parsed with column specification:
+ cols(
+   ID = col_double(),
+   MentionedID = col_double(),
+   MentionedHandle = col_character()
+ )
+ # A tibble: 10,046 x 4
+	   ID MentionedID MentionedHandle     n
+	<dbl>       <dbl>           <chr> <int>
+  1 318061601    10228272         YouTube    46
+  2 429307371    10228272         YouTube    46
+  3 429307371    10228272         YouTube    46
+  4 429307371    10228272         YouTube    46
+  5  54176816    10228272         YouTube    46
+  6 127799707    10228272         YouTube    46
+  7 486176491    10228272         YouTube    46
+  8  65839204    10228272         YouTube    46
+  9  65839204    10228272         YouTube    46
+ 10  65839204    10228272         YouTube    46
+ # ... with 10,036 more rows
+ # A tibble: 20 x 3
+    MentionedID     n MentionedHandle
+	  <dbl> <int>           <chr>
+  1   132774626    32       girlposts
+  2   154048214    30       Sexualgif
+  3    26257166    24    SportsCenter
+  4    10228272    22         YouTube
+  5  1372975219    20  BabyAnimalPics
+  6   219049532    19      SoDamnTrue
+  7   147305691    18  RelatableQuote
+  8    95023423    17       UberFacts
+  9   568825492    17   CuteEmergency
+ 10  1370986902    17 WORIDSTARHlPHOP
+ 11   524657792    16  FunnyPicsDepot
+ 12  1107613844    16  WorldStarFunny
+ 13   416983726    15  FIirtationship
+ 14   561684253    15      HornyFacts
+ 15    20322929    14      wizkhalifa
+ 16    61003804    14    FreddyAmazin
+ 17   422178777    14     AboutVirgos
+ 18   891826837    14  TweetLikeAGirI
+ 19   166739404    13        EmWatson
+ 20   127245578    12    funnyortruth
+#+end_example
+
+*** Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?
+
+Emma Watson (==EmWatson==) is in the Harry Potter, and she was mentioned by ==13== unique users.
+** Age breakdown
+*** make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)
+
+#+BEGIN_SRC R :exports both :results output :session
+ages_train <- read_csv('../assignment_package/ages_train.csv') %>%
+    mutate(age_group =  cut(Age, breaks = seq(10,120, by = 10)))
+
+ages_train %>%
+    ggplot(aes(age_group)) +
+    geom_bar() +
+    labs(x = 'Age Group', y = 'Count') + 
+    theme_bw(base_size = 15)
+#+END_SRC
+
+#+RESULTS:
+: Parsed with column specification:
+: cols(
+:   ID = col_double(),
+:   Age = col_integer()
+: )
+
+** Emoji
+*** Which   age   group   uses   the   most   emojis   in   their   profile   status?
+#+BEGIN_SRC R :exports both :results output :session :eval no
+## read in the tweets
+age_tweets <- read_json('../assignment_package/age_tweets.json',simplifyDataFrame = T)
+
+age_tweets %>%
+    flatten(recursive = T) %>%
+    select(text,user.id_str) %>%
+    write_csv('../Data/age_tweets.csv')
+
+
+## library(twitteR)
+## library(rvest)
+## library(Unicode)
+## library(tm)
+## library(ggplot2)
+
+## ## utility functions
+## ## this function applies count_matches on a vector of texts and outputs a data.frame
+## emojis_matching <- function(texts, matchto, description, sentiment = NA) {  
+##   texts %>% 
+##     lapply(count_matches, matchto = matchto, description = description, sentiment = sentiment) %>%
+##     bind_rows  
+## }
+
+## ## this function outputs the emojis found in a string as well as their occurences
+## count_matches <- function(string, matchto, description, sentiment = NA) {
+##   vec <- str_count(string, matchto)
+##   matches <- which(vec != 0)
+##   descr <- NA
+##   cnt <- NA
+##   if (length(matches) != 0) {
+##     descr <- description[matches]
+##     cnt <- vec[matches]
+##   } 
+##   df <- data.frame(text = string, description = descr, count = cnt, sentiment = NA)
+##   if (!is.na(sentiment) & length(sentiment[matches]) != 0) {
+##     df$sentiment <- sentiment[matches]
+##   }
+##   return(df)
+## }
+
+
+## ## read in an emoji dictionary
+## emDict_raw <- read.csv2("https://raw.githubusercontent.com/today-is-a-good-day/emojis/master/emojis.csv",
+##                         stringsAsFactors = F) %>% 
+##   select(EN, ftu8, unicode) %>% 
+##   dplyr::rename(description = EN, r.encoding = ftu8)
+
+## ## plain skin tones
+## skin_tones <- c("light skin tone", 
+##                 "medium-light skin tone", 
+##                 "medium skin tone",
+##                 "medium-dark skin tone", 
+##                 "dark skin tone")
+
+
+## ## remove plain skin tones and remove skin tone info in description
+## emDict <- emDict_raw %>%
+##     ## remove plain skin tones emojis
+##     filter(!description %in% skin_tones) %>%
+##     ## remove emojis with skin tones info, e.g. remove woman: light skin tone and only
+##     ## keep woman
+##     filter(!grepl(":", description)) %>%
+##     mutate(description = tolower(description)) %>%
+##     mutate(unicode = as.character(unicode))
+## ## all emojis with more than one unicode codepoint become NA
+
+
+## matchto <- emDict$r.encoding
+## description <- emDict$description
+#+END_SRC
+
+#+BEGIN_SRC R :exports none :results graphics :file ../Figures/fig-emoji.png :session :eval no
+## emoji_count_df <- age_profiles %>%
+##     mutate(text_convert = iconv(status.text,
+##                                 from = "latin1",
+##                                 to = "ascii",
+##                                 sub = "byte")) %>%
+##     mutate(emoji_count = map_int(text_convert, function(x)
+##         unlist(sum(emojis_matching(x, matchto, description)$count)))) %>%
+##     arrange(emoji_count)
+
+## emoji_count_df %<>%
+##     left_join(ages_train, by = c('id' = 'ID')) 
+
+## emoji_count_df %>%
+##     select(id, emoji_count, age_group2) %>%
+##     group_by(age_group2) %>%
+##     summarize(count = sum(emoji_count,na.rm = T)) %>%
+##     arrange(desc(count))
+
+## foo <- emoji_count_df %>%
+##     filter(id == '225197836') %>%
+##     pull(status.text)
+
+## emojis_matching("Damn I gotta wait to next week to get the IPhone 6.\U0001f612", matchto, description)
+
+## iconv('\U0001f612',
+##                                 from = "latin1",
+##                                 to = "ascii",
+##                                 sub = "byte")
+## search_emoji(foo)
+## emoji('\U0001f612')
+
+#+END_SRC
+
+#+BEGIN_SRC python :results output org drawer :eval no
+import emoji
+import pandas as pd
+import numpy as np
+from collections import Counter
+
+age_profiles2 = pd.read_csv('../Data/age_profiles2.csv')
+age_profiles2.head()
+# define a function to extract emojis
+def extract_emojis(s):
+    return ''.join(c for c in str(s) if c in emoji.UNICODE_EMOJI)
+    
+age_profiles2['emoji_code'] = age_profiles2['status.text'].map(lambda x: extract_emojis(x))
+
+age_profiles2['emoji_count'] = age_profiles2['emoji_code'].map(lambda x: len(x))
+
+age_profiles2.to_csv('../Data/age_profiles_emoji_count.csv')
+
+age_tweets2 = pd.read_csv('../Data/age_tweets.csv')
+
+age_tweets2.head()
+    
+age_tweets2['emoji_code'] = age_tweets2['text'].map(lambda x: extract_emojis(x))
+
+age_tweets2['emoji_count'] = age_tweets2['emoji_code'].map(lambda x: len(x))
+
+age_tweets2.to_csv('../Data/age_tweets_emoji_count.csv')
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+:END:
+
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-emoji.png :session
+age_profiles_emoji_count <- read_csv('../Data/age_tweets_emoji_count.csv') %>%
+    select(-X1)
+
+ages_train %>%
+    left_join(age_profiles_emoji_count, by = c('ID' = 'user.id_str')) %>%
+        ## select(id, emoji_count, age_group) %>%
+    group_by(age_group) %>%
+    summarize(
+        ## number of records w/ emojis
+        count = sum(emoji_count,na.rm = T),
+        ## proportion of records w/ emojis
+        prop = sum(emoji_count,na.rm = T)/length(emoji_count)) %>%
+    arrange(desc(count)) %>%
+    ggplot(aes(x = age_group, y=prop)) +
+    geom_col() +
+    labs(x = 'Age Group', y = 'User proportion w/ emoji use' ) +
+    theme_bw(base_size = 18) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#+END_SRC
+
+#+RESULTS:
+[[file:../Figures/fig-emoji.png]]
+
+*** Which   is   the   most   common   emoji?
+#+BEGIN_SRC python :exports none :results output org drawer :session :eval no
+# Stack all status_emoji together into one list, find the most common one:
+all_emojis = list(filter(None, age_profiles2.emoji_code.tolist()))
+# Get a string of all emojis:
+all_emojis = ''.join(x for x in all_emojis)
+Counter(all_emojis).most_common(5)
+#+END_SRC
+
+
+The most frequent emojis and their occurrences are below:
+#+BEGIN_SRC python :results output org drawer :session 
+all_emojis_tweets = list(filter(None, age_tweets2.emoji_code.tolist()))
+all_emojis_tweets = ''.join(x for x in all_emojis_tweets)
+Counter(all_emojis_tweets).most_common(5)
+
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+
+>>> [('😂', 2432), ('😍', 912), ('😭', 772), ('😩', 636), ('❤', 519)]
+:END:
+
+* Predicting Twitter users' age
+Here I document the sentiment analysis, data wrangling, and building a prediction model. 
+
+** Read in data
+#+BEGIN_SRC R :exports both :results output :session
+library(tidyverse)
+library(jsonlite)
+library(magrittr)
+
+## test data
+ages_test <- read_csv('../assignment_package/ages_test.csv',
+                      col_names = F, col_types = 'c') %>%
+    dplyr::rename(ID = X1) %>%
+    mutate(Age = NA)
+
+## training data
+ages_train <- read_csv('../assignment_package/ages_train.csv', col_types = 'ci')
+
+## combine training data and test data
+dat <- rbind(ages_train, ages_test)
+
+## ====read in all realted info
+age_profiles <- read_json('../assignment_package/age_profiles.json',
+                          simplifyDataFrame = T) %>%
+    flatten(recursive = T) %>%    
+    ## and remove the record that has a negative count of friends
+    filter(friends_count != -69) %>%
+    as.tibble    
+
+age_tweets <- read_json('../assignment_package/age_tweets.json',
+                        simplifyDataFrame = T) %>%
+    flatten(recursive = T) %>%
+    as.tibble
+
+mentions <- read_csv('../assignment_package/mentions.csv', col_types = 'ccc')
+
+mention_profiles <- read_json('../assignment_package/mention_profiles.json',
+                        simplifyDataFrame = T) %>%
+    flatten(recursive = T) %>%
+    as.tibble
+
+friends <- read_csv('../assignment_package/friends.csv', col_types = 'cc')
+
+friend_profiles <- read_json('../assignment_package/friend_profiles.json',
+                        simplifyDataFrame = T) %>%
+    flatten(recursive = T) %>%
+    as.tibble
+
+tweets_emoji_count <- read_csv('../Data/age_tweets_emoji_count.csv',col_types = 'iccci') %>%
+    select(-X1)
+#+END_SRC
+
+#+RESULTS:
+: Warning: 26 parsing failures.
+: row # A tibble: 5 x 5 col     row   col   expected expected   <int> <chr>      <chr> actual 1  7302  <NA>  5 columns file 2  7303    X1 an integer row 3  7303  <NA>  5 columns col 4  7306  <NA>  5 columns expected 5  7307    X1 an integer actual # ... with 2 more variables: actual <chr>, file <chr>
+: ... ................. ... ........................ ........ ........................ ...... ........................ .... ........................ ... ........................ ... ........................ ........ ........................ ...... .....................................................
+: See problems(...) for more details.
+: 
+: Warning messages:
+: 1: Missing column names filled in: 'X1' [1] 
+: 2: In rbind(names(probs), probs_f) :
+:   number of columns of result is not a multiple of vector length (arg 1)
+
+** Sentiment analysis
+*** Utility functions
+#+BEGIN_SRC R :exports both :results output :session
+library(lubridate)
+## * score.sentiment
+score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
+{
+  scores = plyr::laply(sentences, function(sentence, pos.words, neg.words) {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    # and convert to lower case:
+    sentence = tolower(sentence)
+    
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+   
+    neg.matches = match(words, neg.words)
+    pos.matches = match(words, pos.words)
+    
+    # match() returns the position of the matched term or NA
+    # we just want a TRUE/FALSE:
+    pos.matches = !is.na(pos.matches)
+    neg.matches = !is.na(neg.matches)
+    
+    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    score = sum(pos.matches) - sum(neg.matches)
+    
+    return(score)
+  }, pos.words, neg.words, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+*** Sentiment analysis of all the recent tweets
+#+BEGIN_SRC R :exports both :results output :session
+## read in a dictionary of negtive words nad positive words
+pos_words <- scan('../Data/wordbanks/positive-words.txt',
+                  what = 'character',
+                  comment.char = ';')
+                      
+neg_words <- scan('../Data/wordbanks/negative-words.txt',
+                  what = 'character',
+                  comment.char = ';')
+
+age_tweets %<>%
+    mutate(sentiment_score = score.sentiment(text,
+                                             pos.words = pos_words,
+                                             neg.words = neg_words)$score) 
+ #+END_SRC
+
+ #+RESULTS:
+ : Read 2006 items
+ : Read 4783 items
+
+** Joint all tables-prepare training and test data
+#+BEGIN_SRC R :exports both :results output :session
+age_tweets %<>%
+    mutate(tweet_len = str_length(text))
+  
+
+
+## remove the varialbes that are not likely asscoated w/ age and w/ too many levels
+var_to_remove <-
+    c("name","location","lang","description",
+      "profile_background_image_url_https","profile_background_color",
+      "screen_name", "profile_sidebar_border_color",
+      "profile_sidebar_fill_color", "status.text",
+      "status.retweeted_status.coordinates.coordinates",
+      "status.retweeted_status.entities.urls",
+      "status.retweeted_status.entities.user_mentions",
+      "status.retweeted_status.entities.symbols",
+      "status.retweeted_status.entities.hashtags",
+      "status.retweeted_status.entities.media",
+      "status.retweeted_status.place.contained_within",
+      "status.retweeted_status.place.bounding_box.coordinates",
+      "status.retweeted_status.geo.coordinates",
+      "status.retweeted_status.scopes.place_ids",
+      "status.entities.urls",
+      "status.entities.user_mentions",
+      "status.entities.symbols",
+      "status.entities.hashtags",
+      "status.entities.media",
+      "status.geo.coordinates",
+      "status.coordinates.coordinates",
+      "status.place.contained_within",
+      "status.place.bounding_box.coordinates",
+      "status.source",
+      "time_zone")
+
+
+
+f.cleanData <- function(profiles = age_profiles){
+    tmp_profiles <- profiles
+    tmp_profiles %<>%
+        ## remove the columns w/ id
+        select(-contains('id')) %>%
+        ## remove the columns w/ urls
+        select(-contains('url')) %>%
+        ## remove the columns w/ color
+        select(-contains('color')) %>%
+        ## when was the account created
+        mutate(created_at = as.numeric(str_sub(created_at, -4,-1))) %>%
+        ## when was the status created
+        mutate(status.created_at = as.numeric(str_sub(status.created_at, -4,-1))) %>%
+        ## sentiment score of descriptions
+        mutate(desc_senti_score = score.sentiment(description,
+                                                  pos.words = pos_words,
+                                                  neg.words = neg_words)$score) %>%
+        ## sentiment score of status text
+        mutate(text_senti_score = score.sentiment(status.text,
+                                                  pos.words = pos_words,
+                                                  neg.words = neg_words)$score) %>%
+        select(-one_of(var_to_remove))
+
+    na_prop <- tmp_profiles %>%
+        apply(2, function(x) sum(!is.na(x))/length(x))
+
+    tmp_profiles %<>%    
+        ## remove the columns w/ too much missing data
+        select(names(na_prop)[na_prop>.8])
+    tmp_profiles %<>%
+        mutate(id_str = profiles$id_str)
+    return(tmp_profiles)
+}
+
+
+age_profiles_s <- f.cleanData(age_profiles)
+
+friend_profiles_s <- f.cleanData(friend_profiles)
+
+mention_profiles_s <- f.cleanData(mention_profiles)
+
+
+friends_grouped <- friend_profiles_s %>%
+    left_join(friends, by = c('id_str' = 'FriendID')) %>%
+    ## remove two variables for which taking a mean doesn't make sense
+    select(-c(status.lang,id_str)) %>%
+    group_by(ID) %>%
+    summarize_all(funs(mean(.,na.rm = T)))
+
+## missing value imputatioin
+friends_grouped$utc_offset[is.na(friends_grouped$utc_offset)] <-
+    mean(friends_grouped$utc_offset,na.rm = T)
+
+mentions_grouped <- mention_profiles_s %>%    
+    left_join(mentions, by = c('id_str' = 'MentionedID')) %>%
+    ## remove two variables for which taking a mean doesn't make sense
+    select(-c(status.lang,id_str,MentionedHandle)) %>%
+    group_by(ID) %>%
+    summarize_all(funs(mean(.,na.rm = T)))
+
+
+
+## calculate the average length and average sentiment scores of user's tweets
+age_tweets_grouped <-
+    age_tweets %>%
+    group_by(user.id_str) %>%
+        summarise(avg_senti_score = mean(sentiment_score,na.rm = T),
+                  avg_tweet_len = mean(tweet_len,na.rm = T))
+
+## claculate the avg number of emoji count for each user
+emoji_count_grouped <- 
+    tweets_emoji_count %>%
+    group_by(user.id_str) %>%
+    summarise(avg_emoji_count = mean(emoji_count,na.rm = T))
+   
+dat_all <- dat %>%
+    left_join(age_profiles_s, by = c('ID' = 'id_str')) %>%
+    left_join(friends_grouped, by = 'ID', suffix = c('', '.fg')) %>%
+    left_join(mentions_grouped, by = 'ID', suffix = c('', '.mg')) %>%
+    left_join(age_tweets_grouped, by = c('ID' = 'user.id_str')) %>%
+    left_join(emoji_count_grouped, by = c('ID' = 'user.id_str')) 
+
+
+dat_all %>%
+    apply(2, function(x) sum(is.na(x))/length(x)) %>%
+    summary
+#+END_SRC
+
+#+RESULTS:
+: Warning message:
+: Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+: Warning message:
+: Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+: Warning message:
+: Unknown variables: `profile_background_image_url_https`, `profile_background_color`, `profile_sidebar_border_color`, `profile_sidebar_fill_color`, `status.retweeted_status.entities.urls`, `status.retweeted_status.scopes.place_ids`, `status.entities.urls`
+:    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+: 0.00000 0.02834 0.04127 0.08819 0.20388 0.22178
+
+** Train a gradient boosting model
+#+BEGIN_SRC R :exports none :results output :session :eval no
+
+train <- dat_all %>%
+    select(-ID) %>%
+    filter(!is.na(Age))
+
+comp_case <- train %>%
+    apply(1,function(x) !any(is.na(x)))
+
+train %<>%
+    filter(comp_case)
+ 
+    
+sparse_matrix <- sparse.model.matrix(Age ~ ., data = train)
+    
+test <- dat_all %>%
+    select(-ID) %>%
+    filter(is.na(Age))
+
+output_vector <- train$Age
+    
+bst <- xgboost(data = sparse_matrix, label = output_vector, max_depth = 8,
+               eta = 1, nthread = 2, nrounds = 10)
+
+## test_sparse <- sparse.model.matrix( Age~. ,data = test)
+
+importance <- xgb.importance(feature_names = colnames(sparse_matrix), model = bst)
+print(importance)
+#+END_SRC
+#+BEGIN_SRC R :exports both :results output :session
+require(xgboost)
+require(Matrix)
+require(data.table)
+
+
+train <- dat_all %>%
+    select(-ID) %>%
+    filter(!is.na(Age))
+    
+test <- dat_all %>%
+    select(-ID) %>%
+    filter(is.na(Age))
+
+##  missing data imputataion
+na_val_train <- apply(train, 2,function(x) any(is.na(x)))
+
+for(i in 1:sum(na_val_train)){
+    na_element <- is.na(train[,na_val_train][,i])
+    if(class(unlist(train[,na_val_train][,i])) == 'character'){
+        train[,na_val_train][,i] = addNA(unlist(train[,na_val_train][,i]))
+    }else{
+        train[,na_val_train][na_element,i] <- mean(train[,na_val_train][[i]],
+                                                   na.rm = T)
+    }
+}
+
+na_val_test <- apply(test, 2,function(x) any(is.na(x)))
+
+for(i in 1:sum(na_val_test)){
+    na_element <- is.na(test[,na_val_test][,i])
+    if(class(unlist(test[,na_val_test][,i])) == 'character'){
+        test[,na_val_test][,i] = addNA(unlist(test[,na_val_test][,i]))
+    }else{
+        test[,na_val_test][na_element,i] <- mean(test[,na_val_test][[i]],
+                                                   na.rm = T)
+    }
+}
+
+## cv
+nround <- 2
+param <- list(max_depth=5, eta=.9, silent=1, nthread=5)
+cv <- xgb.cv(param, dtrain, nround, nfold=5)
+print(cv)
+
+test$Age <- sample(1:100, replace = T, size = nrow(test))
+test_sparse <- sparse.model.matrix( Age~. ,data = test)
+
+sparse_matrix <- sparse.model.matrix(Age ~ ., data = train)
+
+bst <- xgboost(data = sparse_matrix,
+               label = unlist(train %>% select(Age)),
+               max_depth = 5,
+               eta = .9, nthread = 2, nrounds = 2)
+
+## write out the predictioins
+dat_all %>%
+    filter(is.na(Age)) %>%
+    select(ID) %>%
+    mutate(Age = predict(bst,test_sparse) ) %>%
+    write_csv('../Results/ages_pred.csv')
+
+
+
+#+END_SRC
