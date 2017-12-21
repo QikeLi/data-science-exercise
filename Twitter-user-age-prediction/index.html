@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-20 Wed 15:04 -->
+<!-- 2017-12-20 Wed 18:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Twitter users' age prediction</title>
@@ -179,17 +179,17 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/bigblow.css"/>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/hideshow.css"/>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.localscroll-min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.zclip.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/bigblow.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/hideshow.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/hideshow.css"/>
+<script type="text/javascript" src="../styles/bigblow/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/bigblow.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/hideshow.js"></script>
+<script type="text/javascript" src="../styles/lib/js/jquery.stickytableheaders.min.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -266,60 +266,60 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org679456f">1. Descriptive</a>
+<li><a href="#org3226129">1. Descriptive</a>
 <ul>
-<li><a href="#org69a60dc">1.1. Histograms</a></li>
-<li><a href="#org201d30c">1.2. Correlations</a>
+<li><a href="#orgc16c554">1.1. Histograms</a></li>
+<li><a href="#org659ea11">1.2. Correlations</a>
 <ul>
-<li><a href="#orgcc87f0d">1.2.1. Are friend   and   follower   counts   correlated?</a></li>
+<li><a href="#orga34f400">1.2.1. Are friend   and   follower   counts   correlated?</a></li>
 </ul>
 </li>
-<li><a href="#orge56c946">1.3. Time zone</a>
+<li><a href="#orga86d40e">1.3. Time zone</a>
 <ul>
-<li><a href="#orgbbfa360">1.3.1. Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</a></li>
+<li><a href="#orgff7a4ff">1.3.1. Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</a></li>
 </ul>
 </li>
-<li><a href="#org8638f18">1.4. Mentions</a>
+<li><a href="#org017f5f1">1.4. Mentions</a>
 <ul>
-<li><a href="#orgbbb6322">1.4.1. Build   a   list   of   the   top   20   handles</a></li>
-<li><a href="#org95ee11d">1.4.2. Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</a></li>
+<li><a href="#org78b5f3b">1.4.1. Build   a   list   of   the   top   20   handles</a></li>
+<li><a href="#org6c0c1e3">1.4.2. Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</a></li>
 </ul>
 </li>
-<li><a href="#org73c87c1">1.5. Age breakdown</a>
+<li><a href="#org82dc953">1.5. Age breakdown</a>
 <ul>
-<li><a href="#org8d8d09f">1.5.1. make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</a></li>
+<li><a href="#orgf656f2a">1.5.1. make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</a></li>
 </ul>
 </li>
-<li><a href="#org7d139a7">1.6. Emoji</a>
+<li><a href="#org334859d">1.6. Emoji</a>
 <ul>
-<li><a href="#orgbf71de2">1.6.1. Which   age   group   uses   the   most   emojis   in   their   profile   status?</a></li>
-<li><a href="#orgba1415d">1.6.2. Which   is   the   most   common   emoji?</a></li>
+<li><a href="#orgb937c3b">1.6.1. Which   age   group   uses   the   most   emojis   in   their   profile   status?</a></li>
+<li><a href="#orgb87decf">1.6.2. Which   is   the   most   common   emoji?</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgae3c398">2. Predicting Twitter users' age</a>
+<li><a href="#orgcb14a9e">2. Predicting Twitter users' age</a>
 <ul>
-<li><a href="#orgd3da242">2.1. Read in data</a></li>
-<li><a href="#org4950ee9">2.2. Sentiment analysis</a>
+<li><a href="#orgb1b81ab">2.1. Read in data</a></li>
+<li><a href="#org215fdc4">2.2. Sentiment analysis</a>
 <ul>
-<li><a href="#org90f6b58">2.2.1. Utility functions</a></li>
-<li><a href="#org02db725">2.2.2. Sentiment analysis of all the recent tweets</a></li>
+<li><a href="#orga44b262">2.2.1. Utility functions</a></li>
+<li><a href="#org7098b0e">2.2.2. Sentiment analysis of all the recent tweets</a></li>
 </ul>
 </li>
-<li><a href="#org69b64bc">2.3. Joint all tables-prepare training and test data</a></li>
-<li><a href="#org7216fe4">2.4. Train a gradient boosting model</a></li>
+<li><a href="#org04efc56">2.3. Joint all tables-prepare training and test data</a></li>
+<li><a href="#org12a8345">2.4. Train a gradient boosting model</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org679456f" class="outline-2">
-<h2 id="org679456f"><span class="section-number-2">1</span> Descriptive</h2>
+<div id="outline-container-org3226129" class="outline-2">
+<h2 id="org3226129"><span class="section-number-2">1</span> Descriptive</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-org69a60dc" class="outline-3">
-<h3 id="org69a60dc"><span class="section-number-3">1.1</span> Histograms</h3>
+</div><div id="outline-container-orgc16c554" class="outline-3">
+<h3 id="orgc16c554"><span class="section-number-3">1.1</span> Histograms</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
@@ -389,11 +389,11 @@ The summary of the counts again confirmed that there are some extreme values and
 </div>
 </div>
 
-<div id="outline-container-org201d30c" class="outline-3">
-<h3 id="org201d30c"><span class="section-number-3">1.2</span> Correlations</h3>
+<div id="outline-container-org659ea11" class="outline-3">
+<h3 id="org659ea11"><span class="section-number-3">1.2</span> Correlations</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-orgcc87f0d" class="outline-4">
-<h4 id="orgcc87f0d"><span class="section-number-4">1.2.1</span> Are friend   and   follower   counts   correlated?</h4>
+</div><div id="outline-container-orga34f400" class="outline-4">
+<h4 id="orga34f400"><span class="section-number-4">1.2.1</span> Are friend   and   follower   counts   correlated?</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-R">age_profiles <span style="color: #BFEBBF;">%&gt;%</span>
@@ -488,11 +488,11 @@ Based on these correlations, we can see that users with higher count of friends 
 </div>
 </div>
 </div>
-<div id="outline-container-orge56c946" class="outline-3">
-<h3 id="orge56c946"><span class="section-number-3">1.3</span> Time zone</h3>
+<div id="outline-container-orga86d40e" class="outline-3">
+<h3 id="orga86d40e"><span class="section-number-3">1.3</span> Time zone</h3>
 <div class="outline-text-3" id="text-1-3">
-</div><div id="outline-container-orgbbfa360" class="outline-4">
-<h4 id="orgbbfa360"><span class="section-number-4">1.3.1</span> Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</h4>
+</div><div id="outline-container-orgff7a4ff" class="outline-4">
+<h4 id="orgff7a4ff"><span class="section-number-4">1.3.1</span> Which   time   zone   has   the   highest   proportion   of   known   iPhone   users   in age_profiles.json?   Which   time   zone   has   the   highest   proportion   of   Android   users?</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <p>
 Here I only considered iPhone users and Android users,not all types of iOS and Android platform users, due to the time limit.
@@ -578,16 +578,16 @@ Among the Android users, most of them are in time zone: Central Time (US &amp; C
 </div>
 </div>
 
-<div id="outline-container-org8638f18" class="outline-3">
-<h3 id="org8638f18"><span class="section-number-3">1.4</span> Mentions</h3>
+<div id="outline-container-org017f5f1" class="outline-3">
+<h3 id="org017f5f1"><span class="section-number-3">1.4</span> Mentions</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Gaol: use   the   “mentions”   data   in    mentions.csv    to   come   up   with   a   list   of   Twitter   handles that   were   mentioned   by   more   than   one   user.
 </p>
 </div>
 
-<div id="outline-container-orgbbb6322" class="outline-4">
-<h4 id="orgbbb6322"><span class="section-number-4">1.4.1</span> Build   a   list   of   the   top   20   handles</h4>
+<div id="outline-container-org78b5f3b" class="outline-4">
+<h4 id="org78b5f3b"><span class="section-number-4">1.4.1</span> Build   a   list   of   the   top   20   handles</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <p>
 Below is the list of the top  20  handles:  
@@ -660,8 +660,8 @@ mentions <span style="color: #BFEBBF;">%&gt;%</span>
 </div>
 </div>
 
-<div id="outline-container-org95ee11d" class="outline-4">
-<h4 id="org95ee11d"><span class="section-number-4">1.4.2</span> Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</h4>
+<div id="outline-container-org6c0c1e3" class="outline-4">
+<h4 id="org6c0c1e3"><span class="section-number-4">1.4.2</span> Which   actor/actress   in   this   top   20   list   starred   in   the   Harry   Potter   movies, and   how   many   unique   users   mentioned   this   star’s   Twitter   handle?</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <p>
 Emma Watson (<code>=EmWatson=</code>) is in the Harry Potter, and she was mentioned by <code>=13=</code> unique users.
@@ -669,11 +669,11 @@ Emma Watson (<code>=EmWatson=</code>) is in the Harry Potter, and she was mentio
 </div>
 </div>
 </div>
-<div id="outline-container-org73c87c1" class="outline-3">
-<h3 id="org73c87c1"><span class="section-number-3">1.5</span> Age breakdown</h3>
+<div id="outline-container-org82dc953" class="outline-3">
+<h3 id="org82dc953"><span class="section-number-3">1.5</span> Age breakdown</h3>
 <div class="outline-text-3" id="text-1-5">
-</div><div id="outline-container-org8d8d09f" class="outline-4">
-<h4 id="org8d8d09f"><span class="section-number-4">1.5.1</span> make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</h4>
+</div><div id="outline-container-orgf656f2a" class="outline-4">
+<h4 id="orgf656f2a"><span class="section-number-4">1.5.1</span> make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <div class="org-src-container">
 <pre class="src src-R">ages_train <span style="color: #BFEBBF;">&lt;-</span> read_csv(<span style="color: #CC9393;">'../assignment_package/ages_train.csv'</span>) <span style="color: #BFEBBF;">%&gt;%</span>
@@ -699,11 +699,11 @@ cols(
 </div>
 </div>
 
-<div id="outline-container-org7d139a7" class="outline-3">
-<h3 id="org7d139a7"><span class="section-number-3">1.6</span> Emoji</h3>
+<div id="outline-container-org334859d" class="outline-3">
+<h3 id="org334859d"><span class="section-number-3">1.6</span> Emoji</h3>
 <div class="outline-text-3" id="text-1-6">
-</div><div id="outline-container-orgbf71de2" class="outline-4">
-<h4 id="orgbf71de2"><span class="section-number-4">1.6.1</span> Which   age   group   uses   the   most   emojis   in   their   profile   status?</h4>
+</div><div id="outline-container-orgb937c3b" class="outline-4">
+<h4 id="orgb937c3b"><span class="section-number-4">1.6.1</span> Which   age   group   uses   the   most   emojis   in   their   profile   status?</h4>
 <div class="outline-text-4" id="text-1-6-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">read in the tweets</span>
@@ -839,8 +839,8 @@ ages_train <span style="color: #BFEBBF;">%&gt;%</span>
 </div>
 </div>
 
-<div id="outline-container-orgba1415d" class="outline-4">
-<h4 id="orgba1415d"><span class="section-number-4">1.6.2</span> Which   is   the   most   common   emoji?</h4>
+<div id="outline-container-orgb87decf" class="outline-4">
+<h4 id="orgb87decf"><span class="section-number-4">1.6.2</span> Which   is   the   most   common   emoji?</h4>
 <div class="outline-text-4" id="text-1-6-2">
 <p>
 The most frequent emojis and their occurrences are below:
@@ -865,16 +865,16 @@ Counter(all_emojis_tweets).most_common(5)
 </div>
 </div>
 
-<div id="outline-container-orgae3c398" class="outline-2">
-<h2 id="orgae3c398"><span class="section-number-2">2</span> Predicting Twitter users' age</h2>
+<div id="outline-container-orgcb14a9e" class="outline-2">
+<h2 id="orgcb14a9e"><span class="section-number-2">2</span> Predicting Twitter users' age</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Here I document the sentiment analysis, data wrangling, and building a prediction model. 
 </p>
 </div>
 
-<div id="outline-container-orgd3da242" class="outline-3">
-<h3 id="orgd3da242"><span class="section-number-3">2.1</span> Read in data</h3>
+<div id="outline-container-orgb1b81ab" class="outline-3">
+<h3 id="orgb1b81ab"><span class="section-number-3">2.1</span> Read in data</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
@@ -940,11 +940,11 @@ Warning messages:
 </div>
 </div>
 
-<div id="outline-container-org4950ee9" class="outline-3">
-<h3 id="org4950ee9"><span class="section-number-3">2.2</span> Sentiment analysis</h3>
+<div id="outline-container-org215fdc4" class="outline-3">
+<h3 id="org215fdc4"><span class="section-number-3">2.2</span> Sentiment analysis</h3>
 <div class="outline-text-3" id="text-2-2">
-</div><div id="outline-container-org90f6b58" class="outline-4">
-<h4 id="org90f6b58"><span class="section-number-4">2.2.1</span> Utility functions</h4>
+</div><div id="outline-container-orga44b262" class="outline-4">
+<h4 id="orga44b262"><span class="section-number-4">2.2.1</span> Utility functions</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">library</span>(lubridate)
@@ -987,21 +987,11 @@ score.sentiment = <span style="color: #F0DFAF; font-weight: bold;">function</spa
 
 </pre>
 </div>
-
-<pre class="example">
-
-Attaching package: ‘lubridate’
-
-The following object is masked from ‘package:base’:
-
-    date
-
-</pre>
 </div>
 </div>
 
-<div id="outline-container-org02db725" class="outline-4">
-<h4 id="org02db725"><span class="section-number-4">2.2.2</span> Sentiment analysis of all the recent tweets</h4>
+<div id="outline-container-org7098b0e" class="outline-4">
+<h4 id="org7098b0e"><span class="section-number-4">2.2.2</span> Sentiment analysis of all the recent tweets</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">read in a dictionary of negtive words nad positive words</span>
@@ -1029,8 +1019,8 @@ Read 4783 items
 </div>
 </div>
 
-<div id="outline-container-org69b64bc" class="outline-3">
-<h3 id="org69b64bc"><span class="section-number-3">2.3</span> Joint all tables-prepare training and test data</h3>
+<div id="outline-container-org04efc56" class="outline-3">
+<h3 id="org04efc56"><span class="section-number-3">2.3</span> Joint all tables-prepare training and test data</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
 <pre class="src src-R">age_tweets <span style="color: #BFEBBF;">%&lt;&gt;%</span>
@@ -1171,8 +1161,8 @@ Unknown variables: `profile_background_image_url_https`, `profile_background_col
 </div>
 </div>
 
-<div id="outline-container-org7216fe4" class="outline-3">
-<h3 id="org7216fe4"><span class="section-number-3">2.4</span> Train a gradient boosting model</h3>
+<div id="outline-container-org12a8345" class="outline-3">
+<h3 id="org12a8345"><span class="section-number-3">2.4</span> Train a gradient boosting model</h3>
 <div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">require</span>(xgboost)
@@ -1240,47 +1230,6 @@ dat_all <span style="color: #BFEBBF;">%&gt;%</span>
 
 </pre>
 </div>
-
-<pre class="example">
-Loading required package: xgboost
-
-Attaching package: ‘xgboost’
-
-The following object is masked from ‘package:dplyr’:
-
-    slice
-Loading required package: Matrix
-
-Attaching package: ‘Matrix’
-
-The following object is masked from ‘package:tidyr’:
-
-    expand
-Loading required package: data.table
-data.table 1.10.4.3
-  The fastest way to learn (by data.table authors): https://www.datacamp.com/courses/data-analysis-the-data-table-way
-  Documentation: ?data.table, example(data.table) and browseVignettes("data.table")
-  Release notes, videos and slides: http://r-datatable.com
-
-Attaching package: ‘data.table’
-
-The following objects are masked from ‘package:lubridate’:
-
-    hour, isoweek, mday, minute, month, quarter, second, wday, week,
-    yday, year
-
-The following objects are masked from ‘package:dplyr’:
-
-    between, first, last
-
-The following object is masked from ‘package:purrr’:
-
-    transpose
-Error in inherits(data, "xgb.DMatrix") : object 'dtrain' not found
-Error in print(cv) : object 'cv' not found
-[1]	train-rmse:6.145485 
-[2]	train-rmse:4.718259
-</pre>
 </div>
 </div>
 </div>
@@ -1288,7 +1237,7 @@ Error in print(cv) : object 'cv' not found
 <div id="postamble" class="status">
 <p class="date">Date: 2017-10-24 Tue 00:00</p>
 <p class="author">Author: Qike Li</p>
-<p class="date">Created: 2017-12-20 Wed 15:04</p>
+<p class="date">Created: 2017-12-20 Wed 18:08</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

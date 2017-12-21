@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-20 Wed 17:11 -->
+<!-- 2017-12-20 Wed 18:28 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Time Series Data Analysis</title>
@@ -179,12 +179,12 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/readtheorg/js/readtheorg.js"></script>
+<link rel="stylesheet" type="text/css" href="../styles/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../styles/readtheorg/css/readtheorg.css"/>
+<script src="../styles/readtheorg/js/jquery.min.js"></script>
+<script src="../styles/readtheorg/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../styles/readtheorg/js/jquery.stickytableheaders.js"></script>
+<script type="text/javascript" src="../styles/readtheorg/js/readtheorg.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -261,61 +261,61 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1fc4dfe">1. Exploratory data analysis (EDA)</a>
+<li><a href="#orge0f79a3">1. Exploratory data analysis (EDA)</a>
 <ul>
-<li><a href="#org1157eae">1.1. Get a feeling of the data</a></li>
-<li><a href="#orga870bd4">1.2. Initial plots</a>
+<li><a href="#orga74a58f">1.1. Get a feeling of the data</a></li>
+<li><a href="#org64d25fd">1.2. Initial plots</a>
 <ul>
-<li><a href="#orgba52c5b">1.2.1. Plot the time series data with different colors for clear days and cloudy days.</a></li>
-<li><a href="#org8a8f372">1.2.2. Plot car counts against weather</a></li>
-<li><a href="#org53f9666">1.2.3. Plot weather of clear days and cloudy days</a></li>
+<li><a href="#orge705251">1.2.1. Plot the time series data with different colors for clear days and cloudy days.</a></li>
+<li><a href="#org21baa20">1.2.2. Plot car counts against weather</a></li>
+<li><a href="#org0464117">1.2.3. Plot weather of clear days and cloudy days</a></li>
 </ul>
 </li>
-<li><a href="#org33fbb26">1.3. Single-year data analysis</a>
+<li><a href="#org453cb3f">1.3. Single-year data analysis</a>
 <ul>
-<li><a href="#orgdb2b5b1">1.3.1. Year 2010</a></li>
-<li><a href="#org01f156f">1.3.2. Year 2014</a></li>
+<li><a href="#org1324281">1.3.1. Year 2010</a></li>
+<li><a href="#org89128a4">1.3.2. Year 2014</a></li>
 </ul>
 </li>
-<li><a href="#orgc614271">1.4. Group data points</a>
+<li><a href="#org9be97b4">1.4. Group data points</a>
 <ul>
-<li><a href="#orgdb0ac6b">1.4.1. Group by day of week</a></li>
-<li><a href="#org607dc97">1.4.2. Group by day of month</a></li>
-<li><a href="#org3f8e6c2">1.4.3. Group by day of year</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgfa5c539">2. Analysis in Frequency Domain</a>
-<ul>
-<li><a href="#orgad9d0d6">2.1. Imputation</a></li>
-<li><a href="#org502d1cb">2.2. Plot the time series with imputed data points</a></li>
-<li><a href="#org39702f2">2.3. Decompose the series</a></li>
-<li><a href="#orga6d3b72">2.4. Spectrum analysis</a>
-<ul>
-<li><a href="#org21f8d3c">2.4.1. Detrend</a></li>
-<li><a href="#orgdf207ed">2.4.2. Spectrum Analysis</a></li>
+<li><a href="#orgf75df38">1.4.1. Group by day of week</a></li>
+<li><a href="#org965227f">1.4.2. Group by day of month</a></li>
+<li><a href="#org93a6a5b">1.4.3. Group by day of year</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org6578bb3">3. Fit ARIMA models</a>
+<li><a href="#org8657f26">2. Analysis in Frequency Domain</a>
 <ul>
-<li><a href="#orgb7e5a3e">3.1. ARIMA \((1,0,1)×(0,1,0)_{92}\)</a></li>
-<li><a href="#orgea328e7">3.2. Choose ARIMA models</a></li>
+<li><a href="#org0eec7d3">2.1. Imputation</a></li>
+<li><a href="#org41d23ec">2.2. Plot the time series with imputed data points</a></li>
+<li><a href="#org50709bf">2.3. Decompose the series</a></li>
+<li><a href="#orgf32e48f">2.4. Spectrum analysis</a>
+<ul>
+<li><a href="#orgb7d0023">2.4.1. Detrend</a></li>
+<li><a href="#org774262e">2.4.2. Spectrum Analysis</a></li>
 </ul>
 </li>
-<li><a href="#org362b376">4. Future analysis</a></li>
+</ul>
+</li>
+<li><a href="#org494cdad">3. Fit ARIMA models</a>
+<ul>
+<li><a href="#orgb36e426">3.1. ARIMA \((1,0,1)×(0,1,0)_{92}\)</a></li>
+<li><a href="#org13239d4">3.2. Choose ARIMA models</a></li>
+</ul>
+</li>
+<li><a href="#org700031d">4. Future analysis</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-org1fc4dfe" class="outline-2">
-<h2 id="org1fc4dfe"><span class="section-number-2">1</span> Exploratory data analysis (EDA)</h2>
+<div id="outline-container-orge0f79a3" class="outline-2">
+<h2 id="orge0f79a3"><span class="section-number-2">1</span> Exploratory data analysis (EDA)</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-org1157eae" class="outline-3">
-<h3 id="org1157eae"><span class="section-number-3">1.1</span> Get a feeling of the data</h3>
+</div><div id="outline-container-orga74a58f" class="outline-3">
+<h3 id="orga74a58f"><span class="section-number-3">1.1</span> Get a feeling of the data</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">load the libraries</span>
@@ -392,11 +392,11 @@ There are five columns in the data, and approximately 40% of the data are collec
 </p>
 </div>
 </div>
-<div id="outline-container-orga870bd4" class="outline-3">
-<h3 id="orga870bd4"><span class="section-number-3">1.2</span> Initial plots</h3>
+<div id="outline-container-org64d25fd" class="outline-3">
+<h3 id="org64d25fd"><span class="section-number-3">1.2</span> Initial plots</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-orgba52c5b" class="outline-4">
-<h4 id="orgba52c5b"><span class="section-number-4">1.2.1</span> Plot the time series data with different colors for clear days and cloudy days.</h4>
+</div><div id="outline-container-orge705251" class="outline-4">
+<h4 id="orge705251"><span class="section-number-4">1.2.1</span> Plot the time series data with different colors for clear days and cloudy days.</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -425,8 +425,8 @@ There are five columns in the data, and approximately 40% of the data are collec
 </div>
 </div>
 
-<div id="outline-container-org8a8f372" class="outline-4">
-<h4 id="org8a8f372"><span class="section-number-4">1.2.2</span> Plot car counts against weather</h4>
+<div id="outline-container-org21baa20" class="outline-4">
+<h4 id="org21baa20"><span class="section-number-4">1.2.2</span> Plot car counts against weather</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -449,8 +449,8 @@ There doesn't seem to be a relationship between weather and car counts.
 </p>
 </div>
 </div>
-<div id="outline-container-org53f9666" class="outline-4">
-<h4 id="org53f9666"><span class="section-number-4">1.2.3</span> Plot weather of clear days and cloudy days</h4>
+<div id="outline-container-org0464117" class="outline-4">
+<h4 id="org0464117"><span class="section-number-4">1.2.3</span> Plot weather of clear days and cloudy days</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -474,16 +474,16 @@ There doesn't seem to be a difference between the weather of cloudy days and wea
 </div>
 </div>
 
-<div id="outline-container-org33fbb26" class="outline-3">
-<h3 id="org33fbb26"><span class="section-number-3">1.3</span> Single-year data analysis</h3>
+<div id="outline-container-org453cb3f" class="outline-3">
+<h3 id="org453cb3f"><span class="section-number-3">1.3</span> Single-year data analysis</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 It is hard to visualize other patterns in the data since the data has <code>2373</code> data points (6.5 years). Therefore, let's plot the data year by year.
 </p>
 </div>
 
-<div id="outline-container-orgdb2b5b1" class="outline-4">
-<h4 id="orgdb2b5b1"><span class="section-number-4">1.3.1</span> Year 2010</h4>
+<div id="outline-container-org1324281" class="outline-4">
+<h4 id="org1324281"><span class="section-number-4">1.3.1</span> Year 2010</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -504,8 +504,8 @@ It is hard to visualize other patterns in the data since the data has <code>2373
 </div>
 </div>
 
-<div id="outline-container-org01f156f" class="outline-4">
-<h4 id="org01f156f"><span class="section-number-4">1.3.2</span> Year 2014</h4>
+<div id="outline-container-org89128a4" class="outline-4">
+<h4 id="org89128a4"><span class="section-number-4">1.3.2</span> Year 2014</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -536,16 +536,16 @@ It is hard to visualize other patterns in the data since the data has <code>2373
 </div>
 
 
-<div id="outline-container-orgc614271" class="outline-3">
-<h3 id="orgc614271"><span class="section-number-3">1.4</span> Group data points</h3>
+<div id="outline-container-org9be97b4" class="outline-3">
+<h3 id="org9be97b4"><span class="section-number-3">1.4</span> Group data points</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Grouping the data points into categories and taking the mean. 
 </p>
 </div>
 
-<div id="outline-container-orgdb0ac6b" class="outline-4">
-<h4 id="orgdb0ac6b"><span class="section-number-4">1.4.1</span> Group by day of week</h4>
+<div id="outline-container-orgf75df38" class="outline-4">
+<h4 id="orgf75df38"><span class="section-number-4">1.4.1</span> Group by day of week</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -566,8 +566,8 @@ Not surprisingly, more cars were on the parking lot on Fridays, Saturdays, and S
 </div>
 </div>
 
-<div id="outline-container-org607dc97" class="outline-4">
-<h4 id="org607dc97"><span class="section-number-4">1.4.2</span> Group by day of month</h4>
+<div id="outline-container-org965227f" class="outline-4">
+<h4 id="org965227f"><span class="section-number-4">1.4.2</span> Group by day of month</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -590,8 +590,8 @@ Not surprisingly, more cars were on the parking lot on Fridays, Saturdays, and S
 </div>
 </div>
 
-<div id="outline-container-org3f8e6c2" class="outline-4">
-<h4 id="org3f8e6c2"><span class="section-number-4">1.4.3</span> Group by day of year</h4>
+<div id="outline-container-org93a6a5b" class="outline-4">
+<h4 id="org93a6a5b"><span class="section-number-4">1.4.3</span> Group by day of year</h4>
 <div class="outline-text-4" id="text-1-4-3">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -620,16 +620,16 @@ Cyclical behavior (~100 days period) may exist in the <code>Group by day of year
 </div>
 </div>
 
-<div id="outline-container-orgfa5c539" class="outline-2">
-<h2 id="orgfa5c539"><span class="section-number-2">2</span> Analysis in Frequency Domain</h2>
+<div id="outline-container-org8657f26" class="outline-2">
+<h2 id="org8657f26"><span class="section-number-2">2</span> Analysis in Frequency Domain</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 To identify the dominant cyclical behavior in a series, we will do a spectrum analysis. From now on, I will drop the data of cloudy days and impute the missing values since the data collected from cloudy days are very noisy and seems from a different distribution.
 </p>
 </div>
 
-<div id="outline-container-orgad9d0d6" class="outline-3">
-<h3 id="orgad9d0d6"><span class="section-number-3">2.1</span> Imputation</h3>
+<div id="outline-container-org0eec7d3" class="outline-3">
+<h3 id="org0eec7d3"><span class="section-number-3">2.1</span> Imputation</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-R">dat1 <span style="color: #BFEBBF;">%&gt;%</span>
@@ -677,26 +677,11 @@ ind_na_2 <span style="color: #BFEBBF;">&lt;-</span> is.na(dat_impute$car.count.i
 dat_impute$car.count.impute[ind_na_2] <span style="color: #BFEBBF;">&lt;-</span> dat_impute$avg.year[ind_na_2]
 </pre>
 </div>
-
-<pre class="example">
-Error in mutate_impl(.data, dots) : 
-  Evaluation error: no applicable method for 'month' applied to an object of class "Date".
-Error in eval(lhs, parent, parent) : object 'dat_clear' not found
-Error in eval(lhs, parent, parent) : object 'dat_clear' not found
-Error in left_join(dat_clear, dat_avg, by = c("year", "month", "day.of.week")) : 
-  object 'dat_clear' not found
-Error in left_join(dat_impute, dat_avg_year, by = c("year", "day.of.week")) : 
-  object 'dat_impute' not found
-Error: object 'dat_impute' not found
-Error: object 'dat_impute' not found
-Error: object 'dat_impute' not found
-Error: object 'dat_impute' not found
-</pre>
 </div>
 </div>
 
-<div id="outline-container-org502d1cb" class="outline-3">
-<h3 id="org502d1cb"><span class="section-number-3">2.2</span> Plot the time series with imputed data points</h3>
+<div id="outline-container-org41d23ec" class="outline-3">
+<h3 id="org41d23ec"><span class="section-number-3">2.2</span> Plot the time series with imputed data points</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-R">dat_impute <span style="color: #BFEBBF;">%&gt;%</span>
@@ -715,8 +700,8 @@ Error: object 'dat_impute' not found
 </div>
 </div>
 
-<div id="outline-container-org39702f2" class="outline-3">
-<h3 id="org39702f2"><span class="section-number-3">2.3</span> Decompose the series</h3>
+<div id="outline-container-org50709bf" class="outline-3">
+<h3 id="org50709bf"><span class="section-number-3">2.3</span> Decompose the series</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
 <pre class="src src-R">dat_impute$car.count.impute <span style="color: #BFEBBF;">%&gt;%</span>
@@ -737,11 +722,11 @@ Looking at this figure, the trend is clear, and there may exist a three-month pe
 </p>
 </div>
 </div>
-<div id="outline-container-orga6d3b72" class="outline-3">
-<h3 id="orga6d3b72"><span class="section-number-3">2.4</span> Spectrum analysis</h3>
+<div id="outline-container-orgf32e48f" class="outline-3">
+<h3 id="orgf32e48f"><span class="section-number-3">2.4</span> Spectrum analysis</h3>
 <div class="outline-text-3" id="text-2-4">
-</div><div id="outline-container-org21f8d3c" class="outline-4">
-<h4 id="org21f8d3c"><span class="section-number-4">2.4.1</span> Detrend</h4>
+</div><div id="outline-container-orgb7d0023" class="outline-4">
+<h4 id="orgb7d0023"><span class="section-number-4">2.4.1</span> Detrend</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 Since a clear trend exists for the time series, I chose to detrend with linear regression.
@@ -774,8 +759,8 @@ lines(as.numeric(trend),
 </div>
 </div>
 </div>
-<div id="outline-container-orgdf207ed" class="outline-4">
-<h4 id="orgdf207ed"><span class="section-number-4">2.4.2</span> Spectrum Analysis</h4>
+<div id="outline-container-org774262e" class="outline-4">
+<h4 id="org774262e"><span class="section-number-4">2.4.2</span> Spectrum Analysis</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <div class="org-src-container">
 <pre class="src src-R">car_spec <span style="color: #BFEBBF;">&lt;-</span> spec.pgram(residuals(regtrend), 
@@ -812,11 +797,11 @@ The first peak in the figure above corresponds to a seasonal pattern for <code>9
 </div>
 </div>
 
-<div id="outline-container-org6578bb3" class="outline-2">
-<h2 id="org6578bb3"><span class="section-number-2">3</span> Fit ARIMA models</h2>
+<div id="outline-container-org494cdad" class="outline-2">
+<h2 id="org494cdad"><span class="section-number-2">3</span> Fit ARIMA models</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-orgb7e5a3e" class="outline-3">
-<h3 id="orgb7e5a3e"><span class="section-number-3">3.1</span> ARIMA \((1,0,1)×(0,1,0)_{92}\)</h3>
+</div><div id="outline-container-orgb36e426" class="outline-3">
+<h3 id="orgb36e426"><span class="section-number-3">3.1</span> ARIMA \((1,0,1)×(0,1,0)_{92}\)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 My first try is \(ARIMA(1,0,1)×(0,1,0)_{92}\).
@@ -862,8 +847,8 @@ For illustration purpose, I will use this model to make some predications.
 </div>
 </div>
 
-<div id="outline-container-orgea328e7" class="outline-3">
-<h3 id="orgea328e7"><span class="section-number-3">3.2</span> Choose ARIMA models</h3>
+<div id="outline-container-org13239d4" class="outline-3">
+<h3 id="org13239d4"><span class="section-number-3">3.2</span> Choose ARIMA models</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>We could use AIC or BIC to choose between ARIMA models. For the sake of computation simplification, let's choose the orders for AR and MA first and then the orders for SAR and SMA. Note, here we set S = 92.</li>
@@ -925,8 +910,8 @@ With this process, we can find the top models that yield the lowest BIC. Further
 </div>
 </div>
 </div>
-<div id="outline-container-org362b376" class="outline-2">
-<h2 id="org362b376"><span class="section-number-2">4</span> Future analysis</h2>
+<div id="outline-container-org700031d" class="outline-2">
+<h2 id="org700031d"><span class="section-number-2">4</span> Future analysis</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>If I had a whole day to work on this problem, I would explore the following things:
@@ -948,7 +933,7 @@ With this process, we can find the top models that yield the lowest BIC. Further
 <div id="postamble" class="status">
 <p class="date">Date: &lt;2017-12-4 Mon 20:00&gt;</p>
 <p class="author">Author: Qike Max Li</p>
-<p class="date">Created: 2017-12-20 Wed 17:11</p>
+<p class="date">Created: 2017-12-20 Wed 18:28</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

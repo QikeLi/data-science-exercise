@@ -2,11 +2,11 @@
 #+DATE: <2017-10-24 Sun>
 #+AUTHOR: Qike Li
 #+EMAIL: qikeli@gmail.com
-#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-bigblow.setup
+#+SETUPFILE: ../setup/theme-bigblow-local.setup
 
 * Descriptive
 ** Histograms
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 library(tidyverse)
 library(jsonlite)
 library(magrittr)
@@ -29,7 +29,7 @@ age_profiles %<>%
 
 #+RESULTS:
 
-#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-hist.png :session :height 700
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-hist.png :session :eval no :height 700
 age_profiles %>%
     select(favourites_count, friends_count, statuses_count,followers_count) %>%
     gather(type, count) %>%
@@ -45,7 +45,7 @@ age_profiles %>%
 [[file:../Figures/fig-hist.png]]
 
 From the histograms above, we can see that the all of the counts are right skewed. We may want to use log(count). 
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 age_profiles %>%
     select(favourites_count, friends_count, statuses_count,followers_count) %>%
     summary
@@ -65,7 +65,7 @@ The summary of the counts again confirmed that there are some extreme values and
 ** Correlations
 
 *** Are friend   and   follower   counts   correlated?
-#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor1.png :session
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor1.png :session :eval no
 age_profiles %>%
     select(favourites_count, friends_count, statuses_count,followers_count) %>%
     ggplot(aes(x = log(friends_count), y = log(followers_count))) +
@@ -79,7 +79,7 @@ age_profiles %>%
 
 The figure above demonstrate a strong correlation between friend counts and follower counts. Since we don't expect a linear relationship between friend counts and follower counts, I use Spearman's $\rho$ test to test the correlation. Keep in mind, with so many data points, p-values are not so informative, and we will focus on the effect sizes.
 
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 (cor_test1 <- age_profiles %$%
     cor.test(friends_count, followers_count,method = 'spearman'))
 #+END_SRC
@@ -102,7 +102,7 @@ In cor.test.default(friends_count, followers_count, method = "spearman") :
 #+end_example
 
 The statistic Spearman's $\rho$ is equal to =0.77=, which indicates a strong correlation.
-#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor2.png :session
+#+BEGIN_SRC R :exports both :results graphics :file ../Figures/fig-cor2.png :session :eval no
 age_profiles %>%
     select(favourites_count, friends_count, statuses_count,followers_count) %>%
     ggplot(aes(x = log(favourites_count), y = log(statuses_count))) +
@@ -114,7 +114,7 @@ age_profiles %>%
 #+RESULTS:
 [[file:../Figures/fig-cor2.png]]
 
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 (cor_test1 <- age_profiles %$%
     cor.test(favourites_count, statuses_count, method = 'spearman'))
 #+END_SRC
@@ -144,7 +144,7 @@ Based on these correlations, we can see that users with higher count of friends 
 
  Here I only considered iPhone users and Android users,not all types of iOS and Android platform users, due to the time limit.
 
- #+BEGIN_SRC R :exports both :results output :session
+ #+BEGIN_SRC R :exports both :results output :session :eval no
 ## add a column to indicate the platform
 age_profiles %<>%
     mutate(platform = str_extract(status.source, '[[[:alnum:]]®)]+(?=</a>$)'))
@@ -192,7 +192,7 @@ age_profiles %>%
 #+end_example
 
  A number of time zones have exclusive iPhone users or exclusive Android users due to the small number of users in those time zones who have known platform information. 
- #+BEGIN_SRC R :exports both :results output :session
+ #+BEGIN_SRC R :exports both :results output :session :eval no
 ## time zones w/ the most iPhone and Android users.
 age_profiles %>%
     select(platform,time_zone) %>%
@@ -219,7 +219,7 @@ Gaol: use   the   “mentions”   data   in    mentions.csv    to   come   up  
 
 *** Build   a   list   of   the   top   20   handles  
 Below is the list of the top  20  handles:  
- #+BEGIN_SRC R :exports both :results output :session
+ #+BEGIN_SRC R :exports both :results output :session :eval no
 mentions <- read_csv('../assignment_package/mentions.csv')
 
 mentions %>%
@@ -291,7 +291,7 @@ Emma Watson (==EmWatson==) is in the Harry Potter, and she was mentioned by ==13
 ** Age breakdown
 *** make   a   bar   chart   of   age   group   sample   size   (x-axis:   age   group,   y-axis: per-group   sample   size)
 
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 ages_train <- read_csv('../assignment_package/ages_train.csv') %>%
     mutate(age_group =  cut(Age, breaks = seq(10,120, by = 10)))
 
@@ -486,7 +486,7 @@ Counter(all_emojis).most_common(5)
 
 
 The most frequent emojis and their occurrences are below:
-#+BEGIN_SRC python :results output org drawer :session 
+#+BEGIN_SRC python :results output org drawer :session :eval no 
 all_emojis_tweets = list(filter(None, age_tweets2.emoji_code.tolist()))
 all_emojis_tweets = ''.join(x for x in all_emojis_tweets)
 Counter(all_emojis_tweets).most_common(5)
@@ -503,7 +503,7 @@ Counter(all_emojis_tweets).most_common(5)
 Here I document the sentiment analysis, data wrangling, and building a prediction model. 
 
 ** Read in data
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 library(tidyverse)
 library(jsonlite)
 library(magrittr)
@@ -564,7 +564,7 @@ tweets_emoji_count <- read_csv('../Data/age_tweets_emoji_count.csv',col_types = 
 
 ** Sentiment analysis
 *** Utility functions
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 library(lubridate)
 ## * score.sentiment
 score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
@@ -608,7 +608,7 @@ score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
 #+RESULTS:
 
 *** Sentiment analysis of all the recent tweets
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 ## read in a dictionary of negtive words nad positive words
 pos_words <- scan('../Data/wordbanks/positive-words.txt',
                   what = 'character',
@@ -629,7 +629,7 @@ age_tweets %<>%
  : Read 4783 items
 
 ** Joint all tables-prepare training and test data
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 age_tweets %<>%
     mutate(tweet_len = str_length(text))
   
@@ -764,7 +764,7 @@ dat_all %>%
 : 0.00000 0.02834 0.04127 0.08819 0.20388 0.22178
 
 ** Train a gradient boosting model
-#+BEGIN_SRC R :exports none :results output :session :eval no
+#+BEGIN_SRC R :exports none :results output :session :eval no :eval no
 
 train <- dat_all %>%
     select(-ID) %>%
@@ -793,7 +793,7 @@ bst <- xgboost(data = sparse_matrix, label = output_vector, max_depth = 8,
 importance <- xgb.importance(feature_names = colnames(sparse_matrix), model = bst)
 print(importance)
 #+END_SRC
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 require(xgboost)
 require(Matrix)
 require(data.table)

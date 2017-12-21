@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-20 Wed 17:02 -->
+<!-- 2017-12-20 Wed 18:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>E-commerce prediction model</title>
@@ -179,17 +179,17 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/bigblow.css"/>
-<link rel="stylesheet" type="text/css" href="http://www.pirilampo.org/styles/bigblow/css/hideshow.css"/>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.localscroll-min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/jquery.zclip.min.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/bigblow.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/bigblow/js/hideshow.js"></script>
-<script type="text/javascript" src="http://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="../styles/bigblow/css/hideshow.css"/>
+<script type="text/javascript" src="../styles/bigblow/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/bigblow.js"></script>
+<script type="text/javascript" src="../styles/bigblow/js/hideshow.js"></script>
+<script type="text/javascript" src="../styles/lib/js/jquery.stickytableheaders.min.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -244,61 +244,61 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org600d19c">1. Exploratory Data analysis</a>
+<li><a href="#orgf53c54b">1. Exploratory Data analysis</a>
 <ul>
-<li><a href="#orgca05800">1.1. Calculate the occurrence of each activity in the training dataset.</a>
+<li><a href="#org04cca51">1.1. Calculate the occurrence of each activity in the training dataset.</a>
 <ul>
-<li><a href="#org4d317c4">1.1.1. request an interactive node on HPC and transfer files</a></li>
-<li><a href="#org72a8ee8">1.1.2. The number occurrences of each activity for all users.</a></li>
-<li><a href="#orgc6e6d37">1.1.3. The number occurrences of each activity for users who purchased.</a></li>
-<li><a href="#org8846923">1.1.4. The number occurrences of each activity for users who didn't purchase.</a></li>
-<li><a href="#org4dd02ef">1.1.5. The number occurrences of each activity for users in the test data.</a></li>
+<li><a href="#org4b88cda">1.1.1. request an interactive node on HPC and transfer files</a></li>
+<li><a href="#orgaf1afc9">1.1.2. The number occurrences of each activity for all users.</a></li>
+<li><a href="#orgb9823f4">1.1.3. The number occurrences of each activity for users who purchased.</a></li>
+<li><a href="#org8be85d6">1.1.4. The number occurrences of each activity for users who didn't purchase.</a></li>
+<li><a href="#org14e2d18">1.1.5. The number occurrences of each activity for users in the test data.</a></li>
 </ul>
 </li>
-<li><a href="#orgbf68672">1.2. Make some plots</a>
+<li><a href="#org954dae6">1.2. Make some plots</a>
 <ul>
-<li><a href="#orgd3dfc5a">1.2.1. Boxplots of all activities for users who made purchases and the ones who did not.</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgc829681">2. Fit models</a>
-<ul>
-<li><a href="#org5d64afa">2.1. Prepare data</a>
-<ul>
-<li><a href="#org725e6ce">2.1.1. A function to do data munging</a></li>
-<li><a href="#org190bcbd">2.1.2. Munge training data and test data</a></li>
-</ul>
-</li>
-<li><a href="#org1d0b604">2.2. Random Forest model</a>
-<ul>
-<li><a href="#orgcab5c42">2.2.1. Split data, Define features and outcomes</a></li>
-<li><a href="#org1bdb5a0">2.2.2. Fit a model using all features</a></li>
-<li><a href="#orgeb0706e">2.2.3. Exclude the features that measure the date difference between the first date and the last time of an activity of a user</a></li>
-<li><a href="#orga01807d">2.2.4. Exclude the date related features</a></li>
-</ul>
-</li>
-<li><a href="#orgdc4dcf5">2.3. Gradient Boosting Model (GBM)</a>
-<ul>
-<li><a href="#orgb166bbb">2.3.1. Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</a></li>
-<li><a href="#org8597f5a">2.3.2. Grid search</a></li>
-<li><a href="#org6f9368b">2.3.3. Model Inspection and Final Test Set Scoring</a></li>
-<li><a href="#org99d50df">2.3.4. Ensembling Techniques</a></li>
+<li><a href="#orgb60028e">1.2.1. Boxplots of all activities for users who made purchases and the ones who did not.</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org1dcc779">3. Most predictive features</a></li>
-<li><a href="#org68f27fa">4. Recurrent neural network (RNN)</a></li>
+<li><a href="#orgdb7bdb4">2. Fit models</a>
+<ul>
+<li><a href="#org9137752">2.1. Prepare data</a>
+<ul>
+<li><a href="#org0f51404">2.1.1. A function to do data munging</a></li>
+<li><a href="#org9752041">2.1.2. Munge training data and test data</a></li>
+</ul>
+</li>
+<li><a href="#orgb2f23ff">2.2. Random Forest model</a>
+<ul>
+<li><a href="#org98ec2f2">2.2.1. Split data, Define features and outcomes</a></li>
+<li><a href="#org015cf6e">2.2.2. Fit a model using all features</a></li>
+<li><a href="#org22fa0e7">2.2.3. Exclude the features that measure the date difference between the first date and the last time of an activity of a user</a></li>
+<li><a href="#org2a6cda9">2.2.4. Exclude the date related features</a></li>
+</ul>
+</li>
+<li><a href="#org25231ed">2.3. Gradient Boosting Model (GBM)</a>
+<ul>
+<li><a href="#orgc54980b">2.3.1. Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</a></li>
+<li><a href="#org6bdb4cc">2.3.2. Grid search</a></li>
+<li><a href="#orgfb1685a">2.3.3. Model Inspection and Final Test Set Scoring</a></li>
+<li><a href="#org436e1f2">2.3.4. Ensembling Techniques</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6e4abbf">3. Most predictive features</a></li>
+<li><a href="#org520a324">4. Recurrent neural network (RNN)</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org600d19c" class="outline-2">
-<h2 id="org600d19c"><span class="section-number-2">1</span> Exploratory Data analysis</h2>
+<div id="outline-container-orgf53c54b" class="outline-2">
+<h2 id="orgf53c54b"><span class="section-number-2">1</span> Exploratory Data analysis</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-orgca05800" class="outline-3">
-<h3 id="orgca05800"><span class="section-number-3">1.1</span> Calculate the occurrence of each activity in the training dataset.</h3>
+</div><div id="outline-container-org04cca51" class="outline-3">
+<h3 id="org04cca51"><span class="section-number-3">1.1</span> Calculate the occurrence of each activity in the training dataset.</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 I would like to know:
@@ -309,8 +309,8 @@ I would like to know:
 </ol>
 </div>
 
-<div id="outline-container-org4d317c4" class="outline-4">
-<h4 id="org4d317c4"><span class="section-number-4">1.1.1</span> request an interactive node on HPC and transfer files</h4>
+<div id="outline-container-org4b88cda" class="outline-4">
+<h4 id="org4b88cda"><span class="section-number-4">1.1.1</span> request an interactive node on HPC and transfer files</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <div class="org-src-container">
 <pre class="src src-sh">qsub -I -N takehome -m bea -M qikeli@email.arizona.edu
@@ -326,8 +326,8 @@ I would like to know:
 </div>
 </div>
 
-<div id="outline-container-org72a8ee8" class="outline-4">
-<h4 id="org72a8ee8"><span class="section-number-4">1.1.2</span> The number occurrences of each activity for all users.</h4>
+<div id="outline-container-orgaf1afc9" class="outline-4">
+<h4 id="orgaf1afc9"><span class="section-number-4">1.1.2</span> The number occurrences of each activity for all users.</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">library</span>(tidyverse)
@@ -359,8 +359,8 @@ CustomerSupport EmailClickthrough         EmailOpen        FormSubmit
 </div>
 </div>
 
-<div id="outline-container-orgc6e6d37" class="outline-4">
-<h4 id="orgc6e6d37"><span class="section-number-4">1.1.3</span> The number occurrences of each activity for users who purchased.</h4>
+<div id="outline-container-orgb9823f4" class="outline-4">
+<h4 id="orgb9823f4"><span class="section-number-4">1.1.3</span> The number occurrences of each activity for users who purchased.</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <div class="org-src-container">
 <pre class="src src-R">dat_train <span style="color: #BFEBBF;">%&gt;%</span>
@@ -381,8 +381,8 @@ activity
 </div>
 </div>
 
-<div id="outline-container-org8846923" class="outline-4">
-<h4 id="org8846923"><span class="section-number-4">1.1.4</span> The number occurrences of each activity for users who didn't purchase.</h4>
+<div id="outline-container-org8be85d6" class="outline-4">
+<h4 id="org8be85d6"><span class="section-number-4">1.1.4</span> The number occurrences of each activity for users who didn't purchase.</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <div class="org-src-container">
 <pre class="src src-R">dat_train <span style="color: #BFEBBF;">%&gt;%</span>
@@ -403,8 +403,8 @@ EmailClickthrough         EmailOpen        FormSubmit          PageView
 </div>
 </div>
 
-<div id="outline-container-org4dd02ef" class="outline-4">
-<h4 id="org4dd02ef"><span class="section-number-4">1.1.5</span> The number occurrences of each activity for users in the test data.</h4>
+<div id="outline-container-org14e2d18" class="outline-4">
+<h4 id="org14e2d18"><span class="section-number-4">1.1.5</span> The number occurrences of each activity for users in the test data.</h4>
 <div class="outline-text-4" id="text-1-1-5">
 <div class="org-src-container">
 <pre class="src src-R">table(dat_test$activity)
@@ -427,11 +427,11 @@ Since the variable <code>CustomerSupport</code> does not exit in the test data, 
 </div>
 </div>
 
-<div id="outline-container-orgbf68672" class="outline-3">
-<h3 id="orgbf68672"><span class="section-number-3">1.2</span> Make some plots</h3>
+<div id="outline-container-org954dae6" class="outline-3">
+<h3 id="org954dae6"><span class="section-number-3">1.2</span> Make some plots</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-orgd3dfc5a" class="outline-4">
-<h4 id="orgd3dfc5a"><span class="section-number-4">1.2.1</span> Boxplots of all activities for users who made purchases and the ones who did not.</h4>
+</div><div id="outline-container-orgb60028e" class="outline-4">
+<h4 id="orgb60028e"><span class="section-number-4">1.2.1</span> Boxplots of all activities for users who made purchases and the ones who did not.</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">Group data by customer ID, and then count the number occurences</span>
@@ -474,8 +474,8 @@ Note that the range of y axis is set as <code>[0,50]</code>.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc829681" class="outline-2">
-<h2 id="orgc829681"><span class="section-number-2">2</span> Fit models</h2>
+<div id="outline-container-orgdb7bdb4" class="outline-2">
+<h2 id="orgdb7bdb4"><span class="section-number-2">2</span> Fit models</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Due to the size of the dataset and the computationally intensive hyper-parameter tunning process, I use H2O distributed computing frame to fit models on high performance cluster(HPC). 
@@ -485,11 +485,11 @@ Due to the size of the dataset and the computationally intensive hyper-parameter
 The models I will use include Random Forest and Gradient Boosting Machine (GBM). 
 </p>
 </div>
-<div id="outline-container-org5d64afa" class="outline-3">
-<h3 id="org5d64afa"><span class="section-number-3">2.1</span> Prepare data</h3>
+<div id="outline-container-org9137752" class="outline-3">
+<h3 id="org9137752"><span class="section-number-3">2.1</span> Prepare data</h3>
 <div class="outline-text-3" id="text-2-1">
-</div><div id="outline-container-org725e6ce" class="outline-4">
-<h4 id="org725e6ce"><span class="section-number-4">2.1.1</span> A function to do data munging</h4>
+</div><div id="outline-container-org0f51404" class="outline-4">
+<h4 id="org0f51404"><span class="section-number-4">2.1.1</span> A function to do data munging</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 Feature Engineering:
@@ -629,8 +629,8 @@ Feature Engineering:
 </div>
 </div>
 
-<div id="outline-container-org190bcbd" class="outline-4">
-<h4 id="org190bcbd"><span class="section-number-4">2.1.2</span> Munge training data and test data</h4>
+<div id="outline-container-org9752041" class="outline-4">
+<h4 id="org9752041"><span class="section-number-4">2.1.2</span> Munge training data and test data</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <div class="org-src-container">
 <pre class="src src-R">dat_fit <span style="color: #BFEBBF;">&lt;-</span> prep_data(dat_train, training = T)
@@ -646,15 +646,15 @@ write.table(dat_test_wide, file=<span style="color: #CC9393;">'./Data/test-wide.
 </div>
 </div>
 
-<div id="outline-container-org1d0b604" class="outline-3">
-<h3 id="org1d0b604"><span class="section-number-3">2.2</span> Random Forest model</h3>
+<div id="outline-container-orgb2f23ff" class="outline-3">
+<h3 id="orgb2f23ff"><span class="section-number-3">2.2</span> Random Forest model</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Random Forest is robust and easy to tune, so we don't have to worry much about outliers, multicollinearity, or whether to include the interaction terms. Therefore, I use Random Forest to choose the engineered features.
 </p>
 </div>
-<div id="outline-container-orgcab5c42" class="outline-4">
-<h4 id="orgcab5c42"><span class="section-number-4">2.2.1</span> Split data, Define features and outcomes</h4>
+<div id="outline-container-org98ec2f2" class="outline-4">
+<h4 id="org98ec2f2"><span class="section-number-4">2.2.1</span> Split data, Define features and outcomes</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #BFEBBF;">library</span>(h2o)
@@ -706,91 +706,10 @@ myY <span style="color: #BFEBBF;">&lt;-</span> <span style="color: #CC9393;">'Pu
 
 </pre>
 </div>
-
-<pre class="example">
- Connection successful!
-
-R is connected to the H2O cluster: 
-    H2O cluster uptime:         10 seconds 496 milliseconds 
-    H2O cluster version:        3.16.0.2 
-    H2O cluster version age:    19 days  
-    H2O cluster name:           H2O_started_from_R_qikeli_rbo975 
-    H2O cluster total nodes:    1 
-    H2O cluster total memory:   1.78 GB 
-    H2O cluster total cores:    8 
-    H2O cluster allowed cores:  8 
-    H2O cluster healthy:        TRUE 
-    H2O Connection ip:          localhost 
-    H2O Connection port:        54321 
-    H2O Connection proxy:       NA 
-    H2O Internal Security:      FALSE 
-    H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
-    R Version:                  R version 3.4.2 (2017-09-28)
-[1] 0
-
-ERROR: Unexpected HTTP Status code: 404 Not Found (url = http://localhost:54321/3/ImportFiles?path=.%2FData%2Ftrain-wide.tsv&amp;pattern=)
-
-water.exceptions.H2ONotFoundArgumentException
- [1] "water.exceptions.H2ONotFoundArgumentException: File ./Data/train-wide.tsv does not exist"                           
- [2] "    water.persist.PersistNFS.importFiles(PersistNFS.java:135)"                                                      
- [3] "    water.persist.PersistManager.importFiles(PersistManager.java:271)"                                              
- [4] "    water.api.ImportFilesHandler.importFiles(ImportFilesHandler.java:24)"                                           
- [5] "    sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)"                                                    
- [6] "    sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)"                                  
- [7] "    sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)"                          
- [8] "    java.lang.reflect.Method.invoke(Method.java:498)"                                                               
- [9] "    water.api.Handler.handle(Handler.java:63)"                                                                      
-[10] "    water.api.RequestServer.serve(RequestServer.java:451)"                                                          
-[11] "    water.api.RequestServer.doGeneric(RequestServer.java:296)"                                                      
-[12] "    water.api.RequestServer.doGet(RequestServer.java:220)"                                                          
-[13] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:735)"                                                   
-[14] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:848)"                                                   
-[15] "    org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:684)"                                         
-[16] "    org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:503)"                                     
-[17] "    org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)"                             
-[18] "    org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:429)"                                      
-[19] "    org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)"                              
-[20] "    org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)"                                  
-[21] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
-[22] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
-[23] "    water.JettyHTTPD$LoginHandler.handle(JettyHTTPD.java:192)"                                                      
-[24] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
-[25] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
-[26] "    org.eclipse.jetty.server.Server.handle(Server.java:370)"                                                        
-[27] "    org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:494)"                 
-[28] "    org.eclipse.jetty.server.BlockingHttpConnection.handleRequest(BlockingHttpConnection.java:53)"                  
-[29] "    org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:971)"                
-[30] "    org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1033)"
-[31] "    org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)"                                               
-[32] "    org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)"                                          
-[33] "    org.eclipse.jetty.server.BlockingHttpConnection.handle(BlockingHttpConnection.java:72)"                         
-[34] "    org.eclipse.jetty.server.bio.SocketConnector$ConnectorEndPoint.run(SocketConnector.java:264)"                   
-[35] "    org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)"                               
-[36] "    org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)"                                
-[37] "    java.lang.Thread.run(Thread.java:745)"                                                                          
-
-Error in .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page,  : 
-  
-
-ERROR MESSAGE:
-
-File ./Data/train-wide.tsv does not exist
-
-In addition: Warning message:
-In normalizePath("./Data/train-wide.tsv") :
-  path[1]="./Data/train-wide.tsv": No such file or directory
-Error in ifelse(dat_fit$Purchase &gt; 0, "Y", "N") : 
-  object 'dat_fit' not found
-Error in is.H2OFrame(fr) : object 'dat_fit' not found
-Error in is.H2OFrame(fr) : object 'splits' not found
-Error in is.H2OFrame(fr) : object 'splits' not found
-Error in is.H2OFrame(fr) : object 'splits' not found
-</pre>
 </div>
 </div>
-
-<div id="outline-container-org1bdb5a0" class="outline-4">
-<h4 id="org1bdb5a0"><span class="section-number-4">2.2.2</span> Fit a model using all features</h4>
+<div id="outline-container-org015cf6e" class="outline-4">
+<h4 id="org015cf6e"><span class="section-number-4">2.2.2</span> Fit a model using all features</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
@@ -814,8 +733,8 @@ h2o.confusionMatrix(rf_all)
 </div>
 </div>
 
-<div id="outline-container-orgeb0706e" class="outline-4">
-<h4 id="orgeb0706e"><span class="section-number-4">2.2.3</span> Exclude the features that measure the date difference between the first date and the last time of an activity of a user</h4>
+<div id="outline-container-org22fa0e7" class="outline-4">
+<h4 id="org22fa0e7"><span class="section-number-4">2.2.3</span> Exclude the features that measure the date difference between the first date and the last time of an activity of a user</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
@@ -839,8 +758,8 @@ h2o.confusionMatrix(rf_noSpan)
 </div>
 </div>
 
-<div id="outline-container-orga01807d" class="outline-4">
-<h4 id="orga01807d"><span class="section-number-4">2.2.4</span> Exclude the date related features</h4>
+<div id="outline-container-org2a6cda9" class="outline-4">
+<h4 id="org2a6cda9"><span class="section-number-4">2.2.4</span> Exclude the date related features</h4>
 <div class="outline-text-4" id="text-2-2-4">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #5F7F5F;">## </span><span style="color: #7F9F7F;">fit a Random Forest mode</span>
@@ -874,16 +793,16 @@ Form the three models above, we can see the error rate does not change too much 
 </div>
 </div>
 
-<div id="outline-container-orgdc4dcf5" class="outline-3">
-<h3 id="orgdc4dcf5"><span class="section-number-3">2.3</span> Gradient Boosting Model (GBM)</h3>
+<div id="outline-container-org25231ed" class="outline-3">
+<h3 id="org25231ed"><span class="section-number-3">2.3</span> Gradient Boosting Model (GBM)</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Here, I explore another ensemble method GBM since it is often one of the best performers. Unlike Random Forest, GBM requires carefully hyper-parameter tunning. The tree depth is almost always the most important hyper-parameter, so I first find a range of depth that yields good performance of GBM,  and then I do a grid search for the other hyper-parameters. Note, due to the heavy computation, I do not do cross-validation, but rather splitting the data into thee subsets: train, validation, test. This may increase the variance of estimates for the error rates.
 </p>
 </div>
 
-<div id="outline-container-orgb166bbb" class="outline-4">
-<h4 id="orgb166bbb"><span class="section-number-4">2.3.1</span> Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</h4>
+<div id="outline-container-orgc54980b" class="outline-4">
+<h4 id="orgc54980b"><span class="section-number-4">2.3.1</span> Search the range of hyper-parameter <code>max_depth</code> that yields good performance of GBM.</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="org-src-container">
 <pre class="src src-R">hyper_params = list( max_depth = seq(1,29,2) )
@@ -943,6 +862,13 @@ grid <span style="color: #BFEBBF;">&lt;-</span> h2o.grid(
 save(grid, file = <span style="color: #CC9393;">'./grid1.RData'</span>)
 </pre>
 </div>
+
+<pre class="example">
+Error in h2o.grid(hyper_params = hyper_params, search_criteria = list(strategy = "Cartesian"),  : 
+  object 'valid' not found
+
+</pre>
+
 <div class="org-src-container">
 <pre class="src src-sh">rsync -azv  qikeli@sftp.hpc.arizona.edu:~/
 Data-Science-Challenge/6sense/org/grid1.RData ../../6sense/org/
@@ -968,50 +894,32 @@ maxDepth [[http://math.arizona.edu/~qikeli/Figs/gbm-varimp.png]]
 </div>
 
 <pre class="example">
-Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
-In addition: Warning message:
-In readChar(con, 5L, useBytes = TRUE) :
-  cannot open compressed file './grid1.RData', probable reason 'No such file or directory'
-function (nx = NULL, ny = nx, col = "lightgray", lty = "dotted", 
-    lwd = par("lwd"), equilogs = TRUE) 
-{
-    if (is.null(nx) || (!is.na(nx) &amp;&amp; nx &gt;= 1)) {
-        log &lt;- par("xlog")
-        if (is.null(nx)) {
-            ax &lt;- par("xaxp")
-            if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
-                ax[3L] &lt;- 1
-            at &lt;- axTicks(1, axp = ax, log = log)
-        }
-        else {
-            U &lt;- par("usr")
-            at &lt;- seq.int(U[1L], U[2L], length.out = nx + 1)
-            at &lt;- (if (log) 
-                10^at
-            else at)[-c(1, nx + 1)]
-        }
-        abline(v = at, col = col, lty = lty, lwd = lwd)
-    }
-    if (is.null(ny) || (!is.na(ny) &amp;&amp; ny &gt;= 1)) {
-        log &lt;- par("ylog")
-        if (is.null(ny)) {
-            ax &lt;- par("yaxp")
-            if (log &amp;&amp; equilogs &amp;&amp; ax[3L] &gt; 0) 
-                ax[3L] &lt;- 1
-            at &lt;- axTicks(2, axp = ax, log = log)
-        }
-        else {
-            U &lt;- par("usr")
-            at &lt;- seq.int(U[3L], U[4L], length.out = ny + 1)
-            at &lt;- (if (log) 
-                10^at
-            else at)[-c(1, ny + 1)]
-        }
-        abline(h = at, col = col, lty = lty, lwd = lwd)
-    }
-}
-&lt;bytecode: 0x7f813c3f0628&gt;
-&lt;environment: namespace:graphics&gt;
+H2O Grid Details
+================
+
+Grid ID: depth_grid 
+Used hyper parameters: 
+  -  max_depth 
+Number of models: 15 
+Number of failed models: 0 
+
+Hyper-Parameter Search Summary: ordered by increasing logloss
+   max_depth           model_ids             logloss
+1         11  depth_grid_model_5 0.26855663972709104
+2          9  depth_grid_model_4  0.2689324069528007
+3         13  depth_grid_model_6 0.26962152562401726
+4          7  depth_grid_model_3  0.2706960796720848
+5         15  depth_grid_model_7   0.271483919278747
+6         17  depth_grid_model_8  0.2736645047090567
+7          5  depth_grid_model_2 0.27384727688745303
+8         19  depth_grid_model_9 0.27561345472833965
+9         21 depth_grid_model_10 0.27804811706119287
+10        23 depth_grid_model_11  0.2799678974173186
+11        25 depth_grid_model_12  0.2814161401361331
+12         3  depth_grid_model_1  0.2826054600412833
+13        27 depth_grid_model_13  0.2832815700137976
+14        29 depth_grid_model_14 0.28447137230016933
+15         1  depth_grid_model_0  0.3706308883226358
 
 ERROR: Unexpected HTTP Status code: 404 Not Found (url = http://localhost:54321/99/Grids/depth_grid?sort_by=auc&amp;decreasing=TRUE)
 
@@ -1069,8 +977,8 @@ Error: unexpected '/' in "maxDepth [[http:/"
 </div>
 </div>
 
-<div id="outline-container-org8597f5a" class="outline-4">
-<h4 id="org8597f5a"><span class="section-number-4">2.3.2</span> Grid search</h4>
+<div id="outline-container-org6bdb4cc" class="outline-4">
+<h4 id="org6bdb4cc"><span class="section-number-4">2.3.2</span> Grid search</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 Now that we know a good range, <code>[7,15]</code>, for <code>max_depth</code>, I can tune all other parameters in more detail. Since we don't know what combinations of hyper-parameters will result in the best model, I'll use random hyper-parameter search. 
@@ -1188,6 +1096,61 @@ save(sortedGrid,file = <span style="color: #CC9393;">'./grid2.RData'</span>)
 </pre>
 </div>
 
+<pre class="example">
+Error in seq(minDepth, maxDepth, 1) : object 'minDepth' not found
+Error in h2o.grid(hyper_params = hyper_params, search_criteria = search_criteria,  : 
+  object 'valid' not found
+
+ERROR: Unexpected HTTP Status code: 404 Not Found (url = http://localhost:54321/99/Grids/final_grid?sort_by=auc&amp;decreasing=TRUE)
+
+water.exceptions.H2OKeyNotFoundArgumentException
+ [1] "water.exceptions.H2OKeyNotFoundArgumentException: Object 'final_grid' not found for argument: grid_id"              
+ [2] "    water.api.Handler.getFromDKV(Handler.java:103)"                                                                 
+ [3] "    water.api.GridsHandler.fetch(GridsHandler.java:41)"                                                             
+ [4] "    sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)"                                                    
+ [5] "    sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)"                                  
+ [6] "    sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)"                          
+ [7] "    java.lang.reflect.Method.invoke(Method.java:498)"                                                               
+ [8] "    water.api.Handler.handle(Handler.java:63)"                                                                      
+ [9] "    water.api.RequestServer.serve(RequestServer.java:451)"                                                          
+[10] "    water.api.RequestServer.doGeneric(RequestServer.java:296)"                                                      
+[11] "    water.api.RequestServer.doGet(RequestServer.java:220)"                                                          
+[12] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:735)"                                                   
+[13] "    javax.servlet.http.HttpServlet.service(HttpServlet.java:848)"                                                   
+[14] "    org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:684)"                                         
+[15] "    org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:503)"                                     
+[16] "    org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1086)"                             
+[17] "    org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:429)"                                      
+[18] "    org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1020)"                              
+[19] "    org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)"                                  
+[20] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[21] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[22] "    water.JettyHTTPD$LoginHandler.handle(JettyHTTPD.java:192)"                                                      
+[23] "    org.eclipse.jetty.server.handler.HandlerCollection.handle(HandlerCollection.java:154)"                          
+[24] "    org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)"                                
+[25] "    org.eclipse.jetty.server.Server.handle(Server.java:370)"                                                        
+[26] "    org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:494)"                 
+[27] "    org.eclipse.jetty.server.BlockingHttpConnection.handleRequest(BlockingHttpConnection.java:53)"                  
+[28] "    org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:971)"                
+[29] "    org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:1033)"
+[30] "    org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:644)"                                               
+[31] "    org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)"                                          
+[32] "    org.eclipse.jetty.server.BlockingHttpConnection.handle(BlockingHttpConnection.java:72)"                         
+[33] "    org.eclipse.jetty.server.bio.SocketConnector$ConnectorEndPoint.run(SocketConnector.java:264)"                   
+[34] "    org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)"                               
+[35] "    org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)"                                
+[36] "    java.lang.Thread.run(Thread.java:745)"                                                                          
+
+Error in .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page,  : 
+  
+
+ERROR MESSAGE:
+
+Object 'final_grid' not found for argument: grid_id
+Error in save(sortedGrid, file = "./grid2.RData") : 
+  object ‘sortedGrid’ not found
+</pre>
+
 <div class="org-src-container">
 <pre class="src src-sh">rsync -azv  qikeli@sftp.hpc.arizona.edu:~/Data-Science-Challenge/6sense/
 org/grid2.RData ../../6sense/org/
@@ -1254,8 +1217,8 @@ Error in paste0(.h2o.__MODELS, "/", model_id) :
 </div>
 </div>
 
-<div id="outline-container-org6f9368b" class="outline-4">
-<h4 id="org6f9368b"><span class="section-number-4">2.3.3</span> Model Inspection and Final Test Set Scoring</h4>
+<div id="outline-container-orgfb1685a" class="outline-4">
+<h4 id="orgfb1685a"><span class="section-number-4">2.3.3</span> Model Inspection and Final Test Set Scoring</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 Let's see how well the best model of the grid search (as determined by validation set AUC) does on the held out test set:
@@ -1338,8 +1301,8 @@ specificity              0.9667155 0.95901984  0.9633228
 </div>
 </div>
 
-<div id="outline-container-org99d50df" class="outline-4">
-<h4 id="org99d50df"><span class="section-number-4">2.3.4</span> Ensembling Techniques</h4>
+<div id="outline-container-org436e1f2" class="outline-4">
+<h4 id="org436e1f2"><span class="section-number-4">2.3.4</span> Ensembling Techniques</h4>
 <div class="outline-text-4" id="text-2-3-4">
 <p>
 To further reduce the variance of models, I use ensembling techniques by
@@ -1373,8 +1336,8 @@ as.tibble(h2o.cbind(dat_test_final$ID, prob))<span style="color: #BFEBBF;">%&gt;
 </div>
 </div>
 
-<div id="outline-container-org1dcc779" class="outline-2">
-<h2 id="org1dcc779"><span class="section-number-2">3</span> Most predictive features</h2>
+<div id="outline-container-org6e4abbf" class="outline-2">
+<h2 id="org6e4abbf"><span class="section-number-2">3</span> Most predictive features</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Both Random Forest and GBM suggest that the most predictive variable is <code>EmailOpen</code>, which seems counter intuitive to me since <code>EmailOpen</code> demands little effort of a user. Possible reasons that can obfuscate the inference might include the disproportionately high abundance of <code>EmailOpen</code> activity and the highly correlated features.  
@@ -1415,8 +1378,8 @@ Error in h2o.varimp_plot(gbm) : object 'gbm' not found
 </div>
 </div>
 
-<div id="outline-container-org68f27fa" class="outline-2">
-<h2 id="org68f27fa"><span class="section-number-2">4</span> Recurrent neural network (RNN)</h2>
+<div id="outline-container-org520a324" class="outline-2">
+<h2 id="org520a324"><span class="section-number-2">4</span> Recurrent neural network (RNN)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Predicting future consumer behavior is fundamental to many cases in e-commerce. Consumer behavior in e-commerce can be described by sequences of interactions with a webshop. The methods I employed above are vector-based methods; they operate on feature vectors of fixed length as input. To apply them to predict consumer behavior, one needs to convert consumer histories into fixed sets of features. These features need to be hand-crafted to reflect consumer behavior. Two major drawbacks of the vector-based methods are:
@@ -1438,8 +1401,8 @@ I tried to implement RNN to solve this take-home problem. However, I realized it
 </div>
 <div id="postamble" class="status">
 <p class="date">Date: 2017-09-24 Sun 00:00</p>
-<p class="author">Author: Qike Li</p>
-<p class="date">Created: 2017-12-20 Wed 17:02</p>
+<p class="author">Author: Qike Max Li</p>
+<p class="date">Created: 2017-12-20 Wed 18:05</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

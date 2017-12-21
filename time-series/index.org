@@ -2,7 +2,7 @@
 #+DATE: <2017-12-4 Mon 20:00>
 #+AUTHOR: Qike Max Li
 #+EMAIL: qikeli@gmail.com
-#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-readtheorg.setup
+#+SETUPFILE: ../setup/theme-readtheorg-local.setup
 
 
 * COMMENT read in data and load packages
@@ -311,7 +311,7 @@ Cyclical behavior (~100 days period) may exist in the =Group by day of year= plo
 To identify the dominant cyclical behavior in a series, we will do a spectrum analysis. From now on, I will drop the data of cloudy days and impute the missing values since the data collected from cloudy days are very noisy and seems from a different distribution.
 
 ** Imputation 
-#+BEGIN_SRC R :exports both :results output :session
+#+BEGIN_SRC R :exports both :results output :session :eval no
 dat1 %>%
     mutate(car.count.impute = car.count) %>%
     mutate(car.count.impute = replace(car.count,
