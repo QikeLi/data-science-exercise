@@ -3,18 +3,12 @@
 #+PROPERTY: header-args :eval no :tangle yes
 #+HTML_DOCTYPE: xhtml-strict
 #+HTML_CONTAINER: div
-#+DESCRIPTION:
-#+KEYWORDS:
 #+HTML_LINK_HOME:
 #+HTML_LINK_UP:
 #+HTML_MATHJAX:
 #+HTML_HEAD:
-#+HTML_HEAD_EXTRA:
 #+TITLE: DoorDash Data Science Project
 #+AUTHOR: Qike Max Li
-#+INFOJS_OPT:
-#+CREATOR: <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="https://orgmode.org">Org</a> mode 9.1.13)
-#+LATEX_HEADER:
 #+SETUPFILE: ../setup/theme-bigblow-local.setup
 
 * A few thoughts
