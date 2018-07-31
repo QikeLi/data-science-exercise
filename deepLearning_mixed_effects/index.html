@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-07-31 Tue 08:54 -->
+<!-- 2018-07-31 Tue 09:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DoorDash Data Science Project</title>
@@ -262,52 +262,52 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org22c6346">1. A few thoughts</a>
+<li><a href="#orgb223a87">1. A few thoughts</a>
 <ul>
-<li><a href="#org391a31b">1.1. Overview</a>
+<li><a href="#orgbeabbbc">1.1. Overview</a>
 <ul>
-<li><a href="#org8f1fbea">1.1.1. Objectives</a></li>
-<li><a href="#org6e83876">1.1.2. Datasets</a></li>
-<li><a href="#org2bfc7fd">1.1.3. My approach</a></li>
+<li><a href="#org0b5b42d">1.1.1. Objectives</a></li>
+<li><a href="#orgb5f090e">1.1.2. Datasets</a></li>
+<li><a href="#org26f018b">1.1.3. My approach</a></li>
 </ul>
 </li>
-<li><a href="#org89692d0">1.2. Challenges</a>
+<li><a href="#orgdfeca32">1.2. Challenges</a>
 <ul>
-<li><a href="#org75ec36c">1.2.1. Missing values</a></li>
-<li><a href="#org040c42a">1.2.2. Feature engineering</a></li>
+<li><a href="#orge2c7c5b">1.2.1. Missing values</a></li>
+<li><a href="#org508e18d">1.2.2. Feature engineering</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgd615c37">2. EDA</a>
+<li><a href="#org832c3d4">2. EDA</a>
 <ul>
-<li><a href="#org9080958">2.1. Add some features</a>
+<li><a href="#org9f93e00">2.1. Add some features</a>
 <ul>
-<li><a href="#org8af0050">2.1.1. Extract day of week and hour of day</a></li>
-<li><a href="#org780af73">2.1.2. Investigate the average market features for each day of a week and each hour of a day</a></li>
-<li><a href="#org01be7b9">2.1.3. Hour of day</a></li>
+<li><a href="#org625880e">2.1.1. Extract day of week and hour of day</a></li>
+<li><a href="#orgb1f6a65">2.1.2. Investigate the average market features for each day of a week and each hour of a day</a></li>
+<li><a href="#orge381c7d">2.1.3. Hour of day</a></li>
 </ul>
 </li>
-<li><a href="#orgc62b94d">2.2. Missing values</a>
+<li><a href="#org2414db1">2.2. Missing values</a>
 <ul>
-<li><a href="#org2144d60">2.2.1. Count the number of missing values for each column</a></li>
-<li><a href="#orgd2f182c">2.2.2. Impute the missing values for some columns</a></li>
-<li><a href="#org12d893a">2.2.3. Treat the <code>NaN</code> as an extra level of the categorical variable</a></li>
-<li><a href="#orgb265825">2.2.4. Remove some data points</a></li>
+<li><a href="#org87456b7">2.2.1. Count the number of missing values for each column</a></li>
+<li><a href="#org1b0f2ba">2.2.2. Impute the missing values for some columns</a></li>
+<li><a href="#orgf26a40c">2.2.3. Treat the <code>NaN</code> as an extra level of the categorical variable</a></li>
+<li><a href="#org7cefa67">2.2.4. Remove some data points</a></li>
 </ul>
 </li>
-<li><a href="#org0179108">2.3. Compute the duration from orders created to orders delivered</a></li>
+<li><a href="#orgcc9c3a0">2.3. Compute the duration from orders created to orders delivered</a></li>
 </ul>
 </li>
-<li><a href="#org78d184d">3. Training</a>
+<li><a href="#orgf7f3339">3. Training</a>
 <ul>
-<li><a href="#org3072d54">3.1. Automatic Machine Learnig (AutoML)</a></li>
-<li><a href="#org8e70384">3.2. Mixed effects model</a></li>
+<li><a href="#org07526e3">3.1. Automatic Machine Learnig (AutoML)</a></li>
+<li><a href="#org7c12b02">3.2. Mixed effects model</a></li>
 </ul>
 </li>
-<li><a href="#org5a342e0">4. Prediction</a>
+<li><a href="#org47d48ab">4. Prediction</a>
 <ul>
-<li><a href="#org823a1ff">4.1. Script for model serving</a></li>
+<li><a href="#org0ae24a6">4.1. Script for model serving</a></li>
 </ul>
 </li>
 </ul>
@@ -315,24 +315,24 @@ for the JavaScript code in this tag.
 </div>
 
 
-<div id="outline-container-org22c6346" class="outline-2">
-<h2 id="org22c6346"><span class="section-number-2">1</span> A few thoughts</h2>
+<div id="outline-container-orgb223a87" class="outline-2">
+<h2 id="orgb223a87"><span class="section-number-2">1</span> A few thoughts</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org391a31b" class="outline-3">
-<h3 id="org391a31b"><span class="section-number-3">1.1</span> Overview</h3>
+<div id="outline-container-orgbeabbbc" class="outline-3">
+<h3 id="orgbeabbbc"><span class="section-number-3">1.1</span> Overview</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org8f1fbea" class="outline-4">
-<h4 id="org8f1fbea"><span class="section-number-4">1.1.1</span> Objectives</h4>
+<div id="outline-container-org0b5b42d" class="outline-4">
+<h4 id="org0b5b42d"><span class="section-number-4">1.1.1</span> Objectives</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 Given a few categorical and numerical variables, predict the delivery time.
 </p>
 </div>
 </div>
-<div id="outline-container-org6e83876" class="outline-4">
-<h4 id="org6e83876"><span class="section-number-4">1.1.2</span> Datasets</h4>
+<div id="outline-container-orgb5f090e" class="outline-4">
+<h4 id="orgb5f090e"><span class="section-number-4">1.1.2</span> Datasets</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <ul class="org-ul">
 <li>historical data</li>
@@ -340,8 +340,8 @@ Given a few categorical and numerical variables, predict the delivery time.
 </ul>
 </div>
 </div>
-<div id="outline-container-org2bfc7fd" class="outline-4">
-<h4 id="org2bfc7fd"><span class="section-number-4">1.1.3</span> My approach</h4>
+<div id="outline-container-org26f018b" class="outline-4">
+<h4 id="org26f018b"><span class="section-number-4">1.1.3</span> My approach</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 Due to time constraints, in this exercise, I don't strive for the best performing model but rather to demonstrate how I approach a data science problem. In other words, no attempts were made in carefully tuning the models. Heavy model tuning often lead to only incremental increase of model accuracy. Whereas, substantial accuracy gain are often resulted from better understanding of the problem, identifying the right features to collect, and designing models to represent the special structure/characteristics in data.  
@@ -349,40 +349,40 @@ Due to time constraints, in this exercise, I don't strive for the best performin
 </div>
 </div>
 </div>
-<div id="outline-container-org89692d0" class="outline-3">
-<h3 id="org89692d0"><span class="section-number-3">1.2</span> Challenges</h3>
+<div id="outline-container-orgdfeca32" class="outline-3">
+<h3 id="orgdfeca32"><span class="section-number-3">1.2</span> Challenges</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-org75ec36c" class="outline-4">
-<h4 id="org75ec36c"><span class="section-number-4">1.2.1</span> Missing values</h4>
+<div id="outline-container-orge2c7c5b" class="outline-4">
+<h4 id="orge2c7c5b"><span class="section-number-4">1.2.1</span> Missing values</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 In the historical dataset, some variables have missing values. Note, throughout this report I use variables and features interchangeably. 
 </p>
 </div>
 <ol class="org-ol">
-<li><a id="orgedbe7b3"></a><code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code><br />
+<li><a id="org698c4ab"></a><code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code><br />
 <div class="outline-text-5" id="text-1-2-1-1">
 <p>
 These variables represent market features. Since the market feature of the same time, i.e. the same hour of the same day of week, should be reasonably consistent. To impute the missing values, I took the average of these variables from the same time.
 </p>
 </div>
 </li>
-<li><a id="org7680fd5"></a><code>estimated_store_to_consumer_driving_duration</code><br />
+<li><a id="org99e95f0"></a><code>estimated_store_to_consumer_driving_duration</code><br />
 <div class="outline-text-5" id="text-1-2-1-2">
 <p>
 This is the estimated travel time between store and consumer. Stores located at areas with heavy traffic may tend to have longer driving duration time, and vice versa. Therefore, I used the average of driving duration time of a store to fill in the missing driving duration times of the same store. Note, this may not be a good strategy to fill in the missing values since the driving time should also depend on the distance from a customer to a store. To determine the approach of engineering this feature, model performances should be compared between with and without imputing this variable.
 </p>
 </div>
 </li>
-<li><a id="org95a8665"></a><code>store_primary_category</code><br />
+<li><a id="orgeb2c5e7"></a><code>store_primary_category</code><br />
 <div class="outline-text-5" id="text-1-2-1-3">
 <p>
 A store often offers one type of cuisine. Therefore, for each store, I take its most frequent category to fill in the missing values.
 </p>
 </div>
 </li>
-<li><a id="org4f8d22b"></a><code>market_id</code> and <code>order_protocol</code><br />
+<li><a id="org5ec34d5"></a><code>market_id</code> and <code>order_protocol</code><br />
 <div class="outline-text-5" id="text-1-2-1-4">
 <p>
 Instead of imputing the missing values for these two variables, I chose to treat the missing values as an extra level of the categorical variables since the their possible values cannot be inferred from the other variables. 
@@ -391,12 +391,12 @@ Instead of imputing the missing values for these two variables, I chose to treat
 </li>
 </ol>
 </div>
-<div id="outline-container-org040c42a" class="outline-4">
-<h4 id="org040c42a"><span class="section-number-4">1.2.2</span> Feature engineering</h4>
+<div id="outline-container-org508e18d" class="outline-4">
+<h4 id="org508e18d"><span class="section-number-4">1.2.2</span> Feature engineering</h4>
 <div class="outline-text-4" id="text-1-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="org67b9889"></a>The cyclic nature of the feature <code>hour</code><br />
+<li><a id="orgf1c0fe1"></a>The cyclic nature of the feature <code>hour</code><br />
 <div class="outline-text-5" id="text-1-2-2-1">
 <p>
 Hour of day is an ordinal cyclic variables. It is inappropriate to treat this variable as numeric or ordinal.
@@ -424,7 +424,7 @@ After the transformation, the distance between 1am and 24:00 and the distance be
 </div>
 </li>
 
-<li><a id="org905e458"></a>Linear vs non-linear; additive vs. interactive<br />
+<li><a id="org00cf2ce"></a>Linear vs non-linear; additive vs. interactive<br />
 <div class="outline-text-5" id="text-1-2-2-2">
 <p>
 Linear assumption is inappropriate since the delivery time never linearly increase as the other variables (e.g. <code>week of day</code>) increase.
@@ -436,7 +436,7 @@ The additive assumption is also inappropriate since interactive effects, such as
 </div>
 </li>
 
-<li><a id="org1b92684"></a>Random effects<br />
+<li><a id="org5420450"></a>Random effects<br />
 <div class="outline-text-5" id="text-1-2-2-3">
 <p>
 Random effects models — also known as hierarchical models — allow us to ascribe distinct behaviors to different "clusters" of observations, e.g. markets (<code>market_id</code>) may each act in a unique way. Furthermore, these models allow us to infer these tendencies in a collaborative fashion: while each market/cluster is assumed to behave differently, their parameters can be learned by heeding to the behavior of the population at large.
@@ -460,20 +460,20 @@ To my knowledge, there are no available algorithms to model the random effects w
 </div>
 </div>
 
-<div id="outline-container-orgd615c37" class="outline-2">
-<h2 id="orgd615c37"><span class="section-number-2">2</span> EDA</h2>
+<div id="outline-container-org832c3d4" class="outline-2">
+<h2 id="org832c3d4"><span class="section-number-2">2</span> EDA</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9080958" class="outline-3">
-<h3 id="org9080958"><span class="section-number-3">2.1</span> Add some features</h3>
+<div id="outline-container-org9f93e00" class="outline-3">
+<h3 id="org9f93e00"><span class="section-number-3">2.1</span> Add some features</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The delivery time may depend on which day of week and which hour of day. Therefore, I extracted week of day and hour of day from the variable <code>created_at</code>
 </p>
 </div>
 
-<div id="outline-container-org8af0050" class="outline-4">
-<h4 id="org8af0050"><span class="section-number-4">2.1.1</span> Extract day of week and hour of day</h4>
+<div id="outline-container-org625880e" class="outline-4">
+<h4 id="org625880e"><span class="section-number-4">2.1.1</span> Extract day of week and hour of day</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <div class="org-src-container">
 <pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">import</span> math
@@ -499,12 +499,12 @@ The delivery time may depend on which day of week and which hour of day. Therefo
 </div>
 </div>
 
-<div id="outline-container-org780af73" class="outline-4">
-<h4 id="org780af73"><span class="section-number-4">2.1.2</span> Investigate the average market features for each day of a week and each hour of a day</h4>
+<div id="outline-container-orgb1f6a65" class="outline-4">
+<h4 id="orgb1f6a65"><span class="section-number-4">2.1.2</span> Investigate the average market features for each day of a week and each hour of a day</h4>
 <div class="outline-text-4" id="text-2-1-2">
 </div>
 <ol class="org-ol">
-<li><a id="org54119ae"></a>Market feature vary substantially from day to day<br />
+<li><a id="org8c8ab07"></a>Market feature vary substantially from day to day<br />
 <div class="outline-text-5" id="text-2-1-2-1">
 <div class="org-src-container">
 <pre class="src src-ipython"><span style="color: #7590db;">grouped_mean_day</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'weekday'</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
@@ -567,7 +567,7 @@ plt.legend<span style="color: #4f97d7;">()</span>
 </div>
 </li>
 
-<li><a id="orge966369"></a>Market feature vary substantially from hour to hour<br />
+<li><a id="org20b67a0"></a>Market feature vary substantially from hour to hour<br />
 <div class="outline-text-5" id="text-2-1-2-2">
 <p>
 Here I only show two days. The same pattern holds for the other days. 
@@ -647,8 +647,8 @@ f_plot<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</spa
 </ol>
 </div>
 
-<div id="outline-container-org01be7b9" class="outline-4">
-<h4 id="org01be7b9"><span class="section-number-4">2.1.3</span> Hour of day</h4>
+<div id="outline-container-orge381c7d" class="outline-4">
+<h4 id="orge381c7d"><span class="section-number-4">2.1.3</span> Hour of day</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 Hour of day is an ordinal cyclic variables. It is inappropriate to treat this variable as numeric or ordinal. We need to take care of cyclicity. Thus we do the following trigonometric transformation
@@ -680,12 +680,12 @@ After the transformation, the distance between 1am and 24:00 and the distance be
 </div>
 </div>
 
-<div id="outline-container-orgc62b94d" class="outline-3">
-<h3 id="orgc62b94d"><span class="section-number-3">2.2</span> Missing values</h3>
+<div id="outline-container-org2414db1" class="outline-3">
+<h3 id="org2414db1"><span class="section-number-3">2.2</span> Missing values</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-org2144d60" class="outline-4">
-<h4 id="org2144d60"><span class="section-number-4">2.2.1</span> Count the number of missing values for each column</h4>
+<div id="outline-container-org87456b7" class="outline-4">
+<h4 id="org87456b7"><span class="section-number-4">2.2.1</span> Count the number of missing values for each column</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
 <pre class="src src-ipython">Train.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
@@ -718,12 +718,12 @@ dtype: int64
 </div>
 </div>
 
-<div id="outline-container-orgd2f182c" class="outline-4">
-<h4 id="orgd2f182c"><span class="section-number-4">2.2.2</span> Impute the missing values for some columns</h4>
+<div id="outline-container-org1b0f2ba" class="outline-4">
+<h4 id="org1b0f2ba"><span class="section-number-4">2.2.2</span> Impute the missing values for some columns</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="orgbaccd51"></a>For <code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code>, replace the missing values by the corresponding average from the same hour of day and the same day of week<br />
+<li><a id="org9332d6b"></a>For <code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code>, replace the missing values by the corresponding average from the same hour of day and the same day of week<br />
 <div class="outline-text-5" id="text-2-2-2-1">
 <div class="org-src-container">
 <pre class="src src-ipython"><span style="color: #7590db;">cols</span> = <span style="color: #4f97d7;">[</span>
@@ -751,7 +751,7 @@ Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6
 </div>
 </li>
 
-<li><a id="org2be94ed"></a>For <code>estimated_store_to_consumer_driving_duration</code>, replace the missing values by the average from the same store<br />
+<li><a id="orgb28d933"></a>For <code>estimated_store_to_consumer_driving_duration</code>, replace the missing values by the average from the same store<br />
 <div class="outline-text-5" id="text-2-2-2-2">
 <div class="org-src-container">
 <pre class="src src-ipython"><span style="color: #7590db;">grouped_mean_store</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'store_id'</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
@@ -776,7 +776,7 @@ Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6
 </div>
 </li>
 
-<li><a id="orgfc1f1fe"></a>Use the majority of the <code>store_primary_category</code> of a store to replace the missing values<br />
+<li><a id="org69f57d6"></a>Use the majority of the <code>store_primary_category</code> of a store to replace the missing values<br />
 <div class="outline-text-5" id="text-2-2-2-3">
 <div class="org-src-container">
 <pre class="src src-ipython">Train.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
@@ -803,20 +803,20 @@ Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6
 </ol>
 </div>
 
-<div id="outline-container-org12d893a" class="outline-4">
-<h4 id="org12d893a"><span class="section-number-4">2.2.3</span> Treat the <code>NaN</code> as an extra level of the categorical variable</h4>
+<div id="outline-container-orgf26a40c" class="outline-4">
+<h4 id="orgf26a40c"><span class="section-number-4">2.2.3</span> Treat the <code>NaN</code> as an extra level of the categorical variable</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <p>
 For the <code>NaN's</code> in <code>market_id</code> and <code>order_protocol</code>, and the remaining <code>NaN's</code> in <code>store_primary_category_x</code>, I treat them as a special level of these categorical variables 
 </p>
 </div>
 </div>
-<div id="outline-container-orgb265825" class="outline-4">
-<h4 id="orgb265825"><span class="section-number-4">2.2.4</span> Remove some data points</h4>
+<div id="outline-container-org7cefa67" class="outline-4">
+<h4 id="org7cefa67"><span class="section-number-4">2.2.4</span> Remove some data points</h4>
 <div class="outline-text-4" id="text-2-2-4">
 </div>
 <ol class="org-ol">
-<li><a id="orgb826a13"></a>remove rows with no delivery time<br />
+<li><a id="org099a409"></a>remove rows with no delivery time<br />
 <div class="outline-text-5" id="text-2-2-4-1">
 <p>
 Since no label is recorded, nothing can be learned from the data points. I remove those data points.
@@ -831,8 +831,8 @@ Since no label is recorded, nothing can be learned from the data points. I remov
 </div>
 </div>
 
-<div id="outline-container-org0179108" class="outline-3">
-<h3 id="org0179108"><span class="section-number-3">2.3</span> Compute the duration from orders created to orders delivered</h3>
+<div id="outline-container-orgcc9c3a0" class="outline-3">
+<h3 id="orgcc9c3a0"><span class="section-number-3">2.3</span> Compute the duration from orders created to orders delivered</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
 <pre class="src src-ipython"><span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'duration'</span><span style="color: #4f97d7;">]</span> = <span style="color: #4f97d7;">(</span>Train<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'actual_delivery_time'</span><span style="color: #bc6ec5;">]</span> - Train<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'created_at'</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.seconds<span style="color: #4f97d7;">)</span>
@@ -844,12 +844,12 @@ Train.to_csv<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-org78d184d" class="outline-2">
-<h2 id="org78d184d"><span class="section-number-2">3</span> Training</h2>
+<div id="outline-container-orgf7f3339" class="outline-2">
+<h2 id="orgf7f3339"><span class="section-number-2">3</span> Training</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org3072d54" class="outline-3">
-<h3 id="org3072d54"><span class="section-number-3">3.1</span> Automatic Machine Learnig (AutoML)</h3>
+<div id="outline-container-org07526e3" class="outline-3">
+<h3 id="org07526e3"><span class="section-number-3">3.1</span> Automatic Machine Learnig (AutoML)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 In recent years a number of AutoML have been developed. <a href="https://h2o-release.s3.amazonaws.com/h2o/master/3888/docs-website/h2o-docs/automl.html">H2O</a> offers an easy-to-use AutoML package. The AutoML tools significantly reduce the effort on model implementation when exploring different models. Data scientist just need to specify the models to be included, and then these models will be automatically tuned and evaluated. Keep in mind, AutoML is suitable for the initial model exploration but not for getting the best performing model. Once an appropriate model family is identified, further tuning is still required.   
@@ -1000,8 +1000,8 @@ I will use <code>StackedEnsemble_BestOfFamily</code> as the model for servnig.
 </div>
 </div>
 
-<div id="outline-container-org8e70384" class="outline-3">
-<h3 id="org8e70384"><span class="section-number-3">3.2</span> Mixed effects model</h3>
+<div id="outline-container-org7c12b02" class="outline-3">
+<h3 id="org7c12b02"><span class="section-number-3">3.2</span> Mixed effects model</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 A generalized mixed effects model (GLMM) is represented as:
@@ -1151,12 +1151,12 @@ inference.run<span style="color: #4f97d7;">(</span>n_samples=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org5a342e0" class="outline-2">
-<h2 id="org5a342e0"><span class="section-number-2">4</span> Prediction</h2>
+<div id="outline-container-org47d48ab" class="outline-2">
+<h2 id="org47d48ab"><span class="section-number-2">4</span> Prediction</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org823a1ff" class="outline-3">
-<h3 id="org823a1ff"><span class="section-number-3">4.1</span> Script for model serving</h3>
+<div id="outline-container-org0ae24a6" class="outline-3">
+<h3 id="org0ae24a6"><span class="section-number-3">4.1</span> Script for model serving</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 For the neural network based mixed effects model, since it is implemented in tensorflow, it can be served via tf.serving. A few advantages of tf.serving are:
@@ -1280,7 +1280,7 @@ h2o.init<span style="color: #4f97d7;">()</span>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Qike Max Li</p>
-<p class="date">Created: 2018-07-31 Tue 08:54</p>
+<p class="date">Created: 2018-07-31 Tue 09:08</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -15,7 +15,7 @@
 #+INFOJS_OPT:
 #+CREATOR: <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="https://orgmode.org">Org</a> mode 9.1.13)
 #+LATEX_HEADER:
-#+SETUPFILE: ~/Dropbox/scimax/org-html-themes/setup/theme-readtheorg.setup
+#+SETUPFILE: ../setup/theme-readtheorg.setup
 
 
 * A few thoughts
