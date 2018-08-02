@@ -1,6 +1,6 @@
 #+OPTIONS: html-link-use-abs-url:nil html-postamble:auto html-preamble:t
 #+OPTIONS: html-scripts:t html-style:t html5-fancy:nil tex:t
-#+PROPERTY: header-args :eval no :tangle yes
+#+PROPERTY: header-args :eval yes :tangle yes
 #+HTML_DOCTYPE: xhtml-strict
 #+HTML_CONTAINER: div
 #+HTML_LINK_HOME:
@@ -86,7 +86,7 @@ To my knowledge, there are no available algorithms to model the random effects w
 
  #+RESULTS:
  :RESULTS:
- # Out[1]:
+ # Out[112]:
  :END:
 
  #+BEGIN_SRC ipython :exports both :results raw drawer :session
@@ -100,7 +100,7 @@ To my knowledge, there are no available algorithms to model the random effects w
 
   #+RESULTS:
   :RESULTS:
-  # Out[3]:
+  # Out[113]:
   :END:
 
 *** Investigate the average market features for each day of a week and each hour of a day 
@@ -398,7 +398,7 @@ Here I only show two days. The same pattern holds for the other days.
 
      #+RESULTS:
      :RESULTS:
-     # Out[12]:
+     # Out[115]:
      :END:
 
 ** Compute the duration from orders created to orders delivered
