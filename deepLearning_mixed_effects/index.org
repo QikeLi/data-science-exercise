@@ -1,6 +1,6 @@
 #+OPTIONS: html-link-use-abs-url:nil html-postamble:auto html-preamble:t
 #+OPTIONS: html-scripts:t html-style:t html5-fancy:nil tex:t
-#+PROPERTY: header-args :eval yes :tangle yes
+#+PROPERTY: header-args :eval no :tangle yes
 #+HTML_DOCTYPE: xhtml-strict
 #+HTML_CONTAINER: div
 #+HTML_LINK_HOME:
@@ -403,8 +403,10 @@ Here I only show two days. The same pattern holds for the other days.
 
 ** Compute the duration from orders created to orders delivered
    #+BEGIN_SRC ipython :exports both :results raw drawer :session
-     Train['duration'] = (Train['actual_delivery_time'] - Train['created_at']).map(lambda x: x.seconds)
-     Train.drop(['actual_delivery_time','created_at', 'hour'], axis=1, inplace=True)
+     Train['duration'] = (Train['actual_delivery_time'] -
+                          Train['created_at']).map(lambda x: x.seconds)
+     Train.drop(
+         ['actual_delivery_time', 'created_at', 'hour'], axis=1, inplace=True)
      Train.to_csv('./data/data.csv', index=False)
    #+END_SRC
 
