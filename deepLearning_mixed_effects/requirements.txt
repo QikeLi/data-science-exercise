@@ -1,4 +1,0 @@
-matplotlib==2.1.0
-pandas==0.19.2
-numpy==1.12.1
-h2o==3.18.0.11
