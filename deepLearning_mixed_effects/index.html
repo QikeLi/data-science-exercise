@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-08-01 Wed 23:02 -->
+<!-- 2018-09-17 Mon 22:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DoorDash Data Science Project</title>
@@ -267,76 +267,76 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb360efb">1. A few thoughts</a>
+<li><a href="#orgf7d5388">1. A few thoughts</a>
 <ul>
-<li><a href="#orge328dab">1.1. Overview</a>
+<li><a href="#org141d84d">1.1. Overview</a>
 <ul>
-<li><a href="#orga289c0f">1.1.1. Objectives</a></li>
-<li><a href="#org53a0154">1.1.2. Datasets</a></li>
-<li><a href="#org6cba7b0">1.1.3. My approach</a></li>
+<li><a href="#org07c99b2">1.1.1. Objectives</a></li>
+<li><a href="#org3af2aa8">1.1.2. Datasets</a></li>
+<li><a href="#orgb9a29a5">1.1.3. My approach</a></li>
 </ul>
 </li>
-<li><a href="#org70b044e">1.2. Challenges</a>
+<li><a href="#orge041986">1.2. Challenges</a>
 <ul>
-<li><a href="#orgca1ee4c">1.2.1. Missing values</a></li>
-<li><a href="#org9490f4c">1.2.2. Feature engineering</a></li>
+<li><a href="#org00539e5">1.2.1. Missing values</a></li>
+<li><a href="#org4eac27f">1.2.2. Feature engineering</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org9d44fcd">2. EDA</a>
+<li><a href="#orgb119980">2. EDA</a>
 <ul>
-<li><a href="#org4dff9b3">2.1. Add some features</a>
+<li><a href="#org10da7c1">2.1. Add some features</a>
 <ul>
-<li><a href="#orgf9de8a5">2.1.1. Extract day of week and hour of day</a></li>
-<li><a href="#org44d9c90">2.1.2. Investigate the average market features for each day of a week and each hour of a day</a></li>
-<li><a href="#org5b9b7d8">2.1.3. Hour of day</a></li>
+<li><a href="#orga9a6933">2.1.1. Extract day of week and hour of day</a></li>
+<li><a href="#org45b6990">2.1.2. Investigate the average market features for each day of a week and each hour of a day</a></li>
+<li><a href="#orgd812eda">2.1.3. Hour of day</a></li>
 </ul>
 </li>
-<li><a href="#org59b80c5">2.2. Missing values</a>
+<li><a href="#org88e72b8">2.2. Missing values</a>
 <ul>
-<li><a href="#org8dd606d">2.2.1. Count the number of missing values for each column</a></li>
-<li><a href="#org8c879d0">2.2.2. Impute the missing values for some columns</a></li>
-<li><a href="#org4730645">2.2.3. Treat the <code>NaN</code> as an extra level of the categorical variable</a></li>
-<li><a href="#org40b2dbe">2.2.4. Remove some data points</a></li>
+<li><a href="#orgaed3c97">2.2.1. Count the number of missing values for each column</a></li>
+<li><a href="#org5564508">2.2.2. Impute the missing values for some columns</a></li>
+<li><a href="#org9021131">2.2.3. Treat the <code>NaN</code> as an extra level of the categorical variable</a></li>
+<li><a href="#orgb4e7003">2.2.4. Remove some data points</a></li>
 </ul>
 </li>
-<li><a href="#org1cf6971">2.3. Compute the duration from orders created to orders delivered</a></li>
+<li><a href="#org4b51796">2.3. Compute the duration from orders created to orders delivered</a></li>
 </ul>
 </li>
-<li><a href="#org6dd3174">3. Training</a>
+<li><a href="#org608c609">3. Training</a>
 <ul>
-<li><a href="#org526e2c6">3.1. Automatic Machine Learnig (AutoML)</a></li>
-<li><a href="#org9d9600b">3.2. Mixed effects model</a></li>
+<li><a href="#org5ca7a10">3.1. Automatic Machine Learnig (AutoML)</a></li>
+<li><a href="#orgc1bfa1c">3.2. Mixed effects model</a></li>
 </ul>
 </li>
-<li><a href="#org8893db6">4. Prediction</a>
+<li><a href="#org2923cea">4. Prediction</a>
 <ul>
-<li><a href="#org76fdbc8">4.1. Script for model serving</a></li>
+<li><a href="#org9d349d5">4.1. Script for model serving</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb360efb" class="outline-2">
-<h2 id="orgb360efb"><span class="section-number-2">1</span> A few thoughts</h2>
+<div id="outline-container-orgf7d5388" class="outline-2">
+<h2 id="orgf7d5388"><span class="section-number-2">1</span> A few thoughts</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orge328dab" class="outline-3">
-<h3 id="orge328dab"><span class="section-number-3">1.1</span> Overview</h3>
+<div id="outline-container-org141d84d" class="outline-3">
+<h3 id="org141d84d"><span class="section-number-3">1.1</span> Overview</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-orga289c0f" class="outline-4">
-<h4 id="orga289c0f"><span class="section-number-4">1.1.1</span> Objectives</h4>
+<div id="outline-container-org07c99b2" class="outline-4">
+<h4 id="org07c99b2"><span class="section-number-4">1.1.1</span> Objectives</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 Given a few categorical and numerical variables, predict the delivery time.
 </p>
 </div>
 </div>
-<div id="outline-container-org53a0154" class="outline-4">
-<h4 id="org53a0154"><span class="section-number-4">1.1.2</span> Datasets</h4>
+<div id="outline-container-org3af2aa8" class="outline-4">
+<h4 id="org3af2aa8"><span class="section-number-4">1.1.2</span> Datasets</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <ul class="org-ul">
 <li>historical data</li>
@@ -344,8 +344,8 @@ Given a few categorical and numerical variables, predict the delivery time.
 </ul>
 </div>
 </div>
-<div id="outline-container-org6cba7b0" class="outline-4">
-<h4 id="org6cba7b0"><span class="section-number-4">1.1.3</span> My approach</h4>
+<div id="outline-container-orgb9a29a5" class="outline-4">
+<h4 id="orgb9a29a5"><span class="section-number-4">1.1.3</span> My approach</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 Due to time constraints, in this exercise, I don't strive for the best performing model but rather to demonstrate how I approach a data science problem. In other words, no attempts were made in carefully tuning the models. Heavy model tuning often lead to only incremental increase of model accuracy. Whereas, substantial accuracy gain are often resulted from better understanding of the problem, identifying the right features to collect, and designing models to represent the special structure/characteristics in data.  
@@ -353,40 +353,40 @@ Due to time constraints, in this exercise, I don't strive for the best performin
 </div>
 </div>
 </div>
-<div id="outline-container-org70b044e" class="outline-3">
-<h3 id="org70b044e"><span class="section-number-3">1.2</span> Challenges</h3>
+<div id="outline-container-orge041986" class="outline-3">
+<h3 id="orge041986"><span class="section-number-3">1.2</span> Challenges</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgca1ee4c" class="outline-4">
-<h4 id="orgca1ee4c"><span class="section-number-4">1.2.1</span> Missing values</h4>
+<div id="outline-container-org00539e5" class="outline-4">
+<h4 id="org00539e5"><span class="section-number-4">1.2.1</span> Missing values</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 In the historical dataset, some variables have missing values. Note, throughout this report I use variables and features interchangeably. 
 </p>
 </div>
 <ol class="org-ol">
-<li><a id="org387ebe7"></a><code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code><br />
+<li><a id="org6292264"></a><code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code><br />
 <div class="outline-text-5" id="text-1-2-1-1">
 <p>
 These variables represent market features. Since the market feature of the same time, i.e. the same hour of the same day of week, should be reasonably consistent. To impute the missing values, I took the average of these variables from the same time.
 </p>
 </div>
 </li>
-<li><a id="org5ba326f"></a><code>estimated_store_to_consumer_driving_duration</code><br />
+<li><a id="orgbbad6ed"></a><code>estimated_store_to_consumer_driving_duration</code><br />
 <div class="outline-text-5" id="text-1-2-1-2">
 <p>
 This is the estimated travel time between store and consumer. Stores located at areas with heavy traffic may tend to have longer driving duration time, and vice versa. Therefore, I used the average of driving duration time of a store to fill in the missing driving duration times of the same store. Note, this may not be a good strategy to fill in the missing values since the driving time should also depend on the distance from a customer to a store. To determine the approach of engineering this feature, model performances should be compared between with and without imputing this variable.
 </p>
 </div>
 </li>
-<li><a id="orgfd9727e"></a><code>store_primary_category</code><br />
+<li><a id="org717c3da"></a><code>store_primary_category</code><br />
 <div class="outline-text-5" id="text-1-2-1-3">
 <p>
 A store often offers one type of cuisine. Therefore, for each store, I take its most frequent category to fill in the missing values.
 </p>
 </div>
 </li>
-<li><a id="orgc43e4b1"></a><code>market_id</code> and <code>order_protocol</code><br />
+<li><a id="org15ff604"></a><code>market_id</code> and <code>order_protocol</code><br />
 <div class="outline-text-5" id="text-1-2-1-4">
 <p>
 Instead of imputing the missing values for these two variables, I chose to treat the missing values as an extra level of the categorical variables since the their possible values cannot be inferred from the other variables. 
@@ -395,12 +395,12 @@ Instead of imputing the missing values for these two variables, I chose to treat
 </li>
 </ol>
 </div>
-<div id="outline-container-org9490f4c" class="outline-4">
-<h4 id="org9490f4c"><span class="section-number-4">1.2.2</span> Feature engineering</h4>
+<div id="outline-container-org4eac27f" class="outline-4">
+<h4 id="org4eac27f"><span class="section-number-4">1.2.2</span> Feature engineering</h4>
 <div class="outline-text-4" id="text-1-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="org14ca3a9"></a>The cyclic nature of the feature <code>hour</code><br />
+<li><a id="orgf964093"></a>The cyclic nature of the feature <code>hour</code><br />
 <div class="outline-text-5" id="text-1-2-2-1">
 <p>
 Hour of day is an ordinal cyclic variables. It is inappropriate to treat this variable as numeric or ordinal.
@@ -428,7 +428,7 @@ After the transformation, the distance between 1am and 24:00 and the distance be
 </div>
 </li>
 
-<li><a id="org6d4513d"></a>Linear vs non-linear; additive vs. interactive<br />
+<li><a id="org16a9551"></a>Linear vs non-linear; additive vs. interactive<br />
 <div class="outline-text-5" id="text-1-2-2-2">
 <p>
 Linear assumption is inappropriate since the delivery time never linearly increase as the other variables (e.g. <code>week of day</code>) increase.
@@ -440,7 +440,7 @@ The additive assumption is also inappropriate since interactive effects, such as
 </div>
 </li>
 
-<li><a id="org80fdf60"></a>Random effects<br />
+<li><a id="org0f99411"></a>Random effects<br />
 <div class="outline-text-5" id="text-1-2-2-3">
 <p>
 Random effects models — also known as hierarchical models — allow us to ascribe distinct behaviors to different "clusters" of observations, e.g. markets (<code>market_id</code>) may each act in a unique way. Furthermore, these models allow us to infer these tendencies in a collaborative fashion: while each market/cluster is assumed to behave differently, their parameters can be learned by heeding to the behavior of the population at large.
@@ -464,98 +464,98 @@ To my knowledge, there are no available algorithms to model the random effects w
 </div>
 </div>
 
-<div id="outline-container-org9d44fcd" class="outline-2">
-<h2 id="org9d44fcd"><span class="section-number-2">2</span> EDA</h2>
+<div id="outline-container-orgb119980" class="outline-2">
+<h2 id="orgb119980"><span class="section-number-2">2</span> EDA</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org4dff9b3" class="outline-3">
-<h3 id="org4dff9b3"><span class="section-number-3">2.1</span> Add some features</h3>
+<div id="outline-container-org10da7c1" class="outline-3">
+<h3 id="org10da7c1"><span class="section-number-3">2.1</span> Add some features</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The delivery time may depend on which day of week and which hour of day. Therefore, I extracted week of day and hour of day from the variable <code>created_at</code>
 </p>
 </div>
 
-<div id="outline-container-orgf9de8a5" class="outline-4">
-<h4 id="orgf9de8a5"><span class="section-number-4">2.1.1</span> Extract day of week and hour of day</h4>
+<div id="outline-container-orga9a6933" class="outline-4">
+<h4 id="orga9a6933"><span class="section-number-4">2.1.1</span> Extract day of week and hour of day</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">import</span> math
-<span style="color: #4f97d7; font-weight: bold;">from</span> datetime <span style="color: #4f97d7; font-weight: bold;">import</span> datetime
+<pre class="src src-ipython">import math
+from datetime import datetime
 
-<span style="color: #4f97d7; font-weight: bold;">import</span> matplotlib.pyplot <span style="color: #4f97d7; font-weight: bold;">as</span> plt
-<span style="color: #4f97d7; font-weight: bold;">import</span> numpy <span style="color: #4f97d7; font-weight: bold;">as</span> np
-<span style="color: #4f97d7; font-weight: bold;">import</span> pandas <span style="color: #4f97d7; font-weight: bold;">as</span> pd
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 %matplotlib inline
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">Train</span> = pd.read_csv<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'../../Data Science/historical_data.csv'</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train.actual_delivery_time</span> = \
-    pd.to_datetime<span style="color: #4f97d7;">(</span>Train.actual_delivery_time<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train.created_at</span> = pd.to_datetime<span style="color: #4f97d7;">(</span>Train.created_at<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'weekday'</span><span style="color: #4f97d7;">]</span> = Train.created_at.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.weekday<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour'</span><span style="color: #4f97d7;">]</span> = Train.created_at.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.hour<span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">Train = pd.read_csv('../../Data Science/historical_data.csv')
+Train.actual_delivery_time = \
+    pd.to_datetime(Train.actual_delivery_time)
+Train.created_at = pd.to_datetime(Train.created_at)
+Train['weekday'] = Train.created_at.map(lambda x: x.weekday())
+Train['hour'] = Train.created_at.map(lambda x: x.hour)
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org44d9c90" class="outline-4">
-<h4 id="org44d9c90"><span class="section-number-4">2.1.2</span> Investigate the average market features for each day of a week and each hour of a day</h4>
+<div id="outline-container-org45b6990" class="outline-4">
+<h4 id="org45b6990"><span class="section-number-4">2.1.2</span> Investigate the average market features for each day of a week and each hour of a day</h4>
 <div class="outline-text-4" id="text-2-1-2">
 </div>
 <ol class="org-ol">
-<li><a id="org0ec1d21"></a>Market feature vary substantially from day to day<br />
+<li><a id="org1a9dc1c"></a>Market feature vary substantially from day to day<br />
 <div class="outline-text-5" id="text-2-1-2-1">
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">grouped_mean_day</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'weekday'</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
-    <span style="color: #2d9574;">'total_onshift_dashers'</span>:
-    np.<span style="color: #4f97d7;">sum</span>,
-    <span style="color: #2d9574;">'total_busy_dashers'</span>:
-    np.<span style="color: #4f97d7;">sum</span>,
-    <span style="color: #2d9574;">'total_outstanding_orders'</span>:
-    np.<span style="color: #4f97d7;">sum</span>
-<span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">grouped_mean_day = Train.groupby('weekday').agg({
+    'total_onshift_dashers':
+    np.sum,
+    'total_busy_dashers':
+    np.sum,
+    'total_outstanding_orders':
+    np.sum
+})
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">create plot</span>
-<span style="color: #7590db;">fig</span>, <span style="color: #7590db;">ax</span> = plt.subplots<span style="color: #4f97d7;">()</span>
-<span style="color: #7590db;">index</span> = grouped_mean_day.index.values
-<span style="color: #7590db;">bar_width</span> = <span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">25</span>
-<span style="color: #7590db;">opacity</span> = <span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">8</span>
+# create plot
+fig, ax = plt.subplots()
+index = grouped_mean_day.index.values
+bar_width = 0.25
+opacity = 0.8
 
-<span style="color: #7590db;">rects1</span> = plt.bar<span style="color: #4f97d7;">(</span>
+rects1 = plt.bar(
     index,
     grouped_mean_day.total_busy_dashers,
     bar_width,
     alpha=opacity,
-    color=<span style="color: #2d9574;">'b'</span>,
-    label=<span style="color: #2d9574;">'# busy_dashers'</span><span style="color: #4f97d7;">)</span>
+    color='b',
+    label='# busy_dashers')
 
-<span style="color: #7590db;">rects2</span> = plt.bar<span style="color: #4f97d7;">(</span>
+rects2 = plt.bar(
     index + bar_width,
     grouped_mean_day.total_onshift_dashers,
     bar_width,
     alpha=opacity,
-    color=<span style="color: #2d9574;">'g'</span>,
-    label=<span style="color: #2d9574;">'# onshift_dashers'</span><span style="color: #4f97d7;">)</span>
+    color='g',
+    label='# onshift_dashers')
 
-<span style="color: #7590db;">rects3</span> = plt.bar<span style="color: #4f97d7;">(</span>
-    index + <span style="color: #a45bad;">2</span> * bar_width,
+rects3 = plt.bar(
+    index + 2 * bar_width,
     grouped_mean_day.total_outstanding_orders,
     bar_width,
     alpha=opacity,
-    color=<span style="color: #2d9574;">'r'</span>,
-    label=<span style="color: #2d9574;">'# outstanding_orders'</span><span style="color: #4f97d7;">)</span>
+    color='r',
+    label='# outstanding_orders')
 
-plt.xlabel<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Day of Week'</span><span style="color: #4f97d7;">)</span>
-plt.ylabel<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Market Features'</span><span style="color: #4f97d7;">)</span>
-plt.title<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Market Features by day'</span><span style="color: #4f97d7;">)</span>
-plt.xticks<span style="color: #4f97d7;">(</span>index + bar_width,
-           <span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">'Mon'</span>, <span style="color: #2d9574;">'Tue'</span>, <span style="color: #2d9574;">'Wed'</span>, <span style="color: #2d9574;">'Thur'</span>, <span style="color: #2d9574;">'Fri'</span>, <span style="color: #2d9574;">'Sat'</span>, <span style="color: #2d9574;">'Sun'</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-plt.legend<span style="color: #4f97d7;">()</span>
+plt.xlabel('Day of Week')
+plt.ylabel('Market Features')
+plt.title('Market Features by day')
+plt.xticks(index + bar_width,
+           ('Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'))
+plt.legend()
 </pre>
 </div>
 
@@ -571,62 +571,62 @@ plt.legend<span style="color: #4f97d7;">()</span>
 </div>
 </li>
 
-<li><a id="org47307ef"></a>Market feature vary substantially from hour to hour<br />
+<li><a id="org03449a6"></a>Market feature vary substantially from hour to hour<br />
 <div class="outline-text-5" id="text-2-1-2-2">
 <p>
 Here I only show two days. The same pattern holds for the other days. 
 </p>
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">grouped_mean</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'weekday'</span>, <span style="color: #2d9574;">'hour'</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
-    <span style="color: #2d9574;">'total_onshift_dashers'</span>:
-    np.<span style="color: #4f97d7;">sum</span>,
-    <span style="color: #2d9574;">'total_busy_dashers'</span>:
-    np.<span style="color: #4f97d7;">sum</span>,
-    <span style="color: #2d9574;">'total_outstanding_orders'</span>:
-    np.<span style="color: #4f97d7;">sum</span>
-<span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">grouped_mean = Train.groupby(['weekday', 'hour']).agg({
+    'total_onshift_dashers':
+    np.sum,
+    'total_busy_dashers':
+    np.sum,
+    'total_outstanding_orders':
+    np.sum
+})
 
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">define a function to make a plot for the market features of each hour</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">create plot</span>
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">f_plot</span><span style="color: #4f97d7;">(</span>which_day=<span style="color: #a45bad;">0</span>, day=<span style="color: #2d9574;">'Monday'</span><span style="color: #4f97d7;">)</span>:
-    <span style="color: #7590db;">fig</span>, <span style="color: #7590db;">ax</span> = plt.subplots<span style="color: #4f97d7;">()</span>
-    <span style="color: #7590db;">index</span> = np.arange<span style="color: #4f97d7;">(</span>grouped_mean.loc<span style="color: #bc6ec5;">[</span>which_day<span style="color: #bc6ec5;">]</span>.shape<span style="color: #bc6ec5;">[</span><span style="color: #a45bad;">0</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">bar_width</span> = .<span style="color: #a45bad;">25</span>
-    <span style="color: #7590db;">opacity</span> = <span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">8</span>
+# define a function to make a plot for the market features of each hour
+# create plot
+def f_plot(which_day=0, day='Monday'):
+    fig, ax = plt.subplots()
+    index = np.arange(grouped_mean.loc[which_day].shape[0])
+    bar_width = .25
+    opacity = 0.8
 
-    <span style="color: #7590db;">rects1</span> = plt.bar<span style="color: #4f97d7;">(</span>
+    rects1 = plt.bar(
         index,
-        grouped_mean.loc<span style="color: #bc6ec5;">[</span>which_day<span style="color: #bc6ec5;">]</span>.total_busy_dashers,
+        grouped_mean.loc[which_day].total_busy_dashers,
         bar_width,
         alpha=opacity,
-        color=<span style="color: #2d9574;">'b'</span>,
-        label=<span style="color: #2d9574;">'# busy_dashers'</span><span style="color: #4f97d7;">)</span>
+        color='b',
+        label='# busy_dashers')
 
-    <span style="color: #7590db;">rects2</span> = plt.bar<span style="color: #4f97d7;">(</span>
+    rects2 = plt.bar(
         index + bar_width,
-        grouped_mean.loc<span style="color: #bc6ec5;">[</span>which_day<span style="color: #bc6ec5;">]</span>.total_onshift_dashers,
+        grouped_mean.loc[which_day].total_onshift_dashers,
         bar_width,
         alpha=opacity,
-        color=<span style="color: #2d9574;">'g'</span>,
-        label=<span style="color: #2d9574;">'# onshift_dashers'</span><span style="color: #4f97d7;">)</span>
+        color='g',
+        label='# onshift_dashers')
 
-    <span style="color: #7590db;">rects3</span> = plt.bar<span style="color: #4f97d7;">(</span>
-        index + <span style="color: #a45bad;">2</span> * bar_width,
-        grouped_mean.loc<span style="color: #bc6ec5;">[</span>which_day<span style="color: #bc6ec5;">]</span>.total_outstanding_orders,
+    rects3 = plt.bar(
+        index + 2 * bar_width,
+        grouped_mean.loc[which_day].total_outstanding_orders,
         bar_width,
         alpha=opacity,
-        color=<span style="color: #2d9574;">'r'</span>,
-        label=<span style="color: #2d9574;">'# outstanding_orders'</span><span style="color: #4f97d7;">)</span>
+        color='r',
+        label='# outstanding_orders')
 
-    plt.xlabel<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Day of Week'</span><span style="color: #4f97d7;">)</span>
-    plt.ylabel<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Market Features'</span><span style="color: #4f97d7;">)</span>
-    plt.title<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Market Features by hour on '</span> + day<span style="color: #4f97d7;">)</span>
-    plt.xticks<span style="color: #4f97d7;">(</span>index + bar_width, grouped_mean.loc<span style="color: #bc6ec5;">[</span>which_day<span style="color: #bc6ec5;">]</span>.index.values<span style="color: #4f97d7;">)</span>
-    plt.legend<span style="color: #4f97d7;">()</span>
+    plt.xlabel('Day of Week')
+    plt.ylabel('Market Features')
+    plt.title('Market Features by hour on ' + day)
+    plt.xticks(index + bar_width, grouped_mean.loc[which_day].index.values)
+    plt.legend()
 
 
-f_plot<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</span>, <span style="color: #2d9574;">'Monday'</span><span style="color: #4f97d7;">)</span>
+f_plot(1, 'Monday')
 </pre>
 </div>
 
@@ -637,7 +637,7 @@ f_plot<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</spa
 </div>
 
 <div class="org-src-container">
-<pre class="src src-ipython">f_plot<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">6</span>, <span style="color: #2d9574;">'Saturday'</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">f_plot(6, 'Saturday')
 </pre>
 </div>
 
@@ -651,8 +651,8 @@ f_plot<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">1</spa
 </ol>
 </div>
 
-<div id="outline-container-org5b9b7d8" class="outline-4">
-<h4 id="org5b9b7d8"><span class="section-number-4">2.1.3</span> Hour of day</h4>
+<div id="outline-container-orgd812eda" class="outline-4">
+<h4 id="orgd812eda"><span class="section-number-4">2.1.3</span> Hour of day</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 Hour of day is an ordinal cyclic variables. It is inappropriate to treat this variable as numeric or ordinal. We need to take care of cyclicity. Thus we do the following trigonometric transformation
@@ -668,31 +668,31 @@ After the transformation, the distance between 1am and 24:00 and the distance be
 </p>
 
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">hour_x</span><span style="color: #4f97d7;">(</span>hour<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">return</span> math.sin<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> * math.pi * hour / <span style="color: #a45bad;">24</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">def hour_x(hour):
+    return math.sin(2 * math.pi * hour / 24)
 
 
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">hour_y</span><span style="color: #4f97d7;">(</span>hour<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">return</span> math.cos<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> * math.pi * hour / <span style="color: #a45bad;">24</span><span style="color: #4f97d7;">)</span>
+def hour_y(hour):
+    return math.cos(2 * math.pi * hour / 24)
 
 
-<span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour_x'</span><span style="color: #4f97d7;">]</span> = Train.hour.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span>hour_x<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour_y'</span><span style="color: #4f97d7;">]</span> = Train.hour.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span>hour_y<span style="color: #4f97d7;">)</span>
+Train['hour_x'] = Train.hour.map(hour_x)
+Train['hour_y'] = Train.hour.map(hour_y)
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org59b80c5" class="outline-3">
-<h3 id="org59b80c5"><span class="section-number-3">2.2</span> Missing values</h3>
+<div id="outline-container-org88e72b8" class="outline-3">
+<h3 id="org88e72b8"><span class="section-number-3">2.2</span> Missing values</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-org8dd606d" class="outline-4">
-<h4 id="org8dd606d"><span class="section-number-4">2.2.1</span> Count the number of missing values for each column</h4>
+<div id="outline-container-orgaed3c97" class="outline-4">
+<h4 id="orgaed3c97"><span class="section-number-4">2.2.1</span> Count the number of missing values for each column</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
-<pre class="src src-ipython">Train.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
+<pre class="src src-ipython">Train.isnull().sum()
 </pre>
 </div>
 
@@ -722,84 +722,84 @@ dtype: int64
 </div>
 </div>
 
-<div id="outline-container-org8c879d0" class="outline-4">
-<h4 id="org8c879d0"><span class="section-number-4">2.2.2</span> Impute the missing values for some columns</h4>
+<div id="outline-container-org5564508" class="outline-4">
+<h4 id="org5564508"><span class="section-number-4">2.2.2</span> Impute the missing values for some columns</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="org638f3d5"></a>For <code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code>, replace the missing values by the corresponding average from the same hour of day and the same day of week<br />
+<li><a id="org0d987fa"></a>For <code>total_onshift_dashers</code>, <code>total_busy_dashers</code>, and <code>total_outstanding_orders</code>, replace the missing values by the corresponding average from the same hour of day and the same day of week<br />
 <div class="outline-text-5" id="text-2-2-2-1">
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">cols</span> = <span style="color: #4f97d7;">[</span>
-    <span style="color: #2d9574;">'total_onshift_dashers'</span>,
-    <span style="color: #2d9574;">'total_busy_dashers'</span>,
-    <span style="color: #2d9574;">'total_outstanding_orders'</span>
-<span style="color: #4f97d7;">]</span>
+<pre class="src src-ipython">cols = [
+    'total_onshift_dashers',
+    'total_busy_dashers',
+    'total_outstanding_orders'
+]
 
-<span style="color: #7590db;">grouped_mean</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'weekday'</span>, <span style="color: #2d9574;">'hour'</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
-    <span style="color: #2d9574;">'total_onshift_dashers'</span>:
+grouped_mean = Train.groupby(['weekday', 'hour']).agg({
+    'total_onshift_dashers':
     np.mean,
-    <span style="color: #2d9574;">'total_busy_dashers'</span>:
+    'total_busy_dashers':
     np.mean,
-    <span style="color: #2d9574;">'total_outstanding_orders'</span>:
+    'total_outstanding_orders':
     np.mean
-<span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">Train_merge</span> = Train.reset_index<span style="color: #4f97d7;">()</span>.join<span style="color: #4f97d7;">(</span>
-    grouped_mean, on=<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'weekday'</span>, <span style="color: #2d9574;">'hour'</span><span style="color: #bc6ec5;">]</span>, lsuffix=<span style="color: #2d9574;">'_x'</span>, rsuffix=<span style="color: #2d9574;">'_y'</span><span style="color: #4f97d7;">)</span>
+})
+Train_merge = Train.reset_index().join(
+    grouped_mean, on=['weekday', 'hour'], lsuffix='_x', rsuffix='_y')
 
-Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:,cols<span style="color: #bc6ec5;">]</span>.isnull<span style="color: #bc6ec5;">()</span>.<span style="color: #4f97d7;">any</span><span style="color: #bc6ec5;">(</span>axis=<span style="color: #a45bad;">1</span><span style="color: #bc6ec5;">)</span>.tolist<span style="color: #bc6ec5;">()</span>, cols<span style="color: #4f97d7;">]</span> =\
-    Train_merge.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:, cols<span style="color: #bc6ec5;">]</span>.isnull<span style="color: #bc6ec5;">()</span>.<span style="color: #4f97d7;">any</span><span style="color: #bc6ec5;">(</span>axis=<span style="color: #a45bad;">1</span><span style="color: #bc6ec5;">)</span>.tolist<span style="color: #bc6ec5;">()</span>,
-                    <span style="color: #bc6ec5;">[</span>c+<span style="color: #2d9574;">'_y'</span> <span style="color: #4f97d7; font-weight: bold;">for</span> c <span style="color: #4f97d7; font-weight: bold;">in</span> cols<span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">]</span>.values
+Train.loc[Train.loc[:,cols].isnull().any(axis=1).tolist(), cols] =\
+    Train_merge.loc[Train.loc[:, cols].isnull().any(axis=1).tolist(),
+                    [c+'_y' for c in cols]].values
 </pre>
 </div>
 </div>
 </li>
 
-<li><a id="org6cb4409"></a>For <code>estimated_store_to_consumer_driving_duration</code>, replace the missing values by the average from the same store<br />
+<li><a id="org862bb32"></a>For <code>estimated_store_to_consumer_driving_duration</code>, replace the missing values by the average from the same store<br />
 <div class="outline-text-5" id="text-2-2-2-2">
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">grouped_mean_store</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'store_id'</span><span style="color: #4f97d7;">)</span>.agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span>
-    <span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span>:
+<pre class="src src-ipython">grouped_mean_store = Train.groupby('store_id').agg({
+    'estimated_store_to_consumer_driving_duration':
     np.mean
-<span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
+})
 
-<span style="color: #7590db;">Train_merge_store</span> = Train.reset_index<span style="color: #4f97d7;">()</span>.join<span style="color: #4f97d7;">(</span>
-    grouped_mean_store, on=<span style="color: #2d9574;">'store_id'</span>, lsuffix=<span style="color: #2d9574;">'_x'</span>, rsuffix=<span style="color: #2d9574;">'_y'</span><span style="color: #4f97d7;">)</span>
-Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:,<span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span><span style="color: #bc6ec5;">]</span>\
-    .isnull<span style="color: #bc6ec5;">()</span>.tolist<span style="color: #bc6ec5;">()</span>, <span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span><span style="color: #4f97d7;">]</span> =\
-    Train_merge_store.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:,
-    <span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span><span style="color: #bc6ec5;">]</span>.isnull<span style="color: #bc6ec5;">()</span>.tolist<span style="color: #bc6ec5;">()</span>,
-    <span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span>+<span style="color: #2d9574;">'_y'</span><span style="color: #4f97d7;">]</span>
+Train_merge_store = Train.reset_index().join(
+    grouped_mean_store, on='store_id', lsuffix='_x', rsuffix='_y')
+Train.loc[Train.loc[:,'estimated_store_to_consumer_driving_duration']\
+    .isnull().tolist(), 'estimated_store_to_consumer_driving_duration'] =\
+    Train_merge_store.loc[Train.loc[:,
+    'estimated_store_to_consumer_driving_duration'].isnull().tolist(),
+    'estimated_store_to_consumer_driving_duration'+'_y']
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">remove the only data point that has NaN for</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">estimated_store_to_consumer_driving_duration. Note, this store only has this</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">one record</span>
-<span style="color: #7590db;">Train</span> = Train<span style="color: #4f97d7;">[</span>~Train.estimated_store_to_consumer_driving_duration.isnull<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">]</span>
+# remove the only data point that has NaN for
+# estimated_store_to_consumer_driving_duration. Note, this store only has this
+# one record
+Train = Train[~Train.estimated_store_to_consumer_driving_duration.isnull()]
 </pre>
 </div>
 </div>
 </li>
 
-<li><a id="orgcd6db71"></a>Use the majority of the <code>store_primary_category</code> of a store to replace the missing values<br />
+<li><a id="orge198f5d"></a>Use the majority of the <code>store_primary_category</code> of a store to replace the missing values<br />
 <div class="outline-text-5" id="text-2-2-2-3">
 <div class="org-src-container">
-<pre class="src src-ipython">Train.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
+<pre class="src src-ipython">Train.isnull().sum()
 
-<span style="color: #7590db;">group_maj_categ</span> = Train.groupby<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'store_id'</span><span style="color: #4f97d7;">)</span>.\
-            agg<span style="color: #4f97d7;">(</span><span style="color: #bc6ec5;">{</span><span style="color: #2d9574;">'store_primary_category'</span>:
-                <span style="color: #4f97d7; font-weight: bold;">lambda</span> x: np.nan <span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #4f97d7;">len</span><span style="color: #2d9574;">(</span>pd.value_counts<span style="color: #67b11d;">(</span>x<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span> == <span style="color: #a45bad;">0</span>
-                <span style="color: #4f97d7; font-weight: bold;">else</span> pd.value_counts<span style="color: #2d9574;">(</span>x<span style="color: #2d9574;">)</span>.idxmax<span style="color: #2d9574;">()</span><span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
+group_maj_categ = Train.groupby('store_id').\
+            agg({'store_primary_category':
+                lambda x: np.nan if len(pd.value_counts(x)) == 0
+                else pd.value_counts(x).idxmax()})
 
-<span style="color: #7590db;">Train_merge_store</span> = Train.reset_index<span style="color: #4f97d7;">()</span>.join<span style="color: #4f97d7;">(</span>
-    group_maj_categ, on=<span style="color: #2d9574;">'store_id'</span>, lsuffix=<span style="color: #2d9574;">'_x'</span>, rsuffix=<span style="color: #2d9574;">'_y'</span><span style="color: #4f97d7;">)</span>
+Train_merge_store = Train.reset_index().join(
+    group_maj_categ, on='store_id', lsuffix='_x', rsuffix='_y')
 
-Train.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
-Train_merge_store.isnull<span style="color: #4f97d7;">()</span>.<span style="color: #4f97d7;">sum</span><span style="color: #4f97d7;">()</span>
-Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:,<span style="color: #2d9574;">'store_primary_category'</span><span style="color: #bc6ec5;">]</span>\
-            .isnull<span style="color: #bc6ec5;">()</span>.tolist<span style="color: #bc6ec5;">()</span>, <span style="color: #2d9574;">'store_primary_category'</span><span style="color: #4f97d7;">]</span> =\
-            Train_merge_store.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6ec5;">[</span>:,
-            <span style="color: #2d9574;">'store_primary_category'</span><span style="color: #bc6ec5;">]</span>.isnull<span style="color: #bc6ec5;">()</span>.tolist<span style="color: #bc6ec5;">()</span>,
-                                  <span style="color: #2d9574;">'store_primary_category_y'</span><span style="color: #4f97d7;">]</span>
+Train.isnull().sum()
+Train_merge_store.isnull().sum()
+Train.loc[Train.loc[:,'store_primary_category']\
+            .isnull().tolist(), 'store_primary_category'] =\
+            Train_merge_store.loc[Train.loc[:,
+            'store_primary_category'].isnull().tolist(),
+                                  'store_primary_category_y']
 </pre>
 </div>
 </div>
@@ -807,26 +807,26 @@ Train.loc<span style="color: #4f97d7;">[</span>Train.loc<span style="color: #bc6
 </ol>
 </div>
 
-<div id="outline-container-org4730645" class="outline-4">
-<h4 id="org4730645"><span class="section-number-4">2.2.3</span> Treat the <code>NaN</code> as an extra level of the categorical variable</h4>
+<div id="outline-container-org9021131" class="outline-4">
+<h4 id="org9021131"><span class="section-number-4">2.2.3</span> Treat the <code>NaN</code> as an extra level of the categorical variable</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <p>
 For the <code>NaN's</code> in <code>market_id</code> and <code>order_protocol</code>, and the remaining <code>NaN's</code> in <code>store_primary_category_x</code>, I treat them as a special level of these categorical variables 
 </p>
 </div>
 </div>
-<div id="outline-container-org40b2dbe" class="outline-4">
-<h4 id="org40b2dbe"><span class="section-number-4">2.2.4</span> Remove some data points</h4>
+<div id="outline-container-orgb4e7003" class="outline-4">
+<h4 id="orgb4e7003"><span class="section-number-4">2.2.4</span> Remove some data points</h4>
 <div class="outline-text-4" id="text-2-2-4">
 </div>
 <ol class="org-ol">
-<li><a id="orgd79eea3"></a>remove rows with no delivery time<br />
+<li><a id="orgbc4b79a"></a>remove rows with no delivery time<br />
 <div class="outline-text-5" id="text-2-2-4-1">
 <p>
 Since no label is recorded, nothing can be learned from the data points. I remove those data points.
 </p>
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">Train</span> = Train<span style="color: #4f97d7;">[</span>~Train.actual_delivery_time.isnull<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">]</span>
+<pre class="src src-ipython">Train = Train[~Train.actual_delivery_time.isnull()]
 </pre>
 </div>
 </div>
@@ -835,52 +835,52 @@ Since no label is recorded, nothing can be learned from the data points. I remov
 </div>
 </div>
 
-<div id="outline-container-org1cf6971" class="outline-3">
-<h3 id="org1cf6971"><span class="section-number-3">2.3</span> Compute the duration from orders created to orders delivered</h3>
+<div id="outline-container-org4b51796" class="outline-3">
+<h3 id="org4b51796"><span class="section-number-3">2.3</span> Compute the duration from orders created to orders delivered</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #7590db;">Train</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'duration'</span><span style="color: #4f97d7;">]</span> = <span style="color: #4f97d7;">(</span>Train<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'actual_delivery_time'</span><span style="color: #bc6ec5;">]</span> -
-                     Train<span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'created_at'</span><span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.seconds<span style="color: #4f97d7;">)</span>
-Train.drop<span style="color: #4f97d7;">(</span>
-    <span style="color: #bc6ec5;">[</span><span style="color: #2d9574;">'actual_delivery_time'</span>, <span style="color: #2d9574;">'created_at'</span>, <span style="color: #2d9574;">'hour'</span><span style="color: #bc6ec5;">]</span>, axis=<span style="color: #a45bad;">1</span>, inplace=<span style="color: #a45bad;">True</span><span style="color: #4f97d7;">)</span>
-Train.to_csv<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'./data/data.csv'</span>, index=<span style="color: #a45bad;">False</span><span style="color: #4f97d7;">)</span>
+<pre class="src src-ipython">Train['duration'] = (Train['actual_delivery_time'] -
+                     Train['created_at']).map(lambda x: x.seconds)
+Train.drop(
+    ['actual_delivery_time', 'created_at', 'hour'], axis=1, inplace=True)
+Train.to_csv('./data/data.csv', index=False)
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6dd3174" class="outline-2">
-<h2 id="org6dd3174"><span class="section-number-2">3</span> Training</h2>
+<div id="outline-container-org608c609" class="outline-2">
+<h2 id="org608c609"><span class="section-number-2">3</span> Training</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org526e2c6" class="outline-3">
-<h3 id="org526e2c6"><span class="section-number-3">3.1</span> Automatic Machine Learnig (AutoML)</h3>
+<div id="outline-container-org5ca7a10" class="outline-3">
+<h3 id="org5ca7a10"><span class="section-number-3">3.1</span> Automatic Machine Learnig (AutoML)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 In recent years a number of AutoML have been developed. <a href="https://h2o-release.s3.amazonaws.com/h2o/master/3888/docs-website/h2o-docs/automl.html">H2O</a> offers an easy-to-use AutoML package. The AutoML tools significantly reduce the effort on model implementation when exploring different models. Data scientist just need to specify the models to be included, and then these models will be automatically tuned and evaluated. Keep in mind, AutoML is suitable for the initial model exploration but not for getting the best performing model. Once an appropriate model family is identified, further tuning is still required.   
 </p>
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">import</span> h2o
-<span style="color: #4f97d7; font-weight: bold;">from</span> h2o.automl <span style="color: #4f97d7; font-weight: bold;">import</span> H2OAutoML
+<pre class="src src-ipython">import h2o
+from h2o.automl import H2OAutoML
 
-<span style="color: #7590db;">train</span> = pd.read_csv<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'./data/data.csv'</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">train.market_id</span> = train.market_id.astype<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"str"</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">train.order_protocol</span> = train.order_protocol.astype<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"str"</span><span style="color: #4f97d7;">)</span>
+train = pd.read_csv('./data/data.csv')
+train.market_id = train.market_id.astype("str")
+train.order_protocol = train.order_protocol.astype("str")
 
-h2o.init<span style="color: #4f97d7;">()</span>
-<span style="color: #7590db;">train</span> = h2o.H2OFrame<span style="color: #4f97d7;">(</span>train<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">x</span> = train.columns
-x.remove<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'actual_delivery_time'</span><span style="color: #4f97d7;">)</span>
-x.remove<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'created_at'</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">y</span> = <span style="color: #2d9574;">'duration'</span>
-x.remove<span style="color: #4f97d7;">(</span>y<span style="color: #4f97d7;">)</span>
+h2o.init()
+train = h2o.H2OFrame(train)
+x = train.columns
+x.remove('actual_delivery_time')
+x.remove('created_at')
+y = 'duration'
+x.remove(y)
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Run AutoML for 30 seconds</span>
-<span style="color: #7590db;">aml</span> = H2OAutoML<span style="color: #4f97d7;">(</span>max_runtime_secs=<span style="color: #a45bad;">30</span><span style="color: #4f97d7;">)</span>
-aml.train<span style="color: #4f97d7;">(</span>x=x, y=y, training_frame=train<span style="color: #4f97d7;">)</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">View the AutoML Leaderboard</span>
-<span style="color: #7590db;">lb</span> = aml.leaderboard
+# Run AutoML for 30 seconds
+aml = H2OAutoML(max_runtime_secs=30)
+aml.train(x=x, y=y, training_frame=train)
+# View the AutoML Leaderboard
+lb = aml.leaderboard
 </pre>
 </div>
 
@@ -1006,8 +1006,8 @@ I will use <code>StackedEnsemble_BestOfFamily</code> as the model for servnig.
 </div>
 </div>
 
-<div id="outline-container-org9d9600b" class="outline-3">
-<h3 id="org9d9600b"><span class="section-number-3">3.2</span> Mixed effects model</h3>
+<div id="outline-container-orgc1bfa1c" class="outline-3">
+<h3 id="orgc1bfa1c"><span class="section-number-3">3.2</span> Mixed effects model</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 A generalized mixed effects model (GLMM) is represented as:
@@ -1046,126 +1046,126 @@ which is often graphically represented by a network as in the following figure
  \(L\) is the number of hidden layers in the network, \(w=(W_1,...,W_L)\) is the set of weights
 </p>
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">import</span> matplotlib.pyplot <span style="color: #4f97d7; font-weight: bold;">as</span> plt
-<span style="color: #4f97d7; font-weight: bold;">import</span> numpy <span style="color: #4f97d7; font-weight: bold;">as</span> np
-<span style="color: #4f97d7; font-weight: bold;">import</span> pandas <span style="color: #4f97d7; font-weight: bold;">as</span> pd
-<span style="color: #4f97d7; font-weight: bold;">import</span> tensorflow <span style="color: #4f97d7; font-weight: bold;">as</span> tf
-<span style="color: #4f97d7; font-weight: bold;">from</span> keras <span style="color: #4f97d7; font-weight: bold;">import</span> backend <span style="color: #4f97d7; font-weight: bold;">as</span> K
-<span style="color: #4f97d7; font-weight: bold;">from</span> keras.layers <span style="color: #4f97d7; font-weight: bold;">import</span> Dense, Input
-<span style="color: #4f97d7; font-weight: bold;">from</span> keras.regularizers <span style="color: #4f97d7; font-weight: bold;">import</span> l2
-<span style="color: #4f97d7; font-weight: bold;">from</span> mpl_toolkits.mplot3d <span style="color: #4f97d7; font-weight: bold;">import</span> Axes3D
-<span style="color: #4f97d7; font-weight: bold;">from</span> sklearn.preprocessing <span style="color: #4f97d7; font-weight: bold;">import</span> scale
+<pre class="src src-ipython">import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from keras import backend as K
+from keras.layers import Dense, Input
+from keras.regularizers import l2
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.preprocessing import scale
 
-<span style="color: #4f97d7; font-weight: bold;">import</span> edward <span style="color: #4f97d7; font-weight: bold;">as</span> ed
-<span style="color: #4f97d7; font-weight: bold;">from</span> edward.models <span style="color: #4f97d7; font-weight: bold;">import</span> Normal
-
-
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">neural_network</span><span style="color: #4f97d7;">(</span>fixed_effects, lamd=.<span style="color: #a45bad;">1</span>, input_dim=<span style="color: #a45bad;">None</span><span style="color: #4f97d7;">)</span>:
-    <span style="color: #7590db;">dense</span> = Dense<span style="color: #4f97d7;">(</span>
-        <span style="color: #a45bad;">5</span>, activation=<span style="color: #2d9574;">'tanh'</span>, kernel_regularizer=l2<span style="color: #bc6ec5;">(</span>lamd<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)(</span>fixed_effects<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">output</span> = Dense<span style="color: #4f97d7;">(</span>
-        <span style="color: #a45bad;">1</span>, activation=<span style="color: #2d9574;">'linear'</span>, name=<span style="color: #2d9574;">'output'</span>,
-        kernel_regularizer=l2<span style="color: #bc6ec5;">(</span>lamd<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)(</span>dense<span style="color: #4f97d7;">)</span>
-    <span style="color: #4f97d7; font-weight: bold;">return</span> K.squeeze<span style="color: #4f97d7;">(</span>output, axis=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)</span>
+import edward as ed
+from edward.models import Normal
 
 
-<span style="color: #7590db;">sess</span> = ed.get_session<span style="color: #4f97d7;">()</span>
-K.set_session<span style="color: #4f97d7;">(</span>sess<span style="color: #4f97d7;">)</span>
+def neural_network(fixed_effects, lamd=.1, input_dim=None):
+    dense = Dense(
+        5, activation='tanh', kernel_regularizer=l2(lamd))(fixed_effects)
+    output = Dense(
+        1, activation='linear', name='output',
+        kernel_regularizer=l2(lamd))(dense)
+    return K.squeeze(output, axis=1)
 
-<span style="color: #7590db;">INIT_OP</span> = tf.global_variables_initializer<span style="color: #4f97d7;">()</span>
 
-<span style="color: #7590db;">data</span> = pd.read_csv<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'~/Dropbox/Quantiply/playground/data.csv'</span><span style="color: #4f97d7;">)</span>
+sess = ed.get_session()
+K.set_session(sess)
 
-<span style="color: #7590db;">fixed_effect_predictors</span> = <span style="color: #4f97d7;">[</span>
-    <span style="color: #2d9574;">'total_items'</span>, <span style="color: #2d9574;">'subtotal'</span>, <span style="color: #2d9574;">'num_distinct_items'</span>, <span style="color: #2d9574;">'min_item_price'</span>,
-    <span style="color: #2d9574;">'max_item_price'</span>, <span style="color: #2d9574;">'total_onshift_dashers'</span>, <span style="color: #2d9574;">'total_busy_dashers'</span>,
-    <span style="color: #2d9574;">'total_outstanding_orders'</span>, <span style="color: #2d9574;">'estimated_order_place_duration'</span>,
-    <span style="color: #2d9574;">'estimated_store_to_consumer_driving_duration'</span>, <span style="color: #2d9574;">'hour_x'</span>, <span style="color: #2d9574;">'hour_y'</span>
-<span style="color: #4f97d7;">]</span>
+INIT_OP = tf.global_variables_initializer()
 
-<span style="color: #7590db;">zip_codes</span> = data<span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'market_id'</span><span style="color: #4f97d7;">]</span>.astype<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'category'</span><span style="color: #4f97d7;">)</span>.cat.codes + <span style="color: #a45bad;">1</span>
+data = pd.read_csv('~/Dropbox/Quantiply/playground/data.csv')
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">zip_codes.value_counts()</span>
-<span style="color: #7590db;">train_index</span> = data.sample<span style="color: #4f97d7;">(</span>frac=<span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">7</span><span style="color: #4f97d7;">)</span>.index
-<span style="color: #7590db;">val_index</span> = data.drop<span style="color: #4f97d7;">(</span>train_index<span style="color: #4f97d7;">)</span>.index
+fixed_effect_predictors = [
+    'total_items', 'subtotal', 'num_distinct_items', 'min_item_price',
+    'max_item_price', 'total_onshift_dashers', 'total_busy_dashers',
+    'total_outstanding_orders', 'estimated_order_place_duration',
+    'estimated_store_to_consumer_driving_duration', 'hour_x', 'hour_y'
+]
 
-<span style="color: #7590db;">X</span> = data.drop<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'duration'</span>, axis=<span style="color: #a45bad;">1</span><span style="color: #4f97d7;">)[</span>fixed_effect_predictors<span style="color: #4f97d7;">]</span>
-<span style="color: #7590db;">X</span> = scale<span style="color: #4f97d7;">(</span>X<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">y</span> = data<span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'duration'</span><span style="color: #4f97d7;">]</span>.values
-<span style="color: #7590db;">X_train</span> = X<span style="color: #4f97d7;">[</span>train_index<span style="color: #4f97d7;">]</span>
-<span style="color: #7590db;">y_train</span> = y<span style="color: #4f97d7;">[</span>train_index<span style="color: #4f97d7;">]</span>
-<span style="color: #7590db;">X_val</span> = X<span style="color: #4f97d7;">[</span>val_index<span style="color: #4f97d7;">]</span>
-<span style="color: #7590db;">y_val</span> = y<span style="color: #4f97d7;">[</span>val_index<span style="color: #4f97d7;">]</span>
+zip_codes = data['market_id'].astype('category').cat.codes + 1
 
-<span style="color: #7590db;">N</span>, <span style="color: #7590db;">D</span> = X_train.shape
+# zip_codes.value_counts()
+train_index = data.sample(frac=0.7).index
+val_index = data.drop(train_index).index
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">fixed-effects placeholders</span>
-<span style="color: #7590db;">fixed_effects</span> = tf.placeholder<span style="color: #4f97d7;">(</span>tf.float32, <span style="color: #bc6ec5;">[</span>N, D<span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+X = data.drop('duration', axis=1)[fixed_effect_predictors]
+X = scale(X)
+y = data['duration'].values
+X_train = X[train_index]
+y_train = y[train_index]
+X_val = X[val_index]
+y_val = y[val_index]
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">fixed-effects parameters</span>
-<span style="color: #7590db;">b_fixed_effects</span> = Normal<span style="color: #4f97d7;">(</span>loc=tf.zeros<span style="color: #bc6ec5;">(</span>D<span style="color: #bc6ec5;">)</span>, scale=tf.ones<span style="color: #bc6ec5;">(</span>D<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">a</span> = Normal<span style="color: #4f97d7;">(</span>loc=tf.zeros<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span><span style="color: #bc6ec5;">)</span>, scale=tf.ones<span style="color: #bc6ec5;">(</span><span style="color: #a45bad;">1</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+N, D = X_train.shape
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">approximate fixed-effects distributions</span>
-<span style="color: #7590db;">qb_fixed_effects</span> = Normal<span style="color: #4f97d7;">(</span>
-    loc=tf.Variable<span style="color: #bc6ec5;">(</span>tf.random_normal<span style="color: #2d9574;">(</span><span style="color: #67b11d;">[</span>D<span style="color: #67b11d;">]</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>,
-    scale=tf.nn.softplus<span style="color: #bc6ec5;">(</span>tf.Variable<span style="color: #2d9574;">(</span>tf.random_normal<span style="color: #67b11d;">(</span><span style="color: #b1951d;">[</span>D<span style="color: #b1951d;">]</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">qa</span> = Normal<span style="color: #4f97d7;">(</span>
-    loc=tf.Variable<span style="color: #bc6ec5;">(</span>tf.random_normal<span style="color: #2d9574;">(</span><span style="color: #67b11d;">[</span><span style="color: #a45bad;">1</span><span style="color: #67b11d;">]</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>,
-    scale=tf.nn.softplus<span style="color: #bc6ec5;">(</span>tf.Variable<span style="color: #2d9574;">(</span>tf.random_normal<span style="color: #67b11d;">(</span><span style="color: #b1951d;">[</span><span style="color: #a45bad;">1</span><span style="color: #b1951d;">]</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+# fixed-effects placeholders
+fixed_effects = tf.placeholder(tf.float32, [N, D])
 
-<span style="color: #7590db;">n_zip_codes</span> = <span style="color: #4f97d7;">len</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7;">set</span><span style="color: #bc6ec5;">(</span>zip_codes<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+# fixed-effects parameters
+b_fixed_effects = Normal(loc=tf.zeros(D), scale=tf.ones(D))
+a = Normal(loc=tf.zeros(1), scale=tf.ones(1))
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">random-effect placeholder</span>
-<span style="color: #7590db;">zip_codes_ph</span> = tf.placeholder<span style="color: #4f97d7;">(</span>tf.int32, <span style="color: #bc6ec5;">[</span>N<span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
+# approximate fixed-effects distributions
+qb_fixed_effects = Normal(
+    loc=tf.Variable(tf.random_normal([D])),
+    scale=tf.nn.softplus(tf.Variable(tf.random_normal([D]))))
+qa = Normal(
+    loc=tf.Variable(tf.random_normal([1])),
+    scale=tf.nn.softplus(tf.Variable(tf.random_normal([1]))))
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">random-effect parameter</span>
-<span style="color: #7590db;">sigm_zip_code</span> = tf.sqrt<span style="color: #4f97d7;">(</span>tf.exp<span style="color: #bc6ec5;">(</span>tf.Variable<span style="color: #2d9574;">(</span>tf.random_normal<span style="color: #67b11d;">(</span><span style="color: #b1951d;">[]</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">a_zip_code</span> = Normal<span style="color: #4f97d7;">(</span>
-    loc=tf.zeros<span style="color: #bc6ec5;">(</span>n_zip_codes<span style="color: #bc6ec5;">)</span>, scale=sigm_zip_code * tf.ones<span style="color: #bc6ec5;">(</span>n_zip_codes<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+n_zip_codes = len(set(zip_codes))
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">approximate random-effect distribution</span>
-<span style="color: #7590db;">qa_zip_code</span> = Normal<span style="color: #4f97d7;">(</span>
-    loc=tf.Variable<span style="color: #bc6ec5;">(</span>tf.random_normal<span style="color: #2d9574;">(</span><span style="color: #67b11d;">[</span>n_zip_codes<span style="color: #67b11d;">]</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>,
-    scale=tf.nn.softplus<span style="color: #bc6ec5;">(</span>tf.Variable<span style="color: #2d9574;">(</span>tf.random_normal<span style="color: #67b11d;">(</span><span style="color: #b1951d;">[</span>n_zip_codes<span style="color: #b1951d;">]</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+# random-effect placeholder
+zip_codes_ph = tf.placeholder(tf.int32, [N])
 
-<span style="color: #7590db;">a_random_effects</span> = tf.gather<span style="color: #4f97d7;">(</span>a_zip_code, zip_codes_ph<span style="color: #4f97d7;">)</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">### Infer parameters</span>
+# random-effect parameter
+sigm_zip_code = tf.sqrt(tf.exp(tf.Variable(tf.random_normal([]))))
+a_zip_code = Normal(
+    loc=tf.zeros(n_zip_codes), scale=sigm_zip_code * tf.ones(n_zip_codes))
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">model</span>
-<span style="color: #7590db;">fixed_effects</span> = tf.placeholder<span style="color: #4f97d7;">(</span>tf.float32, <span style="color: #bc6ec5;">[</span>N, D<span style="color: #bc6ec5;">]</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">mu_y</span> = a + a_random_effects + neural_network<span style="color: #4f97d7;">(</span>fixed_effects<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">y</span> = Normal<span style="color: #4f97d7;">(</span>loc=mu_y, scale=tf.ones<span style="color: #bc6ec5;">(</span>N<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">latent_vars</span> = <span style="color: #4f97d7;">{</span>
+# approximate random-effect distribution
+qa_zip_code = Normal(
+    loc=tf.Variable(tf.random_normal([n_zip_codes])),
+    scale=tf.nn.softplus(tf.Variable(tf.random_normal([n_zip_codes]))))
+
+a_random_effects = tf.gather(a_zip_code, zip_codes_ph)
+# ### Infer parameters
+
+# model
+fixed_effects = tf.placeholder(tf.float32, [N, D])
+mu_y = a + a_random_effects + neural_network(fixed_effects)
+y = Normal(loc=mu_y, scale=tf.ones(N))
+latent_vars = {
     b_fixed_effects: qb_fixed_effects,
     a: qa,
     a_zip_code: qa_zip_code
-<span style="color: #4f97d7;">}</span>
+}
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Inference</span>
-sess.run<span style="color: #4f97d7;">(</span>INIT_OP<span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">inference</span> = ed.KLqp<span style="color: #4f97d7;">(</span>
+# Inference
+sess.run(INIT_OP)
+inference = ed.KLqp(
     latent_vars,
-    data=<span style="color: #bc6ec5;">{</span>
+    data={
         fixed_effects: X_train,
-        zip_codes_ph: zip_codes<span style="color: #2d9574;">[</span>train_index<span style="color: #2d9574;">]</span>,
+        zip_codes_ph: zip_codes[train_index],
         y: y_train
-    <span style="color: #bc6ec5;">}</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">optimizer</span> = tf.train.RMSPropOptimizer<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">0</span>.<span style="color: #a45bad;">01</span>, epsilon=<span style="color: #a45bad;">1</span>.<span style="color: #a45bad;">0</span><span style="color: #4f97d7;">)</span>
-inference.initialize<span style="color: #4f97d7;">(</span>optimizer=optimizer<span style="color: #4f97d7;">)</span>
-inference.run<span style="color: #4f97d7;">(</span>n_samples=<span style="color: #a45bad;">5</span>, n_iter=<span style="color: #a45bad;">1000</span><span style="color: #4f97d7;">)</span>
+    })
+optimizer = tf.train.RMSPropOptimizer(0.01, epsilon=1.0)
+inference.initialize(optimizer=optimizer)
+inference.run(n_samples=5, n_iter=1000)
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8893db6" class="outline-2">
-<h2 id="org8893db6"><span class="section-number-2">4</span> Prediction</h2>
+<div id="outline-container-org2923cea" class="outline-2">
+<h2 id="org2923cea"><span class="section-number-2">4</span> Prediction</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org76fdbc8" class="outline-3">
-<h3 id="org76fdbc8"><span class="section-number-3">4.1</span> Script for model serving</h3>
+<div id="outline-container-org9d349d5" class="outline-3">
+<h3 id="org9d349d5"><span class="section-number-3">4.1</span> Script for model serving</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 For the neural network based mixed effects model, since it is implemented in tensorflow, it can be served via tf.serving. A few advantages of tf.serving are:
@@ -1181,106 +1181,106 @@ For the neural network based mixed effects model, since it is implemented in ten
 The script I will use for model serving is shown below. If I had more time, I would have built a <a href="https://www.docker.com/">docker</a> container for portability.
 </p>
 <div class="org-src-container">
-<pre class="src src-ipython"><span style="color: #4f97d7; font-weight: bold;">import</span> argparse
-<span style="color: #4f97d7; font-weight: bold;">import</span> math
-<span style="color: #4f97d7; font-weight: bold;">import</span> os
+<pre class="src src-ipython">import argparse
+import math
+import os
 
-<span style="color: #4f97d7; font-weight: bold;">import</span> h2o
-<span style="color: #4f97d7; font-weight: bold;">import</span> pandas <span style="color: #4f97d7; font-weight: bold;">as</span> pd
+import h2o
+import pandas as pd
 
-<span style="color: #7590db;">parser</span> = argparse.ArgumentParser<span style="color: #4f97d7;">()</span>
-parser.add_argument<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"--input_path"</span>, default=<span style="color: #a45bad;">None</span><span style="color: #4f97d7;">)</span>
-parser.add_argument<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"--model_path"</span>, default=<span style="color: #a45bad;">None</span><span style="color: #4f97d7;">)</span>
-parser.add_argument<span style="color: #4f97d7;">(</span><span style="color: #2d9574;">"--output_path"</span>, default=<span style="color: #a45bad;">None</span><span style="color: #4f97d7;">)</span>
-<span style="color: #7590db;">ms</span> = parser.parse_args<span style="color: #4f97d7;">()</span>
+parser = argparse.ArgumentParser()
+parser.add_argument("--input_path", default=None)
+parser.add_argument("--model_path", default=None)
+parser.add_argument("--output_path", default=None)
+ms = parser.parse_args()
 
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> ms.input_path <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">ValueError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Please provide the path of your input data.'</span><span style="color: #4f97d7;">)</span>
+if ms.input_path is None:
+    raise ValueError('Please provide the path of your input data.')
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> ms.model_path <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">ValueError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Please provide the path of the model file.'</span><span style="color: #4f97d7;">)</span>
+if ms.model_path is None:
+    raise ValueError('Please provide the path of the model file.')
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> ms.output_path <span style="color: #4f97d7; font-weight: bold;">is</span> <span style="color: #a45bad;">None</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">ValueError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Please provide the path to save the results.'</span><span style="color: #4f97d7;">)</span>
+if ms.output_path is None:
+    raise ValueError('Please provide the path to save the results.')
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> os.path.isdir<span style="color: #4f97d7;">(</span>ms.input_path<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">IOError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Provided input path is a directory. \</span>
-<span style="color: #2d9574;">Please provide the path to the data file.'</span><span style="color: #4f97d7;">)</span>
+if os.path.isdir(ms.input_path):
+    raise IOError('Provided input path is a directory. \
+Please provide the path to the data file.')
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> os.path.isdir<span style="color: #4f97d7;">(</span>ms.model_path<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">IOError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Provided model path is a directory. \</span>
-<span style="color: #2d9574;">Please provide the path to the model file.'</span><span style="color: #4f97d7;">)</span>
+if os.path.isdir(ms.model_path):
+    raise IOError('Provided model path is a directory. \
+Please provide the path to the model file.')
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> os.path.isdir<span style="color: #4f97d7;">(</span>ms.output_path<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">raise</span> <span style="color: #ce537a; font-weight: bold;">IOError</span><span style="color: #4f97d7;">(</span><span style="color: #2d9574;">'Provided output path is a directory.\</span>
-<span style="color: #2d9574;">Please specify the file path to store the results.'</span><span style="color: #4f97d7;">)</span>
+if os.path.isdir(ms.output_path):
+    raise IOError('Provided output path is a directory.\
+Please specify the file path to store the results.')
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Initialize h2o</span>
-h2o.init<span style="color: #4f97d7;">()</span>
+# Initialize h2o
+h2o.init()
 
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">define functions to engineer the feature hour</span>
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">hour_x</span><span style="color: #4f97d7;">(</span>hour<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">return</span> math.sin<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> * math.pi * hour / <span style="color: #a45bad;">24</span><span style="color: #4f97d7;">)</span>
+# define functions to engineer the feature hour
+def hour_x(hour):
+    return math.sin(2 * math.pi * hour / 24)
 
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">hour_y</span><span style="color: #4f97d7;">(</span>hour<span style="color: #4f97d7;">)</span>:
-    <span style="color: #4f97d7; font-weight: bold;">return</span> math.cos<span style="color: #4f97d7;">(</span><span style="color: #a45bad;">2</span> * math.pi * hour / <span style="color: #a45bad;">24</span><span style="color: #4f97d7;">)</span>
+def hour_y(hour):
+    return math.cos(2 * math.pi * hour / 24)
 
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">prepare_test_data</span><span style="color: #4f97d7;">(</span>input_path=ms.input_path<span style="color: #4f97d7;">)</span>:
-    <span style="color: #9f8766;">'''Prepare the test dataset</span>
+def prepare_test_data(input_path=ms.input_path):
+    '''Prepare the test dataset
 
-<span style="color: #9f8766;">    Parameters</span>
-<span style="color: #9f8766;">    ----------</span>
-<span style="color: #9f8766;">    input_path: str</span>
-<span style="color: #9f8766;">        Path to the saved input data.</span>
+    Parameters
+    ----------
+    input_path: str
+        Path to the saved input data.
 
-<span style="color: #9f8766;">    Returns</span>
-<span style="color: #9f8766;">    -------</span>
-<span style="color: #9f8766;">    test: H2O.DataFrame</span>
-<span style="color: #9f8766;">        Test dataset after the same feature engineering. </span>
-<span style="color: #9f8766;">    '''</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">jason_path = '../../Data Science/data_to_predict.json'</span>
-<span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">test = pd.read_json(jason_path, lines = True)</span>
-    <span style="color: #7590db;">test</span> = pd.read_json<span style="color: #4f97d7;">(</span>input_path, lines=<span style="color: #a45bad;">True</span><span style="color: #4f97d7;">)</span>
-    <span style="color: #4f97d7; font-weight: bold;">print</span> <span style="color: #2d9574;">'Using input data from %s'</span> % input_path
-    <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">Engineer the features of test data accordingly</span>
-    <span style="color: #7590db;">test.created_at</span> = pd.to_datetime<span style="color: #4f97d7;">(</span>test.created_at<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">test</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'weekday'</span><span style="color: #4f97d7;">]</span> = test.created_at.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.weekday<span style="color: #bc6ec5;">()</span><span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">test</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour'</span><span style="color: #4f97d7;">]</span> = test.created_at.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">lambda</span> x: x.hour<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">test</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour_x'</span><span style="color: #4f97d7;">]</span> = test.hour.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span>hour_x<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">test</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'hour_y'</span><span style="color: #4f97d7;">]</span> = test.hour.<span style="color: #4f97d7;">map</span><span style="color: #4f97d7;">(</span>hour_y<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">test</span> = h2o.H2OFrame<span style="color: #4f97d7;">(</span>test<span style="color: #4f97d7;">)</span>
-    <span style="color: #4f97d7; font-weight: bold;">return</span> test
+    Returns
+    -------
+    test: H2O.DataFrame
+        Test dataset after the same feature engineering. 
+    '''
+# jason_path = '../../Data Science/data_to_predict.json'
+# test = pd.read_json(jason_path, lines = True)
+    test = pd.read_json(input_path, lines=True)
+    print 'Using input data from %s' % input_path
+    # Engineer the features of test data accordingly
+    test.created_at = pd.to_datetime(test.created_at)
+    test['weekday'] = test.created_at.map(lambda x: x.weekday())
+    test['hour'] = test.created_at.map(lambda x: x.hour)
+    test['hour_x'] = test.hour.map(hour_x)
+    test['hour_y'] = test.hour.map(hour_y)
+    test = h2o.H2OFrame(test)
+    return test
 
-<span style="color: #4f97d7; font-weight: bold;">def</span> <span style="color: #bc6ec5; font-weight: bold;">predict</span><span style="color: #4f97d7;">(</span>model_path=ms.model_path,
-            output_path=ms.output_path<span style="color: #4f97d7;">)</span>:
-    <span style="color: #9f8766;">'''Make predictions</span>
+def predict(model_path=ms.model_path,
+            output_path=ms.output_path):
+    '''Make predictions
 
-<span style="color: #9f8766;">    Parameters</span>
-<span style="color: #9f8766;">    ----------</span>
-<span style="color: #9f8766;">    model_path: str</span>
-<span style="color: #9f8766;">        Path to the saved model file.</span>
-<span style="color: #9f8766;">    output_path: str</span>
-<span style="color: #9f8766;">        Path to save the results.</span>
+    Parameters
+    ----------
+    model_path: str
+        Path to the saved model file.
+    output_path: str
+        Path to save the results.
 
-<span style="color: #9f8766;">    Returns</span>
-<span style="color: #9f8766;">    -------</span>
-<span style="color: #9f8766;">    None</span>
-<span style="color: #9f8766;">    '''</span>
-    <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">load the saved model</span>
-    <span style="color: #7590db;">aml_top</span> = h2o.load_model<span style="color: #4f97d7;">(</span>model_path<span style="color: #4f97d7;">)</span>
-    <span style="color: #2aa1ae; background-color: #292e34;"># </span><span style="color: #2aa1ae; background-color: #292e34;">make predictions</span>
-    <span style="color: #7590db;">test</span> = prepare_test_data<span style="color: #4f97d7;">()</span>
-    <span style="color: #7590db;">pred</span> = aml_top.predict<span style="color: #4f97d7;">(</span>test<span style="color: #4f97d7;">)</span>
-    <span style="color: #7590db;">res</span> = pd.DataFrame<span style="color: #4f97d7;">()</span>
-    <span style="color: #7590db;">res</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'delivery_id'</span><span style="color: #4f97d7;">]</span> = test.as_data_frame<span style="color: #4f97d7;">()[</span><span style="color: #2d9574;">'delivery_id'</span><span style="color: #4f97d7;">]</span>
-    <span style="color: #7590db;">res</span><span style="color: #4f97d7;">[</span><span style="color: #2d9574;">'predicted_delivery_seconds'</span><span style="color: #4f97d7;">]</span> = pred.as_data_frame<span style="color: #4f97d7;">()[</span><span style="color: #2d9574;">'predict'</span><span style="color: #4f97d7;">]</span>
-    res.to_csv<span style="color: #4f97d7;">(</span>output_path, sep=<span style="color: #2d9574;">'\t'</span>, index=<span style="color: #a45bad;">False</span><span style="color: #4f97d7;">)</span>
+    Returns
+    -------
+    None
+    '''
+    # load the saved model
+    aml_top = h2o.load_model(model_path)
+    # make predictions
+    test = prepare_test_data()
+    pred = aml_top.predict(test)
+    res = pd.DataFrame()
+    res['delivery_id'] = test.as_data_frame()['delivery_id']
+    res['predicted_delivery_seconds'] = pred.as_data_frame()['predict']
+    res.to_csv(output_path, sep='\t', index=False)
 
-<span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #4f97d7;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
-    predict<span style="color: #4f97d7;">()</span>
-    h2o.cluster<span style="color: #4f97d7;">()</span>.shutdown<span style="color: #4f97d7;">()</span>
-    <span style="color: #4f97d7; font-weight: bold;">print</span> <span style="color: #2d9574;">'Saving results to %s'</span> % ms.output_path
+if __name__ == "__main__":
+    predict()
+    h2o.cluster().shutdown()
+    print 'Saving results to %s' % ms.output_path
 </pre>
 </div>
 </div>
@@ -1289,7 +1289,7 @@ h2o.init<span style="color: #4f97d7;">()</span>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Qike Max Li</p>
-<p class="date">Created: 2018-08-01 Wed 23:02</p>
+<p class="date">Created: 2018-09-17 Mon 22:56</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
